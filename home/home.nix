@@ -5,6 +5,7 @@ in
 {
   imports = [
     ../modules/nvim
+    ../modules/ssh
     ../packages
   ];
 
@@ -17,6 +18,16 @@ in
       format = "yaml";
       key = "example.token";
     };
+    secrets."ssh/github/id_ed25519" = {
+      format = "yaml";
+      sopsFile = ../secrets/ssh.yaml;
+      key = "ssh.github.id_ed25519";
+    };
+    secrets."ssh/github/id_ed25519.pub" = {
+      format = "yaml";
+      sopsFile = ../secrets/ssh.yaml;
+      key = "ssh.github.id_ed25519_pub";
+    };
   };
 
   home.file.".config/example/token" = {
@@ -25,6 +36,28 @@ in
   };
 
   modules.nvim.enable = true;
+  modules.ssh = {
+    enable = true;
+    identities.github = {
+      secret = "ssh/github/id_ed25519";
+      target = ".ssh/github_ed25519";
+    };
+    matchBlocks = {
+      "github.com" = {
+        user = "git";
+        hostname = "github.com";
+        identityFile = "~/.ssh/github_ed25519";
+        identitiesOnly = true;
+        compression = true;
+      };
+    };
+    extraConfig = ''
+      Host *
+        AddKeysToAgent yes
+        Compression yes
+        VisualHostKey no
+    '';
+  };
 
   modules.packages = {
     core.enable = true;

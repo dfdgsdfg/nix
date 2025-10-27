@@ -25,3 +25,16 @@ This directory stores SOPS-encrypted secrets that can be deployed through
 
 > The committed key in `.sops.yaml` is a placeholder for bootstrapping.
 > Replace it with your own recipient before storing real secrets.
+
+## SSH keys
+
+SSH keys are sourced from `secrets/ssh.yaml` and surfaced through the `modules.ssh`
+Home Manager module. Run the following to edit or replace the placeholders:
+
+```bash
+SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/ssh.yaml
+```
+
+Populate the `ssh.github.id_ed25519` and `ssh.github.id_ed25519_pub` entries with your
+private and public keys respectively. The module writes the decrypted private key to
+`~/.ssh/github_ed25519` and wires it into the generated SSH config.

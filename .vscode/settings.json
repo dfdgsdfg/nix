@@ -1,5 +1,6 @@
 {
     "debug.javascript.defaultRuntimeExecutable": {
-        "pwa-node": "/Users/dididi/.local/share/mise/shims/node"
-    }
+        "pwa-node": "${workspaceFolder}/.vscode/mise-tools/node"
+    },
+    "dart.flutterSdkPath": "/Users/dididi/.local/share/mise/installs/flutter/3.35.7-stable"
 }
