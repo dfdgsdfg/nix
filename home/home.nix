@@ -1,7 +1,4 @@
 { config, pkgs, lib, ... }:
-let
-  secretPath = config.sops.secrets."example-token".path;
-in
 {
   imports = [
     ../modules/nvim
@@ -28,11 +25,6 @@ in
       sopsFile = ../secrets/ssh.yaml;
       key = "ssh.github.id_ed25519_pub";
     };
-  };
-
-  home.file.".config/example/token" = {
-    source = secretPath;
-    recursive = false;
   };
 
   modules.nvim.enable = true;

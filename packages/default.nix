@@ -2,10 +2,14 @@
 let
   cfg = config.modules.packages;
   system = pkgs.stdenv.hostPlatform.system;
-  unstablePkgs = pkgsUnstable or import inputs.nixpkgs-unstable {
-    inherit system;
-    config.allowUnfree = true;
-  };
+  unstablePkgs =
+    if pkgsUnstable != null then
+      pkgsUnstable
+    else
+      import inputs.nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
 
   corePkgs =
     (with pkgs; [
@@ -31,7 +35,7 @@ let
       navi
       nushell
       pipx
-      pinentry
+      pinentry-curses
       procs
       ripgrep
       sd
@@ -40,7 +44,6 @@ let
       sops
       tmux
       tree-sitter
-      tree-sitter-cli
       trash-cli
       unzip
       wget
@@ -65,15 +68,18 @@ let
     helix
     imagemagick
     lefthook
-    nodejs_20
+    nodejs_24
   ];
 
-  networkPkgs = with pkgs; [
-    bandwhich
-    cloudflared
-    mitmproxy
-    whalebrew
-  ];
+  networkPkgs =
+    (with pkgs; [
+      bandwhich
+      cloudflared
+      mitmproxy
+    ])
+    ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
+      whalebrew
+    ]);
 
   opsPkgs =
     (with pkgs; [
@@ -114,12 +120,12 @@ in
 
   config.home.packages = lib.unique (
     lib.concatLists [
-      lib.optionals cfg.core.enable corePkgs
-      lib.optionals cfg.dev.enable devPkgs
-      lib.optionals cfg.network.enable networkPkgs
-      lib.optionals cfg.ops.enable opsPkgs
-      lib.optionals cfg.mobile.enable mobilePkgs
-      lib.optionals cfg.gui.enable guiPkgs
+      (lib.optionals cfg.core.enable corePkgs)
+      (lib.optionals cfg.dev.enable devPkgs)
+      (lib.optionals cfg.network.enable networkPkgs)
+      (lib.optionals cfg.ops.enable opsPkgs)
+      (lib.optionals cfg.mobile.enable mobilePkgs)
+      (lib.optionals cfg.gui.enable guiPkgs)
     ]
   );
 }

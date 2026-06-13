@@ -45,12 +45,11 @@ let
   mkIdentityFiles = { name, value }:
     let
       identity = value;
-      secretPath = lib.splitString "/" identity.secret;
-      hasSecret = lib.hasAttrByPath secretPath config.sops.secrets;
+      hasSecret = lib.hasAttr identity.secret config.sops.secrets;
       _ = lib.assertMsg hasSecret ''
         modules.ssh.identities."${name}".secret must reference an existing entry in config.sops.secrets (got "${identity.secret}")
       '';
-      secret = lib.attrByPath secretPath config.sops.secrets;
+      secret = config.sops.secrets.${identity.secret};
       pkTarget =
         if identity.publicKeyTarget != null then
           identity.publicKeyTarget
@@ -61,8 +60,7 @@ let
       {
         name = identity.target;
         value = {
-          source = secret.path;
-          mode = identity.mode;
+          source = config.lib.file.mkOutOfStoreSymlink secret.path;
         };
       }
     ]
@@ -71,7 +69,6 @@ let
         name = pkTarget;
         value = {
           text = identity.publicKey;
-          mode = identity.publicKeyMode;
         };
       }
     ];

@@ -43,6 +43,9 @@
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
+  home-manager.sharedModules = [
+    inputs.sops-nix.homeManagerModules.sops
+  ];
   home-manager.users.dididi = {
     imports = [ ../../home/home.nix ];
     home.username = "dididi";
