@@ -20,7 +20,9 @@ let
       delta
       dust
       fd
+      fx
       fzf
+      gawk
       gh
       git
       git-lfs
@@ -31,11 +33,13 @@ let
       lazygit
       lsd
       mise
+      minisign
       mosh
       navi
       nushell
       pipx
       pinentry-curses
+      pnpm
       procs
       ripgrep
       sd
@@ -47,9 +51,13 @@ let
       trash-cli
       unzip
       wget
+      xh
       yq
       zellij
       zoxide
+    ])
+    ++ lib.optionals (!pkgs.stdenv.isDarwin) (with pkgs; [
+      mole
     ])
     ++ (with unstablePkgs; [
       fastfetch
@@ -77,9 +85,7 @@ let
       cloudflared
       mitmproxy
     ])
-    ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
-      whalebrew
-    ]);
+    ++ lib.optional (pkgs.stdenv.isDarwin && lib.hasAttr "whalebrew" pkgs) pkgs.whalebrew;
 
   opsPkgs =
     (with pkgs; [

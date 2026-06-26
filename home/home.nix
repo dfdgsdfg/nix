@@ -1,4 +1,72 @@
 { config, pkgs, lib, ... }:
+let
+  pnpmHome =
+    if pkgs.stdenv.isDarwin then
+      "${config.home.homeDirectory}/Library/pnpm"
+    else
+      "${config.home.homeDirectory}/.local/share/pnpm";
+
+  commonShellAliases = {
+    ls = "lsd";
+    l = "ls -l";
+    la = "ls -a";
+    lla = "ls -la";
+    lt = "ls --tree";
+    cat = "bat --paging=never -p";
+    rm = "trash";
+    ps = "procs";
+    du = "dust";
+    top = "btm";
+    diff = "delta";
+    network = "bandwhich";
+    npm_legacy = "command npm";
+    npm = "pnpm";
+    npx_legacy = "command npx";
+    npx = "pnpx";
+    http = "xh";
+  };
+
+  fishShellAliases = commonShellAliases // {
+    cd = "z";
+  };
+
+  globalGitIgnores = [
+    ".DS_Store"
+    ".AppleDouble"
+    ".LSOverride"
+    "Icon"
+    "._*"
+    ".DocumentRevisions-V100"
+    ".fseventsd"
+    ".Spotlight-V100"
+    ".TemporaryItems"
+    ".Trashes"
+    ".VolumeIcon.icns"
+    ".AppleDB"
+    ".AppleDesktop"
+    "Network Trash Folder"
+    "Temporary Items"
+    ".apdisk"
+    "Thumbs.db"
+    "ehthumbs.db"
+    "Desktop.ini"
+    "$RECYCLE.BIN/"
+    "*.cab"
+    "*.msi"
+    "*.msm"
+    "*.msp"
+    "*.lnk"
+    "*~"
+    ".directory"
+    ".Trash-*"
+    "[._]*.s[a-w][a-z]"
+    "[._]s[a-w][a-z]"
+    "*.un~"
+    "Session.vim"
+    ".netrwhist"
+    "**/.claude/settings.local.json"
+  ];
+in
 {
   imports = [
     ../modules/nvim
@@ -18,12 +86,12 @@
     secrets."ssh/github/id_ed25519" = {
       format = "yaml";
       sopsFile = ../secrets/ssh.yaml;
-      key = "ssh.github.id_ed25519";
+      key = "ssh/github/id_ed25519";
     };
     secrets."ssh/github/id_ed25519.pub" = {
       format = "yaml";
       sopsFile = ../secrets/ssh.yaml;
-      key = "ssh.github.id_ed25519_pub";
+      key = "ssh/github/id_ed25519_pub";
     };
   };
 
@@ -33,6 +101,7 @@
     identities.github = {
       secret = "ssh/github/id_ed25519";
       target = ".ssh/github_ed25519";
+      publicKeySecret = "ssh/github/id_ed25519.pub";
     };
     matchBlocks = {
       "github.com" = {
@@ -64,12 +133,45 @@
 
   programs.git = {
     enable = true;
-    userName = "dididi";
-    userEmail = "dididi@example.com";
+    ignores = globalGitIgnores;
+    settings = {
+      user = {
+        name = "sg";
+        email = "dfdgsdfg@gmail.com";
+      };
+      pager = {
+        diff = "delta";
+        log = "delta";
+        reflog = "delta";
+        show = "delta";
+      };
+      interactive.diffFilter = "delta --color-only --features=interactive";
+      delta.features = "decorations";
+      "delta \"interactive\"".keep-plus-minus-markers = false;
+      "delta \"decorations\"" = {
+        commit-decoration-style = "blue ol";
+        commit-style = "raw";
+        file-style = "omit";
+        hunk-header-decoration-style = "blue box";
+        hunk-header-file-style = "red";
+        hunk-header-line-number-style = "#067a00";
+        hunk-header-style = "file line-number syntax";
+      };
+      alias.root = "rev-parse --show-toplevel";
+      fetch.pruneTags = true;
+      pull.rebase = false;
+      push.autoSetupRemote = true;
+    };
+  };
+
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = false;
   };
 
   programs.zsh = {
     enable = true;
+    shellAliases = commonShellAliases;
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
@@ -79,34 +181,10 @@
 
   programs.fish = {
     enable = true;
-    shellAliases = {
-      ls = "lsd";
-      l = "ls -l";
-      la = "ls -a";
-      lla = "ls -la";
-      lt = "ls --tree";
-      cat = "bat --paging=never";
-      cd = "z";
-      rm = "trash";
-      ps = "procs";
-      du = "dust";
-      top = "btm";
-      diff = "delta";
-      network = "bandwhich";
-    };
+    shellAliases = fishShellAliases;
     shellInit = ''
       set -gx fisher_home ~/.local/share/fisherman
       set -gx fisher_config ~/.config/fisherman
-
-      if type -q mise
-        if test "$VSCODE_RESOLVING_ENVIRONMENT" = 1
-          mise activate fish --shims | source
-        else if status is-interactive
-          mise activate fish | source
-        else
-          mise activate fish --shims | source
-        end
-      end
 
       if test -f "$HOME/.cargo/env.fish"
         source "$HOME/.cargo/env.fish"
@@ -133,21 +211,51 @@
   programs.starship = {
     enable = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.atuin = {
     enable = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.navi = {
     enable = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
+  };
+
+  programs.mise = {
+    enable = true;
+    enableFishIntegration = true;
+    enableZshIntegration = true;
+    globalConfig.tools = {
+      node = "lts";
+      python = "miniconda3-latest";
+      deno = "latest";
+      java = "zulu-25";
+      ruby = "latest";
+      go = "latest";
+      bun = "latest";
+      erlang = "latest";
+      zig = "latest";
+      uv = "latest";
+      fnox = "latest";
+    };
+  };
+
+  programs.direnv = {
+    enable = true;
+    enableFishIntegration = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
   };
 
   home.stateVersion = lib.mkDefault "24.11";
@@ -160,7 +268,9 @@
       CLOUDSDK_PYTHON_SITEPACKAGES = "1";
       USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
       NO_PROXY = "localhost,127.0.0.1";
-      NODE_OPTIONS = "--max-old-space-size=8096";
+      NODE_OPTIONS = "--max-old-space-size=8192";
+      COREPACK_HOME = "${config.home.homeDirectory}/.cache/corepack";
+      PNPM_HOME = pnpmHome;
     }
     // lib.optionalAttrs pkgs.stdenv.isDarwin {
       ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
@@ -174,6 +284,11 @@
       "${config.home.homeDirectory}/opt/bin"
       "${config.home.homeDirectory}/opt/bin/depot_tools"
       "${config.home.homeDirectory}/.maestro/bin"
+      "${config.home.homeDirectory}/.antigravity/antigravity/bin"
+      "${config.home.homeDirectory}/.elan/bin"
+      "${config.home.homeDirectory}/opt/tlpas/lib"
+      "${pnpmHome}/bin"
+      pnpmHome
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       "${config.home.homeDirectory}/Library/Android/sdk/tools"
@@ -182,4 +297,20 @@
       "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     ]
   );
+
+  home.file.".default-python-packages".text = ''
+    pynvim
+  '';
+
+  home.file.".default-gems".text = ''
+    bundler
+    cocoapods
+    fastlane
+    neovim
+  '';
+
+  xdg.configFile."direnv/direnvrc".text = ''
+    # Uncomment the following line to make direnv silent by default.
+    # export DIRENV_LOG_FORMAT=""
+  '';
 }

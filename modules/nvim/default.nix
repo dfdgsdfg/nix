@@ -12,6 +12,7 @@ let
         { import = "lazyvim.plugins.extras.editor.telescope" },
         { import = "lazyvim.plugins.extras.lang.typescript" },
         { import = "lazyvim.plugins.extras.util.project" },
+        { "akinsho/flutter-tools.nvim", dependencies = "nvim-lua/plenary.nvim" },
       },
       defaults = {
         lazy = false,
@@ -77,6 +78,7 @@ in
     xdg.configFile."nvim/lua/config/options.lua".text = ''
       vim.g.mapleader = " "
       vim.g.maplocalleader = ","
+      vim.env.PATH = vim.env.HOME .. "/.local/share/mise/shims:" .. vim.env.PATH
 
       local opt = vim.opt
 

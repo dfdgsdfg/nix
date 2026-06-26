@@ -20,6 +20,16 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
     nerd-fonts.meslo-lg
   ];
+
+  fonts.fontconfig.defaultFonts = {
+    sansSerif = [ "Noto Sans CJK KR" "Noto Sans" "DejaVu Sans" ];
+    serif = [ "Noto Serif CJK KR" "Noto Serif" "DejaVu Serif" ];
+    monospace = [ "MesloLGM Nerd Font Mono" "Noto Sans Mono CJK KR" ];
+    emoji = [ "Noto Color Emoji" ];
+  };
 }

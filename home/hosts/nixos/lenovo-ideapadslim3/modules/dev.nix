@@ -2,9 +2,25 @@
 
 let
   myNode = pkgs.nodejs_24;
+  androidEnv = pkgs.androidenv.override {
+    licenseAccepted = true;
+  };
+  androidComposition = androidEnv.composeAndroidPackages {
+    platformVersions = [ "35" ];
+    buildToolsVersions = [ "35.0.0" ];
+    includeCmake = false;
+    includeEmulator = false;
+    includeNDK = false;
+    includeSystemImages = false;
+  };
+  androidSdk = androidComposition.androidsdk;
+  androidSdkRoot = "${androidSdk}/libexec/android-sdk";
 
   pnpm-shim = pkgs.writeShellScriptBin "pnpm" ''
     exec "${pkgs.lib.getBin myNode}/bin/node" "${pkgs.lib.getBin myNode}/bin/corepack" pnpm "$@"
+  '';
+  pnpx-shim = pkgs.writeShellScriptBin "pnpx" ''
+    exec "${pkgs.pnpm}/bin/pnpx" "$@"
   '';
 in
 {
@@ -29,24 +45,34 @@ in
     # '')
 
     # devenv
+    androidSdk
     myNode
     pnpm-shim
+    pnpx-shim
   ];
 
   home.sessionVariables = {
+    ANDROID_HOME = androidSdkRoot;
+    ANDROID_SDK_ROOT = androidSdkRoot;
     COREPACK_HOME = "$HOME/.cache/corepack";
-    PNPM_HOME = "HOME/.local/share/pnpm";
+    PNPM_HOME = "$HOME/.local/share/pnpm";
   };
 
   home.sessionPath = [
+    "${androidSdkRoot}/platform-tools"
+    "${androidSdkRoot}/cmdline-tools/latest/bin"
     "$HOME/.local/share/pnpm"
     "$HOME/.local/share/pnpm/bin"
   ];
 
   programs.fish.shellInit = ''
+    set -gx ANDROID_HOME "${androidSdkRoot}"
+    set -gx ANDROID_SDK_ROOT "${androidSdkRoot}"
     set -gx COREPACK_HOME "$HOME/.cache/corepack"
     set -gx PNPM_HOME "$HOME/.local/share/pnpm"
 
+    fish_add_path "${androidSdkRoot}/platform-tools"
+    fish_add_path "${androidSdkRoot}/cmdline-tools/latest/bin"
     fish_add_path "$HOME/.local/share/pnpm"
     fish_add_path "$HOME/.local/share/pnpm/bin"
   '';
@@ -54,6 +80,19 @@ in
   programs.mise = {
     enable = true;
     enableFishIntegration = true;
+    globalConfig.tools = {
+      node = "lts";
+      python = "miniconda3-latest";
+      deno = "latest";
+      java = "zulu-25";
+      ruby = "latest";
+      go = "latest";
+      bun = "latest";
+      erlang = "latest";
+      zig = "latest";
+      uv = "latest";
+      fnox = "latest";
+    };
   };
 
   programs.direnv = {

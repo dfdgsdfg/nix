@@ -2,7 +2,6 @@
 {
   imports = [
     inputs.nixos-wsl.nixosModules.wsl
-    inputs.home-manager.nixosModules.home-manager
   ];
 
   networking.hostName = "wsl";
@@ -14,14 +13,11 @@
   nix.registry.unstable.flake = inputs.nixpkgs-unstable;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  environment.systemPackages =
-    (with pkgs; [
-      git
-      gnupg
-      sops
-    ]) ++ (with pkgsUnstable; [
-      yazi
-    ]);
+  modules.systemPackages.core.enable = true;
+
+  environment.systemPackages = with pkgsUnstable; [
+    yazi
+  ];
 
   users.users.dididi = {
     isNormalUser = true;
@@ -31,13 +27,5 @@
 
   programs.zsh.enable = true;
 
-  system.stateVersion = "25.05";
-
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.users.dididi = {
-    imports = [ ../../home/home.nix ];
-    home.username = "dididi";
-    home.homeDirectory = "/home/dididi";
-  };
+  system.stateVersion = "26.05";
 }

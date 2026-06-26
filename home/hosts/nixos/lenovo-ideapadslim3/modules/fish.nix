@@ -28,9 +28,17 @@
         lt = "ls --tree";
         cat = "bat --paging=never -p";
         cd = "z";
+        rm = "trash";
         ps = "procs";
         du = "dust";
         top = "btop";
+        diff = "delta";
+        network = "bandwhich";
+        npm_legacy = "command npm";
+        npm = "pnpm";
+        npx_legacy = "command npx";
+        npx = "pnpx";
+        http = "xh";
       };
     shellInit = ''
       zoxide init fish | source

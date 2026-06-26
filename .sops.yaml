@@ -1,6 +1,5 @@
 keys:
-  # Replace this placeholder recipient with your own before adding real secrets.
-  - &dididi_age age1k4tf0fjzhq9wc98hawtep00qgupvxy3shj3axwjyg8updspztugqc66y40
+  - &dididi_age age1zl2dssvehmv9vvy3alnary8skd42wh3h73dzgq6tqyxdpyexvcfqvy59zv
 creation_rules:
   - path_regex: secrets/.*\.yaml$
     age: [ *dididi_age ]

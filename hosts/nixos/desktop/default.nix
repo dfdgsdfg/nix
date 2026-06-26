@@ -1,9 +1,5 @@
 { inputs, pkgs, pkgsUnstable, lib, ... }:
 {
-  imports = [
-    inputs.home-manager.nixosModules.home-manager
-  ];
-
   networking.hostName = "desktop";
   time.timeZone = "UTC";
 
@@ -39,16 +35,5 @@
       atuin
     ]);
 
-  system.stateVersion = "25.05";
-
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.sharedModules = [
-    inputs.sops-nix.homeManagerModules.sops
-  ];
-  home-manager.users.dididi = {
-    imports = [ ../../home/home.nix ];
-    home.username = "dididi";
-    home.homeDirectory = "/home/dididi";
-  };
+  system.stateVersion = "26.05";
 }

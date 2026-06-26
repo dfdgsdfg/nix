@@ -2,6 +2,12 @@
 let
   cfg = config.modules.ssh;
 
+  targetPath = target:
+    if lib.hasPrefix "/" target then
+      target
+    else
+      "${config.home.homeDirectory}/${target}";
+
   identitySubmodule = lib.types.submodule ({ name, ... }: {
     options = {
       secret = lib.mkOption {
@@ -28,6 +34,12 @@ let
         description = "Optional public key text to write alongside the private key.";
       };
 
+      publicKeySecret = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Optional SOPS secret that stores the public key to write alongside the private key.";
+      };
+
       publicKeyTarget = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
@@ -42,14 +54,38 @@ let
     };
   });
 
-  mkIdentityFiles = { name, value }:
+  secretFileSubmodule = lib.types.submodule ({ name, ... }: {
+    options = {
+      secret = lib.mkOption {
+        type = lib.types.str;
+        default = name;
+        description = "Attribute path (slash-separated) pointing to the SOPS secret to expose.";
+      };
+
+      target = lib.mkOption {
+        type = lib.types.str;
+        default = ".ssh/${name}";
+        description = "Relative or absolute target path for the decrypted secret.";
+      };
+
+      mode = lib.mkOption {
+        type = lib.types.str;
+        default = "0600";
+        description = "File mode to apply to the decrypted secret.";
+      };
+    };
+  });
+
+  mkSecretAssignment = { secret, target, mode }: {
+    ${secret} = {
+      path = targetPath target;
+      inherit mode;
+    };
+  };
+
+  mkIdentitySecretAssignments = { name, value, ... }:
     let
       identity = value;
-      hasSecret = lib.hasAttr identity.secret config.sops.secrets;
-      _ = lib.assertMsg hasSecret ''
-        modules.ssh.identities."${name}".secret must reference an existing entry in config.sops.secrets (got "${identity.secret}")
-      '';
-      secret = config.sops.secrets.${identity.secret};
       pkTarget =
         if identity.publicKeyTarget != null then
           identity.publicKeyTarget
@@ -57,14 +93,30 @@ let
           identity.target + ".pub";
     in
     [
-      {
-        name = identity.target;
-        value = {
-          source = config.lib.file.mkOutOfStoreSymlink secret.path;
-        };
-      }
+      (mkSecretAssignment {
+        secret = identity.secret;
+        target = identity.target;
+        mode = identity.mode;
+      })
     ]
-    ++ lib.optionals (identity.publicKey != null) [
+    ++ lib.optionals (identity.publicKeySecret != null) [
+      (mkSecretAssignment {
+        secret = identity.publicKeySecret;
+        target = pkTarget;
+        mode = identity.publicKeyMode;
+      })
+    ];
+
+  mkIdentityPublicFiles = { value, ... }:
+    let
+      identity = value;
+      pkTarget =
+        if identity.publicKeyTarget != null then
+          identity.publicKeyTarget
+        else
+          identity.target + ".pub";
+    in
+    lib.optionals (identity.publicKey != null) [
       {
         name = pkTarget;
         value = {
@@ -72,6 +124,11 @@ let
         };
       }
     ];
+
+  mkSecretFileAssignment = { value, ... }:
+    mkSecretAssignment {
+      inherit (value) secret target mode;
+    };
 in
 {
   options.modules.ssh = {
@@ -81,6 +138,12 @@ in
       type = lib.types.attrsOf identitySubmodule;
       default = { };
       description = "SSH identities whose private keys are sourced from SOPS secrets.";
+    };
+
+    secretFiles = lib.mkOption {
+      type = lib.types.attrsOf secretFileSubmodule;
+      default = { };
+      description = "Additional SSH-related files sourced from SOPS secrets.";
     };
 
     matchBlocks = lib.mkOption {
@@ -105,14 +168,25 @@ in
 
   config = lib.mkIf cfg.enable (
     let
-      identityFiles =
+      identityList =
+        lib.mapAttrsToList
+          (name: value: { inherit name value; })
+          cfg.identities;
+
+      secretFileList =
+        lib.mapAttrsToList
+          (name: value: { inherit name value; })
+          cfg.secretFiles;
+
+      sopsSecretAssignments =
+        lib.concatLists [
+          (lib.concatMap mkIdentitySecretAssignments identityList)
+          (map mkSecretFileAssignment secretFileList)
+        ];
+
+      identityPublicFiles =
         lib.listToAttrs (
-          lib.concatMap
-            mkIdentityFiles
-            (lib.mapAttrsToList
-              (name: value: { inherit name value; })
-              cfg.identities
-            )
+          lib.concatMap mkIdentityPublicFiles identityList
         );
     in
     {
@@ -122,7 +196,9 @@ in
         extraConfig = lib.optionalString (cfg.extraConfig != "") cfg.extraConfig;
       };
 
-      home.file = lib.mkMerge [ identityFiles ];
+      sops.secrets = lib.mkMerge sopsSecretAssignments;
+
+      home.file = identityPublicFiles;
     }
   );
 }

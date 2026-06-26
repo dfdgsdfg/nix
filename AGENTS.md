@@ -7,6 +7,7 @@
 - `modules/` – reusable home modules (e.g., `modules/nvim` for LazyVim).
 - `packages/` – grouped package selections (`default.nix` toggles core/dev/etc.; `apps.nix` handles macOS GUI apps).
 - `secrets/` – SOPS-encrypted data; `.sops.yaml` defines recipients. Never commit private keys.
+- `scripts/` – bootstrap and one-time migration helpers such as SOPS age setup and SSH adoption.
 
 ## Build, Test, and Development Commands
 - `nix flake check ./system` – validates system modules (darwin/NixOS/WSL) for evaluation errors.
@@ -14,6 +15,8 @@
 - `darwin-rebuild switch --flake ./system#macbook` – apply macOS system changes.
 - `nixos-rebuild switch --flake ./system#desktop` / `nix run .#homeConfigurations."dididi@macbook".activationPackage` – deploy NixOS or Home Manager updates.
 - `SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/<file>.yaml` – edit encrypted secrets locally.
+- `./scripts/bootstrap-sops-age.sh` – install the local age identity before using `sops-nix` secrets.
+- `./scripts/adopt-ssh-to-nix.sh` – move existing chezmoi-managed SSH files aside before first Nix-managed SSH activation.
 
 ## Coding Style & Naming Conventions
 - Nix files use two-space indentation; align attribute sets vertically for readability.
@@ -33,6 +36,6 @@
 - Attach screenshots or config snippets when adjusting user-facing tooling (e.g., fish shell changes, GUI package updates).
 
 ## Security & Configuration Tips
-- Replace placeholder Age recipients in `.sops.yaml` before storing real secrets.
-- Store private keys under `~/.config/sops/age/`; ensure they are ignored (`secrets/.gitignore`).
+- Keep `.sops.yaml` recipients aligned with the age identity installed by `scripts/bootstrap-sops-age.sh`.
+- Store age private keys under `~/.config/sops/age/`; never commit them.
 - Keep GUI apps in `packages/apps.nix`; the system layer should avoid duplicating Home Manager packages to maintain a single source of truth.

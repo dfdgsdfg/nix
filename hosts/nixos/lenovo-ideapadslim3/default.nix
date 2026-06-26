@@ -1,8 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 
 {
   imports = [
-    ./lenovo-ideapadslim3/hardware-configuration.nix
+    ./hardware-configuration.nix
   ];
 
   boot.loader.systemd-boot = {
@@ -14,6 +14,8 @@
 
   networking.hostName = "lenovo-ideapadslim3";
   networking.networkmanager.enable = true;
+  networking.firewall.allowedTCPPorts = [ 53317 ];
+  networking.firewall.allowedUDPPorts = [ 53317 5353 ];
 
   time.timeZone = "Asia/Seoul";
 
@@ -46,6 +48,24 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "0001:0001:09b4e68d" ];
+      settings.main = {
+        leftmeta = "layer(alt)";
+        leftalt = "layer(meta)";
+        rightalt = "layer(meta)";
+        rightcontrol = "layer(alt)";
+        capslock = "overloadt2(shift, hangeul, 200)";
+      };
+      settings.shift = {
+        leftshift = "capslock";
+        rightshift = "capslock";
+      };
+    };
+  };
+
   services.printing.enable = true;
 
   services.pulseaudio.enable = false;
@@ -75,22 +95,17 @@
     options = "--delete-older-than 1w";
   };
 
-  environment.systemPackages = with pkgs; [
-    fishPlugins.grc
-    git
-    grc
-    helix
-    starship
-    trashy
-  ];
-
-  programs.fish.enable = true;
-  programs.gamescope.enable = true;
-  programs.gamemode.enable = true;
-  programs.nix-ld.enable = true;
+  modules.systemPackages = {
+    core.enable = true;
+    workstation.enable = true;
+    fish.enable = true;
+    games.enable = true;
+    nixLd.enable = true;
+  };
 
   programs.nixvim = {
     enable = true;
+    nixpkgs.source = inputs.nixpkgs;
     colorschemes.catppuccin.enable = true;
     plugins.lualine.enable = true;
     clipboard.providers.wl-copy.enable = true;

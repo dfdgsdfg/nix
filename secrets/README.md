@@ -3,38 +3,57 @@
 This directory stores SOPS-encrypted secrets that can be deployed through
 `sops-nix`.
 
-## Getting started
+## Age Identity
 
-1. Install `age` and `sops` (already referenced in the Home Manager profile).
-2. Generate an age key pair and store it locally (never commit the private key):
+The committed SOPS files are encrypted for the age recipient in `.sops.yaml`.
+A machine must have the matching private age identity before Home Manager can
+activate profiles that consume secrets.
 
-   ```bash
-   mkdir -p ~/.config/sops/age
-   age-keygen -o ~/.config/sops/age/keys.txt
-   ```
+Install the identity locally:
 
-3. Add the public key printed by `age-keygen` to `.sops.yaml` under the
-   `keys` section (replace the existing placeholder).
-4. Re-encrypt `secrets/example.yaml` or add your own secrets. For example:
+```bash
+./scripts/bootstrap-sops-age.sh
+```
 
-   ```bash
-   SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/example.yaml
-   ```
+The script copies `~/key.txt` when it exists, or prompts for an age identity.
+It writes `~/.config/sops/age/keys.txt` with mode `0600`.
 
-5. Update modules or Home Manager to consume the new secret paths as needed.
+## Editing Secrets
 
-> The committed key in `.sops.yaml` is a placeholder for bootstrapping.
-> Replace it with your own recipient before storing real secrets.
+```bash
+SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/<file>.yaml
+```
+
+When adding a new secret file, make sure its path matches `.sops.yaml` creation
+rules and that the file is encrypted for the current recipient.
 
 ## SSH keys
 
 SSH keys are sourced from `secrets/ssh.yaml` and surfaced through the `modules.ssh`
-Home Manager module. Run the following to edit or replace the placeholders:
+Home Manager module. Run the following to edit or replace them:
 
 ```bash
 SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/ssh.yaml
 ```
 
-Populate the `ssh.github.id_ed25519` and `ssh.github.id_ed25519_pub` entries with your
-private and public keys respectively. The module writes the decrypted private key to
-`~/.ssh/github_ed25519` and wires it into the generated SSH config.
+The Lenovo Linux home profile writes decrypted SSH keys and include files under
+`~/.ssh` with SSH-safe modes. Before the first activation on a machine already
+managed by chezmoi, run:
+
+```bash
+./scripts/adopt-ssh-to-nix.sh
+```
+
+This moves existing SSH files to a timestamped backup directory so `sops-nix` can
+create the managed paths during Home Manager activation.
+
+The current Lenovo profile manages:
+
+- `~/.ssh/id_ed25519`
+- `~/.ssh/id_ed25519.pub`
+- `~/.ssh/readonly_id_rsa`
+- `~/.ssh/readonly_id_rsa.pub`
+- `~/.ssh/readonly_id_rsa.pub.pem`
+- `~/.ssh/authorized_keys`
+- `~/.ssh/config`
+- `~/.ssh/config.d/hosts.conf`

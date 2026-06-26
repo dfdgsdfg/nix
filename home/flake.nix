@@ -18,6 +18,10 @@
       url = "github:ryoppippi/nix-claude-code";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    seance = {
+      url = "git+https://github.com/dfdgsdfg/seance.git?ref=codex/fix-ime-composition-key-routing&submodules=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,17 +30,21 @@
 
   outputs = inputs@{ nixpkgs, home-manager, nix-claude-code, sops-nix, nixpkgs-unstable, ... }:
     let
-      mkHome = { system, username, homeDirectory }:
+      mkHome = { system, username, homeDirectory, modules ? [ ./home.nix ], overlays ? [ ] }:
         let
           pkgsUnstable = import nixpkgs-unstable {
             inherit system;
             config.allowUnfree = true;
           };
+          pkgs = import nixpkgs {
+            inherit system overlays;
+            config.allowUnfree = true;
+          };
         in home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
+          inherit pkgs;
           modules = [
             inputs.sops-nix.homeManagerModules.sops
-            ./home.nix
+          ] ++ modules ++ [
             {
               home.username = username;
               home.homeDirectory = homeDirectory;
@@ -47,31 +55,41 @@
           };
         };
 
-      mkLenovoHome =
-        let
+      mkLinuxHostHome = { host, username ? "dididi", homeDirectory ? "/home/${username}" }:
+        mkHome {
           system = "x86_64-linux";
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            overlays = [
-              nix-claude-code.overlays.default
-            ];
-          };
-        in home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
+          inherit username homeDirectory;
           modules = [
-            ./hosts/lenovo-ideapadslim3/home.nix
+            ./hosts/nixos/${host}
           ];
-          extraSpecialArgs = {
-            inherit inputs;
-          };
+          overlays = [
+            nix-claude-code.overlays.default
+          ];
+        };
+
+      mkDarwinHostHome = { host, username ? "dididi", homeDirectory ? "/Users/${username}" }:
+        mkHome {
+          system = "aarch64-darwin";
+          inherit username homeDirectory;
+          modules = [
+            ./home.nix
+            ./hosts/darwin/${host}
+          ];
+        };
+
+      mkWslHostHome = { host ? "default", username ? "dididi", homeDirectory ? "/home/${username}" }:
+        mkHome {
+          system = "x86_64-linux";
+          inherit username homeDirectory;
+          modules = [
+            ./home.nix
+            ./hosts/wsl/${host}
+          ];
         };
 
       homeConfigurations = {
-        "dididi@macbook" = mkHome {
-          system = "aarch64-darwin";
-          username = "dididi";
-          homeDirectory = "/Users/dididi";
+        "dididi@macbook" = mkDarwinHostHome {
+          host = "macbook";
         };
 
         "dididi@desktop" = mkHome {
@@ -80,13 +98,11 @@
           homeDirectory = "/home/dididi";
         };
 
-        "dididi@lenovo-ideapadslim3" = mkLenovoHome;
-
-        "dididi@wsl" = mkHome {
-          system = "x86_64-linux";
-          username = "dididi";
-          homeDirectory = "/home/dididi";
+        "dididi@lenovo-ideapadslim3" = mkLinuxHostHome {
+          host = "lenovo-ideapadslim3";
         };
+
+        "dididi@wsl" = mkWslHostHome { };
       };
     in {
       inherit homeConfigurations;

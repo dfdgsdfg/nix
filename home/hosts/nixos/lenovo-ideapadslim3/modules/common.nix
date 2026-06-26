@@ -39,6 +39,7 @@
     atuin
     bat
     bandwhich
+    delta
     dust
     fd
     gawk
@@ -72,6 +73,7 @@
 
     # productivity
     glow # markdown previewer in terminal
+    xh
 
     btop  # replacement of htop/nmon
     iotop # io monitoring
