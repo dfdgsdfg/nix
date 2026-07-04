@@ -20,7 +20,7 @@ Options:
   -h, --help             Show this help.
 
 After copying, rebuild with:
-  sudo nixos-rebuild switch --flake /etc/nixos/system#lenovo-ideapadslim3
+  sudo nixos-rebuild switch --flake 'path:/etc/nixos?dir=system#lenovo-ideapadslim3'
 EOF
 }
 
@@ -104,7 +104,7 @@ run cp -a -- "${repo_root}/system" "${target}/system"
 run cp -a -- "${repo_root}/hosts" "${target}/hosts"
 run touch -- "${target}/${marker}"
 
-flake_ref="${target}/system#${host}"
+flake_ref="path:${target}?dir=system#${host}"
 
 if [[ -n "$rebuild_action" ]]; then
   run nixos-rebuild "$rebuild_action" --flake "$flake_ref"

@@ -51,7 +51,10 @@
   services.keyd = {
     enable = true;
     keyboards.default = {
-      ids = [ "0001:0001:09b4e68d" ];
+      ids = [
+        "0001:0001:09b4e68d" # AT Translated Set 2 keyboard
+        "0000:0006:bdb72f48" # Video Bus
+      ];
       settings.main = {
         leftmeta = "layer(alt)";
         leftalt = "layer(meta)";
@@ -76,7 +79,7 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
-  services.illum.enable = true;
+  services.illum.enable = false;
 
   users.users.dididi = {
     isNormalUser = true;
