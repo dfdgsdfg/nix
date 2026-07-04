@@ -1,4 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
+
+let
+  system = pkgs.stdenv.hostPlatform.system;
+in
 
 {
   # The home.packages option allows you to install Nix packages into your
@@ -21,11 +25,11 @@
     #   echo "Hello, ${config.home.username}!"
     # '')
 
-    codex
+    inputs.codex-cli-nix.packages.${system}.codex
   ];
 
   programs.claude-code = {
     enable = true;
-    package = pkgs.claude-code;
+    package = inputs.claude-code-nix.packages.${system}.claude-code;
   };
 }

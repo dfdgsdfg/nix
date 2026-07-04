@@ -59,6 +59,7 @@ in
     programs.fish.enable = lib.mkIf cfg.fish.enable true;
     programs.gamescope.enable = lib.mkIf cfg.games.enable true;
     programs.gamemode.enable = lib.mkIf cfg.games.enable true;
+    programs.steam.enable = lib.mkIf (cfg.games.enable && pkgs.stdenv.isLinux) true;
     programs.nix-ld.enable = lib.mkIf cfg.nixLd.enable true;
   };
 }

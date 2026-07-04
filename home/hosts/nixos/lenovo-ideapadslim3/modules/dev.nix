@@ -22,6 +22,34 @@ let
   pnpx-shim = pkgs.writeShellScriptBin "pnpx" ''
     exec "${pkgs.pnpm}/bin/pnpx" "$@"
   '';
+
+  xtool = let
+    pname = "xtool";
+    version = "1.17.0";
+    src = pkgs.fetchurl {
+      url = "https://github.com/xtool-org/xtool/releases/download/${version}/xtool-x86_64.AppImage";
+      hash = "sha256-dWbWK4KaTerbAbU4nJT0V2PYUfIExdIvo26fnRyI1Xs=";
+    };
+    appimageContents = pkgs.appimageTools.extractType2 {
+      inherit pname version src;
+    };
+  in pkgs.appimageTools.wrapType2 {
+    inherit pname version src;
+
+    extraInstallCommands = ''
+      install -Dm444 ${appimageContents}/xtool.desktop $out/share/applications/xtool.desktop
+      install -Dm444 ${appimageContents}/xtool.png $out/share/icons/hicolor/256x256/apps/xtool.png
+    '';
+
+    meta = {
+      description = "Cross-platform Xcode replacement for building and deploying iOS apps with SwiftPM";
+      homepage = "https://xtool.sh/";
+      license = lib.licenses.mit;
+      mainProgram = "xtool";
+      platforms = [ "x86_64-linux" ];
+      sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    };
+  };
 in
 {
   # The home.packages option allows you to install Nix packages into your
@@ -46,9 +74,12 @@ in
 
     # devenv
     androidSdk
+    libimobiledevice
     myNode
     pnpm-shim
     pnpx-shim
+    usbmuxd
+    xtool
   ];
 
   home.sessionVariables = {

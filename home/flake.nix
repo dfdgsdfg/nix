@@ -14,8 +14,12 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-claude-code = {
-      url = "github:ryoppippi/nix-claude-code";
+    claude-code-nix = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    codex-cli-nix = {
+      url = "github:sadjow/codex-cli-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     seance = {
@@ -28,7 +32,7 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, nix-claude-code, sops-nix, nixpkgs-unstable, ... }:
+  outputs = inputs@{ nixpkgs, home-manager, sops-nix, nixpkgs-unstable, ... }:
     let
       mkHome = { system, username, homeDirectory, modules ? [ ./home.nix ], overlays ? [ ] }:
         let
@@ -61,9 +65,6 @@
           inherit username homeDirectory;
           modules = [
             ./hosts/nixos/${host}
-          ];
-          overlays = [
-            nix-claude-code.overlays.default
           ];
         };
 

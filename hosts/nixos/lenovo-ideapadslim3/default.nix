@@ -76,6 +76,7 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+  services.illum.enable = true;
 
   users.users.dididi = {
     isNormalUser = true;
