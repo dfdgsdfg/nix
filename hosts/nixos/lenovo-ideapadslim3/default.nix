@@ -61,6 +61,8 @@
         rightalt = "layer(meta)";
         rightcontrol = "layer(alt)";
         capslock = "overloadt2(shift, hangeul, 200)";
+        f11 = "brightnessdown";
+        f12 = "brightnessup";
       };
       settings.shift = {
         leftshift = "capslock";
