@@ -71,13 +71,13 @@ in
         target = ".ssh/config.d/hosts.conf";
       };
     };
-    extraConfig = ''
-      Host *
-        AddKeysToAgent yes
-        IdentityFile ~/.ssh/id_ed25519
-        IdentityFile ~/.ssh/id_rsa
-
-      Include config.d/*
-    '';
+    includes = [ "config.d/*" ];
+    settings."*" = {
+      AddKeysToAgent = "yes";
+      IdentityFile = [
+        "~/.ssh/id_ed25519"
+        "~/.ssh/id_rsa"
+      ];
+    };
   };
 }

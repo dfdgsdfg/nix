@@ -103,21 +103,20 @@ in
       target = ".ssh/github_ed25519";
       publicKeySecret = "ssh/github/id_ed25519.pub";
     };
-    matchBlocks = {
+    settings = {
       "github.com" = {
-        user = "git";
-        hostname = "github.com";
-        identityFile = "~/.ssh/github_ed25519";
-        identitiesOnly = true;
-        compression = true;
+        User = "git";
+        HostName = "github.com";
+        IdentityFile = "~/.ssh/github_ed25519";
+        IdentitiesOnly = true;
+        Compression = true;
+      };
+      "*" = {
+        AddKeysToAgent = "yes";
+        Compression = true;
+        VisualHostKey = false;
       };
     };
-    extraConfig = ''
-      Host *
-        AddKeysToAgent yes
-        Compression yes
-        VisualHostKey no
-    '';
   };
 
   modules.packages = {

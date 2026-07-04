@@ -146,17 +146,23 @@ in
       description = "Additional SSH-related files sourced from SOPS secrets.";
     };
 
-    matchBlocks = lib.mkOption {
+    settings = lib.mkOption {
       type = lib.types.attrsOf (lib.types.attrsOf lib.types.anything);
       default = { };
       example = {
         "github.com" = {
-          user = "git";
-          hostname = "github.com";
-          identityFile = "~/.ssh/github_ed25519";
+          User = "git";
+          HostName = "github.com";
+          IdentityFile = "~/.ssh/github_ed25519";
         };
       };
-      description = "Match block configuration forwarded to programs.ssh.matchBlocks.";
+      description = "OpenSSH client settings forwarded to programs.ssh.settings.";
+    };
+
+    includes = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "File globs forwarded to programs.ssh.includes.";
     };
 
     extraConfig = lib.mkOption {
@@ -188,11 +194,29 @@ in
         lib.listToAttrs (
           lib.concatMap mkIdentityPublicFiles identityList
         );
+
+      defaultSettings = {
+        ForwardAgent = lib.mkDefault false;
+        AddKeysToAgent = lib.mkDefault "no";
+        Compression = lib.mkDefault false;
+        ServerAliveInterval = lib.mkDefault 0;
+        ServerAliveCountMax = lib.mkDefault 3;
+        HashKnownHosts = lib.mkDefault false;
+        UserKnownHostsFile = lib.mkDefault "~/.ssh/known_hosts";
+        ControlMaster = lib.mkDefault "no";
+        ControlPath = lib.mkDefault "~/.ssh/master-%r@%n:%p";
+        ControlPersist = lib.mkDefault "no";
+      };
     in
     {
       programs.ssh = {
         enable = true;
-        matchBlocks = cfg.matchBlocks;
+        enableDefaultConfig = false;
+        includes = cfg.includes;
+        settings = lib.mkMerge [
+          { "*" = defaultSettings; }
+          cfg.settings
+        ];
         extraConfig = lib.optionalString (cfg.extraConfig != "") cfg.extraConfig;
       };
 

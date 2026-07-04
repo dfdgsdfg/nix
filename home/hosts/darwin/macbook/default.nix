@@ -38,9 +38,8 @@ in
     fi
   '';
 
-  programs.ssh.extraConfig = lib.mkAfter ''
-    Host *
-      IgnoreUnknown UseKeychain
-      UseKeychain yes
-  '';
+  programs.ssh.settings."*" = {
+    IgnoreUnknown = "UseKeychain";
+    UseKeychain = true;
+  };
 }
