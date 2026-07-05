@@ -39,7 +39,6 @@ let
       nushell
       pipx
       pinentry-curses
-      pnpm
       procs
       ripgrep
       sd
@@ -76,7 +75,6 @@ let
     helix
     imagemagick
     lefthook
-    nodejs_24
   ];
 
   networkPkgs =

@@ -36,6 +36,15 @@
     let
       lib = nixpkgs.lib;
       hosts = import ../hosts { inherit inputs; };
+      systems = lib.unique (map (host: host.system) (lib.attrValues hosts));
+
+      forAllSystems = f:
+        lib.genAttrs systems (system:
+          f (import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          })
+        );
 
       mkHome = { system, username, homeDirectory, modules ? [ ./home.nix ], overlays ? [ ] }:
         let
@@ -89,5 +98,29 @@
       inherit homeConfigurations;
 
       packages = lib.foldl' mkActivationPackage { } (lib.attrNames hosts);
+
+      devShells = forAllSystems (pkgs: {
+        build = pkgs.mkShell {
+          packages = with pkgs; [
+            autoconf
+            automake
+            bzip2
+            clang
+            cmake
+            gcc
+            gnumake
+            libffi
+            libtool
+            libyaml
+            ncurses
+            openssl
+            pkg-config
+            readline
+            sqlite
+            xz
+            zlib
+          ];
+        };
+      });
     };
 }

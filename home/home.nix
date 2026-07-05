@@ -235,18 +235,21 @@ in
     enable = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
-    globalConfig.tools = {
-      node = "lts";
-      python = "miniconda3-latest";
-      deno = "latest";
-      java = "temurin-25";
-      ruby = "latest";
-      go = "latest";
-      bun = "latest";
-      erlang = "latest";
-      zig = "latest";
-      uv = "latest";
-      fnox = "latest";
+    globalConfig = {
+      settings.all_compile = false;
+      tools = {
+        node = "lts";
+        pnpm = "latest";
+        python = "miniconda3-latest";
+        deno = "latest";
+        java = "temurin-25";
+        ruby = "latest";
+        go = "latest";
+        bun = "latest";
+        zig = "latest";
+        uv = "latest";
+        fnox = "latest";
+      };
     };
   };
 
