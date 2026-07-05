@@ -115,7 +115,7 @@ in
       node = "lts";
       python = "miniconda3-latest";
       deno = "latest";
-      java = "zulu-25";
+      java = "temurin-25";
       ruby = "latest";
       go = "latest";
       bun = "latest";
