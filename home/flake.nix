@@ -34,6 +34,9 @@
 
   outputs = inputs@{ nixpkgs, home-manager, sops-nix, nixpkgs-unstable, ... }:
     let
+      lib = nixpkgs.lib;
+      hosts = import ../hosts { inherit inputs; };
+
       mkHome = { system, username, homeDirectory, modules ? [ ./home.nix ], overlays ? [ ] }:
         let
           pkgsUnstable = import nixpkgs-unstable {
@@ -59,67 +62,32 @@
           };
         };
 
-      mkLinuxHostHome = { host, username ? "dididi", homeDirectory ? "/home/${username}" }:
+      mkHostHome = host:
         mkHome {
-          system = "x86_64-linux";
-          inherit username homeDirectory;
-          modules = [
-            ./hosts/nixos/${host}
-          ];
+          inherit (host) system username homeDirectory;
+          modules = host.homeModules;
         };
 
-      mkDarwinHostHome = { host, username ? "dididi", homeDirectory ? "/Users/${username}" }:
-        mkHome {
-          system = "aarch64-darwin";
-          inherit username homeDirectory;
-          modules = [
-            ./home.nix
-            ./hosts/darwin/${host}
-          ];
-        };
+      homeConfigurations =
+        lib.mapAttrs'
+          (name: host: lib.nameValuePair "${host.username}@${name}" (mkHostHome host))
+          hosts;
 
-      mkWslHostHome = { host ? "default", username ? "dididi", homeDirectory ? "/home/${username}" }:
-        mkHome {
-          system = "x86_64-linux";
-          inherit username homeDirectory;
-          modules = [
-            ./home.nix
-            ./hosts/wsl/${host}
-          ];
+      mkActivationPackage = packages: name:
+        let
+          host = hosts.${name};
+          packageName = host.homePackageName or name;
+          configName = "${host.username}@${name}";
+        in
+        packages
+        // {
+          ${host.system} = (packages.${host.system} or { }) // {
+            ${packageName} = homeConfigurations.${configName}.activationPackage;
+          };
         };
-
-      homeConfigurations = {
-        "dididi@macbook" = mkDarwinHostHome {
-          host = "macbook";
-        };
-
-        "dididi@desktop" = mkHome {
-          system = "x86_64-linux";
-          username = "dididi";
-          homeDirectory = "/home/dididi";
-        };
-
-        "dididi@lenovo-ideapadslim3" = mkLinuxHostHome {
-          host = "lenovo-ideapadslim3";
-        };
-
-        "dididi@wsl" = mkWslHostHome { };
-      };
     in {
       inherit homeConfigurations;
 
-      packages = {
-        aarch64-darwin.default =
-          homeConfigurations."dididi@macbook".activationPackage;
-
-        x86_64-linux.desktop =
-          homeConfigurations."dididi@desktop".activationPackage;
-
-        x86_64-linux.lenovo-ideapadslim3 =
-          homeConfigurations."dididi@lenovo-ideapadslim3".activationPackage;
-
-        x86_64-linux.wsl =
-          homeConfigurations."dididi@wsl".activationPackage;
-      };
+      packages = lib.foldl' mkActivationPackage { } (lib.attrNames hosts);
     };
 }

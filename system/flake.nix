@@ -14,57 +14,48 @@
 
   outputs = inputs@{ nixpkgs, nix-darwin, nixos-wsl, nixvim, nixpkgs-unstable, ... }:
     let
+      lib = nixpkgs.lib;
+      hosts = import ../hosts { inherit inputs; };
+
       mkSpecialArgs = system: {
         inherit inputs;
+        isLinuxSystem = lib.hasSuffix "-linux" system;
         pkgsUnstable = import nixpkgs-unstable {
           inherit system;
         };
       };
 
-      mkDarwin = { name, system ? "aarch64-darwin", modules ? [ ] }:
+      mkDarwin = host:
         nix-darwin.lib.darwinSystem {
-          inherit system;
+          inherit (host) system;
           modules =
-            modules
+            host.systemModules
             ++ [
               ./modules/packages
-              ../hosts/darwin/${name}
               ({ self, ... }: {
                 system.configurationRevision = self.rev or self.dirtyRev or null;
               })
             ];
-          specialArgs = mkSpecialArgs system;
+          specialArgs = mkSpecialArgs host.system;
         };
 
-      mkNixos = { name, system ? "x86_64-linux", modules ? [ ] }:
+      mkNixos = host:
         nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = modules ++ [
+          inherit (host) system;
+          modules = host.systemModules ++ [
             ./modules/packages
-            ../hosts/nixos/${name}
           ];
-          specialArgs = mkSpecialArgs system;
-        };
-
-      mkWsl = { name, system ? "x86_64-linux", modules ? [ ] }:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = modules ++ [
-            ./modules/packages
-            ../hosts/wsl/${name}
-          ];
-          specialArgs = mkSpecialArgs system;
+          specialArgs = mkSpecialArgs host.system;
         };
     in {
-      darwinConfigurations.macbook = mkDarwin { name = "macbook"; };
+      darwinConfigurations =
+        lib.mapAttrs
+          (_: mkDarwin)
+          (lib.filterAttrs (_: host: (host.systemEnabled or true) && host.type == "darwin") hosts);
 
-      nixosConfigurations.lenovo-ideapadslim3 = mkNixos {
-        name = "lenovo-ideapadslim3";
-        modules = [
-          nixvim.nixosModules.default
-        ];
-      };
-
-      nixosConfigurations.wsl = mkWsl { name = "default"; };
+      nixosConfigurations =
+        lib.mapAttrs
+          (_: mkNixos)
+          (lib.filterAttrs (_: host: (host.systemEnabled or true) && (host.type == "nixos" || host.type == "wsl")) hosts);
     };
 }

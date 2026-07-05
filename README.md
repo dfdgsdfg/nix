@@ -6,7 +6,8 @@ NixOS, and WSL hosts.
 ## Layout
 
 - `system/flake.nix` evaluates nix-darwin, NixOS, and WSL systems.
-- `hosts/` contains host-specific system modules.
+- `hosts/default.nix` is the host registry shared by system and Home Manager flakes.
+- `hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
 - `home/flake.nix` evaluates Home Manager profiles.
 - `home/hosts/nixos/lenovo-ideapadslim3/` contains Linux desktop Home Manager modules migrated from the old `~/hm` setup.
 - `modules/` contains reusable Home Manager modules.
@@ -57,4 +58,3 @@ home-manager switch --flake ./home#dididi@lenovo-ideapadslim3
 
 The adoption script moves existing SSH files into a timestamped backup directory
 under `~/.ssh`. It does not delete keys.
-

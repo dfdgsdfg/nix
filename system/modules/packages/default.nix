@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgsUnstable, ... }:
+{ config, isLinuxSystem ? false, lib, pkgs, pkgsUnstable, ... }:
 let
   cfg = config.modules.systemPackages;
 
@@ -46,20 +46,24 @@ in
     nixLd.enable = lib.mkEnableOption "nix-ld compatibility loader";
   };
 
-  config = {
-    environment.systemPackages = lib.unique (
-      lib.concatLists [
-        (lib.optionals cfg.core.enable corePkgs)
-        (lib.optionals cfg.workstation.enable workstationPkgs)
-        (lib.optionals cfg.fish.enable fishPkgs)
-        (lib.optionals cfg.darwinApps.enable darwinApps)
-      ]
-    );
+  config = lib.mkMerge [
+    {
+      environment.systemPackages = lib.unique (
+        lib.concatLists [
+          (lib.optionals cfg.core.enable corePkgs)
+          (lib.optionals cfg.workstation.enable workstationPkgs)
+          (lib.optionals cfg.fish.enable fishPkgs)
+          (lib.optionals cfg.darwinApps.enable darwinApps)
+        ]
+      );
 
-    programs.fish.enable = lib.mkIf cfg.fish.enable true;
-    programs.gamescope.enable = lib.mkIf cfg.games.enable true;
-    programs.gamemode.enable = lib.mkIf cfg.games.enable true;
-    programs.steam.enable = lib.mkIf (cfg.games.enable && pkgs.stdenv.isLinux) true;
-    programs.nix-ld.enable = lib.mkIf cfg.nixLd.enable true;
-  };
+      programs.fish.enable = lib.mkIf cfg.fish.enable true;
+    }
+    (lib.optionalAttrs isLinuxSystem {
+      programs.gamescope.enable = lib.mkIf cfg.games.enable true;
+      programs.gamemode.enable = lib.mkIf cfg.games.enable true;
+      programs.steam.enable = lib.mkIf cfg.games.enable true;
+      programs.nix-ld.enable = lib.mkIf cfg.nixLd.enable true;
+    })
+  ];
 }
