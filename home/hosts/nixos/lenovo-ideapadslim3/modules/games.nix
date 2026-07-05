@@ -165,6 +165,13 @@ let
       libxrandr
     ];
   };
+
+  heroicSyncGogGenres = pkgs.writeShellApplication {
+    name = "heroic-sync-gog-genres";
+    text = ''
+      exec ${pkgs.python3}/bin/python3 ${../../../../scripts/heroic-sync-gog-genres.py} "$@"
+    '';
+  };
 in
 {
   home.packages = with pkgs; [
@@ -172,6 +179,7 @@ in
     doomrunnerWrapped
     dosbox-x
     heroicWithNativeLibraries
+    heroicSyncGogGenres
     openhv
     opemux
     scummvm
