@@ -45,11 +45,14 @@ machine needs the matching age identity before Home Manager can decrypt secrets.
 The script installs `~/.config/sops/age/keys.txt` from `~/key.txt` when present,
 or prompts for the age identity. Do not commit the age identity.
 
-## SSH Migration
+## Chezmoi Migration
 
-The Lenovo Linux Home Manager profile manages SSH keys and selected SSH files
-through `sops-nix`. Existing files from the old chezmoi setup must be moved out
-of the way once before activation:
+Home Manager profiles manage migrated chezmoi secrets through `sops-nix`. Git
+user include files and fish credentials are written under `~/.config`, while
+Darwin and Lenovo profiles manage selected SSH files under `~/.ssh`.
+
+Existing SSH files from the old chezmoi setup must be moved out of the way once
+before activating a profile that manages SSH:
 
 ```bash
 ./scripts/adopt-ssh-to-nix.sh

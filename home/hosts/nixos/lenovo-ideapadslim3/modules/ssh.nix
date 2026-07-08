@@ -53,7 +53,7 @@ in
     };
     identities.readonly = {
       secret = "ssh/readonly_id_rsa";
-      target = ".ssh/readonly_id_rsa";
+      target = ".ssh/id_rsa";
       publicKeySecret = "ssh/readonly_id_rsa.pub";
     };
     secretFiles = {
@@ -63,7 +63,7 @@ in
       };
       readonlyPublicPem = {
         secret = "ssh/readonly_id_rsa.pub.pem";
-        target = ".ssh/readonly_id_rsa.pub.pem";
+        target = ".ssh/id_rsa.pub.pem";
         mode = "0644";
       };
       hostsConfig = {

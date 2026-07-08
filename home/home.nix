@@ -6,6 +6,8 @@ let
     else
       "${config.home.homeDirectory}/.local/share/pnpm";
 
+  homeSecrets = ../secrets/home.yaml;
+
   commonShellAliases = {
     ls = "lsd";
     l = "ls -l";
@@ -93,6 +95,34 @@ in
       sopsFile = ../secrets/ssh.yaml;
       key = "ssh/github/id_ed25519_pub";
     };
+    secrets."git/config-user" = {
+      format = "yaml";
+      sopsFile = homeSecrets;
+      key = "git/config_user";
+      path = "${config.xdg.configHome}/git/config-user";
+      mode = "0600";
+    };
+    secrets."git/config-user-work" = {
+      format = "yaml";
+      sopsFile = homeSecrets;
+      key = "git/config_user_work";
+      path = "${config.xdg.configHome}/git/config-user-work";
+      mode = "0600";
+    };
+    secrets."git/config-user-work-us" = {
+      format = "yaml";
+      sopsFile = homeSecrets;
+      key = "git/config_user_work_us";
+      path = "${config.xdg.configHome}/git/config-user-work-us";
+      mode = "0600";
+    };
+    secrets."fish/credential.fish" = {
+      format = "yaml";
+      sopsFile = homeSecrets;
+      key = "fish/credential";
+      path = "${config.xdg.configHome}/fish/credential.fish";
+      mode = "0600";
+    };
   };
 
   modules.nvim.enable = true;
@@ -134,10 +164,7 @@ in
     enable = true;
     ignores = globalGitIgnores;
     settings = {
-      user = {
-        name = "sg";
-        email = "dfdgsdfg@gmail.com";
-      };
+      include.path = "${config.xdg.configHome}/git/config-user";
       pager = {
         diff = "delta";
         log = "delta";
@@ -171,6 +198,11 @@ in
   programs.zsh = {
     enable = true;
     shellAliases = commonShellAliases;
+    envExtra = ''
+      if [ -f "$HOME/.shell_env" ]; then
+        . "$HOME/.shell_env"
+      fi
+    '';
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
@@ -207,32 +239,52 @@ in
     '';
   };
 
+  programs.bash = {
+    enable = true;
+    shellAliases = commonShellAliases;
+    profileExtra = ''
+      if [ -f "$HOME/.shell_env" ]; then
+        . "$HOME/.shell_env"
+      fi
+    '';
+    initExtra = ''
+      if [ -f "$HOME/.shell_env" ]; then
+        . "$HOME/.shell_env"
+      fi
+    '';
+  };
+
   programs.starship = {
     enable = true;
+    enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
   };
 
   programs.atuin = {
     enable = true;
+    enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
   };
 
   programs.zoxide = {
     enable = true;
+    enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
   };
 
   programs.navi = {
     enable = true;
+    enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
   };
 
   programs.mise = {
     enable = true;
+    enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
     globalConfig = {
@@ -255,6 +307,7 @@ in
 
   programs.direnv = {
     enable = true;
+    enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
     nix-direnv.enable = true;
@@ -309,6 +362,54 @@ in
     cocoapods
     fastlane
     neovim
+  '';
+
+  home.file.".shell_env".text = ''
+    # Compatibility shim for legacy chezmoi-managed POSIX shell entrypoints.
+    if [ -n "''${_SHELL_ENV_LOADED:-}" ]; then
+      return 0 2>/dev/null || true
+    fi
+    export _SHELL_ENV_LOADED=1
+
+    if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+      . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+    fi
+
+    if [ -f "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh" ]; then
+      . "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh"
+    fi
+
+    if [ -f "$HOME/.cargo/env" ]; then
+      . "$HOME/.cargo/env"
+    fi
+
+    if [ -x /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+
+    path_prepend() {
+      case ":$PATH:" in
+        *":$1:"*) ;;
+        *) PATH="$1:$PATH" ;;
+      esac
+    }
+
+    if command -v ccache >/dev/null 2>&1; then
+      path_prepend "/opt/homebrew/opt/ccache/libexec"
+      export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
+      export CCACHE_FILECLONE="true"
+      export CCACHE_DEPEND="true"
+      export CCACHE_INODECACHE="true"
+    fi
+
+    if [ -f "$HOME/.ghcup/env" ]; then
+      . "$HOME/.ghcup/env"
+    fi
+
+    export PATH
+    unset -f path_prepend 2>/dev/null || true
   '';
 
   xdg.configFile."direnv/direnvrc".text = ''

@@ -27,6 +27,22 @@ SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/<file>.yaml
 When adding a new secret file, make sure its path matches `.sops.yaml` creation
 rules and that the file is encrypted for the current recipient.
 
+## Home secrets
+
+Git user includes and fish credentials are sourced from `secrets/home.yaml` and
+written back to their chezmoi-compatible paths:
+
+- `~/.config/git/config-user`
+- `~/.config/git/config-user-work`
+- `~/.config/git/config-user-work-us`
+- `~/.config/fish/credential.fish`
+
+Edit them with:
+
+```bash
+SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/home.yaml
+```
+
 ## SSH keys
 
 SSH keys are sourced from `secrets/ssh.yaml` and surfaced through the `modules.ssh`
@@ -51,9 +67,9 @@ The current Lenovo profile manages:
 
 - `~/.ssh/id_ed25519`
 - `~/.ssh/id_ed25519.pub`
-- `~/.ssh/readonly_id_rsa`
-- `~/.ssh/readonly_id_rsa.pub`
-- `~/.ssh/readonly_id_rsa.pub.pem`
+- `~/.ssh/id_rsa`
+- `~/.ssh/id_rsa.pub`
+- `~/.ssh/id_rsa.pub.pem`
 - `~/.ssh/authorized_keys`
 - `~/.ssh/config`
 - `~/.ssh/config.d/hosts.conf`
