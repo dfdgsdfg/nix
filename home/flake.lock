@@ -187,11 +187,11 @@
         "zig": "zig"
       },
       "locked": {
-        "lastModified": 1781946026,
-        "narHash": "sha256-9oWAWtDKrpVqVZuhKBVxRA/zVd3/Se7SnKftvAdYeL4=",
+        "lastModified": 1784338554,
+        "narHash": "sha256-9iXi+hZngh1AqEF/QIpvJdxh2rJxXPy4TdMRik9vqc8=",
         "ref": "codex/fix-ime-composition-key-routing",
-        "rev": "1dec5afe330c676e4f2b392d876789b02b2b896a",
-        "revCount": 47,
+        "rev": "ffcbdcf9efc953f0815dcfde21e5391875c806c3",
+        "revCount": 48,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/dfdgsdfg/seance.git"
