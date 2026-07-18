@@ -172,16 +172,128 @@ let
       exec ${pkgs.python3}/bin/python3 ${../../../../scripts/heroic-sync-gog-genres.py} "$@"
     '';
   };
+
+  cheatEngineFiles = pkgs.stdenvNoCC.mkDerivation {
+    pname = "cheat-engine";
+    version = "7.7";
+
+    src = pkgs.fetchurl {
+      url = "https://cheatengine.org/download/CheatEngineLinux77.zip";
+      hash = "sha256-HjwxIGGicOZ8Z88hXMFkACcnC96mb9J5PdFWQUmS9tQ=";
+    };
+
+    nativeBuildInputs = [ pkgs.unzip ];
+    dontUnpack = true;
+
+    installPhase = ''
+      runHook preInstall
+
+      mkdir -p $out/share/cheat-engine
+      unzip -q $src -d $out/share/cheat-engine
+      chmod +x \
+        $out/share/cheat-engine/cheatengine-x86_64 \
+        $out/share/cheat-engine/gtutorial-x86_64 \
+        $out/share/cheat-engine/tutorial-x86_64
+
+      runHook postInstall
+    '';
+
+    meta = {
+      description = "Memory scanner and debugger for games and applications";
+      homepage = "https://www.cheatengine.org/";
+      license = lib.licenses.unfree;
+      mainProgram = "cheat-engine";
+      platforms = [ "x86_64-linux" ];
+      sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    };
+  };
+
+  cheatEngine = pkgs.buildFHSEnv {
+    name = "cheat-engine";
+
+    targetPkgs = pkgs: with pkgs; [
+      dbus
+      fontconfig
+      freetype
+      libGL
+      libx11
+      libxcb
+      libxcb-image
+      libxcb-keysyms
+      libxcb-render-util
+      libxcb-util
+      libxcb-wm
+      libxkbcommon
+      qt6.qtbase
+      qt6.qtwayland
+      stdenv.cc.cc.lib
+      zlib
+    ];
+
+    runScript = pkgs.writeShellScript "cheat-engine-run" ''
+      cd ${cheatEngineFiles}/share/cheat-engine
+      exec ./cheatengine-x86_64 "$@"
+    '';
+
+    extraInstallCommands = ''
+      mkdir -p $out/share/applications
+      cat > $out/share/applications/cheat-engine.desktop <<EOF
+      [Desktop Entry]
+      Type=Application
+      Name=Cheat Engine
+      Comment=Memory scanner and debugger
+      Exec=$out/bin/cheat-engine
+      Terminal=false
+      Categories=Game;Development;Debugger;
+      EOF
+    '';
+
+    meta = cheatEngineFiles.meta;
+  };
+
+  runGuiAsRoot = name: command: pkgs.writeShellScriptBin name ''
+    set -euo pipefail
+
+    xhost_added=0
+    if [ -n "''${DISPLAY:-}" ]; then
+      if ${pkgs.xhost}/bin/xhost +SI:localuser:root >/dev/null 2>&1; then
+        xhost_added=1
+      fi
+    fi
+
+    cleanup() {
+      if [ "$xhost_added" = 1 ]; then
+        ${pkgs.xhost}/bin/xhost -SI:localuser:root >/dev/null 2>&1 || true
+      fi
+    }
+    trap cleanup EXIT
+
+    /run/wrappers/bin/pkexec ${pkgs.coreutils}/bin/env \
+      DISPLAY="''${DISPLAY:-}" \
+      XAUTHORITY="''${XAUTHORITY:-}" \
+      XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-}" \
+      WAYLAND_DISPLAY="''${WAYLAND_DISPLAY:-}" \
+      GDK_BACKEND=x11 \
+      QT_QPA_PLATFORM=xcb \
+      ${command} "$@"
+  '';
+
+  cheatEngineRoot = runGuiAsRoot "cheat-engine-root" "${cheatEngine}/bin/cheat-engine";
+  gameConquerorRoot = runGuiAsRoot "gameconqueror-root" "${pkgs.scanmem}/bin/gameconqueror";
 in
 {
   home.packages = with pkgs; [
     beyondAllReasonWrapped
+    cheatEngine
+    cheatEngineRoot
     doomrunnerWrapped
     dosbox-x
+    gameConquerorRoot
     heroicWithNativeLibraries
     heroicSyncGogGenres
     openhv
     opemux
+    scanmem
     scummvm
     uzdoom
     (retroarch.withCores (cores: with cores; [
@@ -194,6 +306,34 @@ in
   home.file.".local/share/applications/org.opemux.Opemux.desktop" = {
     force = true;
     source = "${opemux}/share/applications/org.opemux.Opemux.desktop";
+  };
+
+  home.file.".local/share/applications/cheat-engine.desktop" = {
+    force = true;
+    text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=Cheat Engine
+      Comment=Memory scanner and debugger
+      Exec=${cheatEngineRoot}/bin/cheat-engine-root
+      Terminal=false
+      Categories=Game;
+    '';
+  };
+
+  home.file.".local/share/applications/GameConqueror.desktop" = {
+    force = true;
+    text = ''
+      [Desktop Entry]
+      Name=Game Conqueror
+      Comment=A GUI front-end for scanmem
+      Exec=${gameConquerorRoot}/bin/gameconqueror-root
+      Terminal=false
+      Type=Application
+      Icon=GameConqueror
+      Categories=Utility;
+      StartupNotify=true
+    '';
   };
 
   home.activation.shareRomsBetweenRetroarchAndOpemux = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
