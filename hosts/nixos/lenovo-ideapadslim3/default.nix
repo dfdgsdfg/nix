@@ -10,8 +10,6 @@
     configurationLimit = 10;
   };
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_7_0;
-
   networking.hostName = "lenovo-ideapadslim3";
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPorts = [ 53317 ];
