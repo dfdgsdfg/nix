@@ -29,6 +29,7 @@ let
       gitui
       glow
       gnupg
+      inputs.herdr.packages.${system}.herdr
       jq
       lazygit
       lsd

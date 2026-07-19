@@ -1,5 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
+let
+  system = pkgs.stdenv.hostPlatform.system;
+in
 {
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -73,6 +76,7 @@
 
     # productivity
     glow # markdown previewer in terminal
+    inputs.herdr.packages.${system}.herdr
     xh
 
     btop  # replacement of htop/nmon
