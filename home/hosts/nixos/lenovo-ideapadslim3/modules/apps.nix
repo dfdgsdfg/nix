@@ -23,6 +23,38 @@ let
   zenPackages = import inputs.zen-browser {
     inherit pkgs;
   };
+  orca =
+    let
+      pname = "orca";
+      version = "1.4.152";
+      src = pkgs.fetchurl {
+        url = "https://github.com/stablyai/orca/releases/download/v${version}/orca-linux.AppImage";
+        hash = "sha256-rUAS67/v7y/+eN7I4mczWZGAn1+UOE81VSKWrqTCN4o=";
+      };
+      appimageContents = pkgs.appimageTools.extractType2 {
+        inherit pname version src;
+      };
+    in
+    pkgs.appimageTools.wrapType2 {
+      inherit pname version src;
+
+      extraInstallCommands = ''
+        install -Dm444 ${appimageContents}/orca-ide.desktop \
+          $out/share/applications/orca-ide.desktop
+        substituteInPlace $out/share/applications/orca-ide.desktop \
+          --replace-fail 'Exec=AppRun' "Exec=$out/bin/orca"
+        cp -R ${appimageContents}/usr/share/icons $out/share/
+      '';
+
+      meta = {
+        description = "IDE for parallel agentic development";
+        homepage = "https://github.com/stablyai/orca";
+        license = lib.licenses.mit;
+        mainProgram = "orca";
+        platforms = [ "x86_64-linux" ];
+        sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+      };
+    };
 in
 {
   imports = [
@@ -42,6 +74,7 @@ in
    zoom-us
    localsend
    localSendWithPort
+   orca
    inputs.seance.packages.${pkgs.stdenv.hostPlatform.system}.seance
   ];
 

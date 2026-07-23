@@ -78,6 +78,17 @@ let
         "${pkgs.adwaita-icon-theme}/share"
         "${pkgs.shared-mime-info}/share"
       ];
+      giTypelibPath = lib.makeSearchPathOutput "lib" "lib/girepository-1.0" [
+        pkgs.cairo
+        pkgs.gtk4
+        pkgs.libadwaita
+        pkgs.gdk-pixbuf
+        pkgs.pango
+        pkgs.harfbuzz
+        pkgs.graphene
+        pkgs.glib
+        pkgs.gobject-introspection
+      ];
     in
     pkgs.stdenvNoCC.mkDerivation {
       pname = "opemux";
@@ -111,15 +122,7 @@ let
           --set OPEMUX_PROJECT_ROOT "$out/share/opemux" \
           --set PYTHONPATH "$out/share/opemux/src" \
           --prefix PATH : "${lib.makeBinPath [ pkgs.retroarch pkgs.xdg-utils ]}" \
-          --prefix GI_TYPELIB_PATH : "${lib.makeSearchPath "lib/girepository-1.0" [
-            pkgs.gtk4
-            pkgs.libadwaita
-            pkgs.gdk-pixbuf
-            pkgs.pango
-            pkgs.harfbuzz
-            pkgs.graphene
-            pkgs.glib
-          ]}" \
+          --set GI_TYPELIB_PATH "${giTypelibPath}" \
           --prefix XDG_DATA_DIRS : "${gsettingsDataDirs}"
 
         printf '%s\n' \
