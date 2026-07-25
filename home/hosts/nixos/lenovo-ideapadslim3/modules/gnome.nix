@@ -26,5 +26,11 @@ in
         "discord-ptb.desktop:4"
       ];
     };
+
+    # Keep GNOME from suspending while on AC power. Battery behavior is left
+    # unchanged, so the existing battery suspend policy still applies.
+    "org/gnome/settings-daemon/plugins/power" = {
+      sleep-inactive-ac-type = "nothing";
+    };
   };
 }

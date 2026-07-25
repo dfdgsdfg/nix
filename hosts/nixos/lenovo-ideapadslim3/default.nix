@@ -12,7 +12,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "lenovo-ideapadslim3";
   networking.networkmanager.enable = true;
-  networking.firewall.allowedTCPPorts = [ 53317 ];
+  networking.firewall.allowedTCPPorts = [
+    3389 # GNOME Remote Desktop (RDP)
+    53317
+  ];
   networking.firewall.allowedUDPPorts = [ 53317 5353 ];
 
   time.timeZone = "Asia/Seoul";
@@ -45,6 +48,24 @@
   };
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
+  services.gnome.gnome-remote-desktop.enable = true;
+  systemd.services.gnome-remote-desktop.wantedBy = [ "graphical.target" ];
+
+  # Keep the laptop available as a server while connected to AC power.
+  # The battery lid-close policy remains at its default (suspend).
+  services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
+
+  services.openssh = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      AllowUsers = [ "dididi" ];
+      AuthenticationMethods = "publickey";
+      KbdInteractiveAuthentication = false;
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
 
   services.keyd = {
     enable = true;
@@ -91,6 +112,9 @@
     description = "dididi";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH6ax5WnlNo8xT6qvvKQbCyHtC5cvTgwX2aPC48CxD5x dfdgsdfg@gmail.com"
+    ];
   };
 
   nixpkgs.config.allowUnfree = true;
