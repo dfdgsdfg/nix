@@ -83,7 +83,6 @@ let
       bandwhich
       cloudflared
       mitmproxy
-      tailscale
     ])
     ++ lib.optional (pkgs.stdenv.isDarwin && lib.hasAttr "whalebrew" pkgs) pkgs.whalebrew;
 

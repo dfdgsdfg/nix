@@ -72,6 +72,7 @@ in
    zed-editor
    bitwarden-desktop
    zoom-us
+   rustdesk
    localsend
    localSendWithPort
    orca

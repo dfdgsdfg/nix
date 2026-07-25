@@ -71,6 +71,11 @@
 
   services.printing.enable = true;
 
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
+  };
+
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
