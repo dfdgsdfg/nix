@@ -37,6 +37,7 @@ let
     in
     pkgs.appimageTools.wrapType2 {
       inherit pname version src;
+      nativeBuildInputs = [ pkgs.makeWrapper ];
 
       extraInstallCommands = ''
         install -Dm444 ${appimageContents}/orca-ide.desktop \
@@ -44,6 +45,8 @@ let
         substituteInPlace $out/share/applications/orca-ide.desktop \
           --replace-fail 'Exec=AppRun' "Exec=$out/bin/orca"
         cp -R ${appimageContents}/usr/share/icons $out/share/
+        wrapProgram $out/bin/orca \
+          --add-flags '--ozone-platform=x11'
       '';
 
       meta = {
