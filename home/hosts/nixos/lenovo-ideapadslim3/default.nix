@@ -53,6 +53,7 @@ in
     ./modules/music.nix
     ./modules/dev.nix
     ./modules/ai.nix
+    ./modules/maintenance.nix
   ];
 
   home.username = "dididi";
