@@ -62,7 +62,7 @@ let
       };
     };
 
-  opemux =
+  openemux =
     let
       pythonEnv = pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
         pycairo
@@ -91,14 +91,14 @@ let
       ];
     in
     pkgs.stdenvNoCC.mkDerivation {
-      pname = "opemux";
-      version = "unstable-2026-02-21";
+      pname = "openemux";
+      version = "1.9.2";
 
       src = pkgs.fetchFromGitHub {
         owner = "guilhermefeitosa66";
-        repo = "opemux";
-        rev = "38c3dbf735db0a1d9e09d5c990e314f464b5598c";
-        hash = "sha256-CplO0lhny8sQjQgg0SA4bJk7vTLcXNa6Iso8R8qo8xE=";
+        repo = "OpenEmux";
+        rev = "v1.9.2";
+        hash = "sha256-Ikj+KMOibtmPdekggwewcixWMbAL8snxJPHONtPD8jU=";
       };
 
       nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -107,44 +107,39 @@ let
       installPhase = ''
         runHook preInstall
 
-        mkdir -p $out/bin $out/share/applications $out/share/opemux $out/share/pixmaps
-        cp -R . $out/share/opemux
+        mkdir -p $out/bin $out/share/applications $out/share/openemux $out/share/pixmaps
+        cp -R . $out/share/openemux
 
-        substituteInPlace $out/share/opemux/src/opemux/core/config.py \
+        substituteInPlace $out/share/openemux/src/openemux/core/config.py \
           --replace-fail 'vendors/RetroArch-Linux-x86_64.AppImage' 'retroarch'
-        substituteInPlace $out/share/opemux/src/opemux/main.py \
+        substituteInPlace $out/share/openemux/src/openemux/main.py \
           --replace-fail '        _ensure_desktop_integration()' '        pass  # Desktop integration is managed by Home Manager.'
 
-        cp docs/assets/logo.png $out/share/pixmaps/org.opemux.Opemux.png
+        cp src/openemux/ui/assets/images/logo.png \
+          $out/share/pixmaps/io.github.guilhermefeitosa66.OpenEmux.png
 
-        makeWrapper ${pythonEnv}/bin/python3 $out/bin/opemux \
-          --add-flags "$out/share/opemux/src/opemux/main.py" \
-          --set OPEMUX_PROJECT_ROOT "$out/share/opemux" \
-          --set PYTHONPATH "$out/share/opemux/src" \
+        makeWrapper ${pythonEnv}/bin/python3 $out/bin/openemux \
+          --add-flags "$out/share/openemux/src/openemux/main.py" \
+          --set OPENEMUX_PROJECT_ROOT "$out/share/openemux" \
+          --set PYTHONPATH "$out/share/openemux/src" \
           --prefix PATH : "${lib.makeBinPath [ pkgs.retroarch pkgs.xdg-utils ]}" \
           --set GI_TYPELIB_PATH "${giTypelibPath}" \
           --prefix XDG_DATA_DIRS : "${gsettingsDataDirs}"
 
-        printf '%s\n' \
-          '[Desktop Entry]' \
-          'Type=Application' \
-          'Name=Opemux' \
-          'Comment=Linux-native emulation frontend for RetroArch' \
-          "Exec=$out/bin/opemux" \
-          'Icon=org.opemux.Opemux' \
-          'Categories=Game;Emulator;' \
-          'Terminal=false' \
-          'StartupWMClass=org.opemux.Opemux' \
-          > $out/share/applications/org.opemux.Opemux.desktop
+        install -Dm444 packaging/common/openemux.desktop \
+          $out/share/applications/io.github.guilhermefeitosa66.OpenEmux.desktop
+        substituteInPlace $out/share/applications/io.github.guilhermefeitosa66.OpenEmux.desktop \
+          --replace-fail 'TryExec=openemux' "TryExec=$out/bin/openemux" \
+          --replace-fail 'Exec=openemux' "Exec=$out/bin/openemux"
 
         runHook postInstall
       '';
 
       meta = {
         description = "Linux-native emulation frontend for RetroArch";
-        homepage = "https://github.com/guilhermefeitosa66/opemux";
+        homepage = "https://github.com/guilhermefeitosa66/OpenEmux";
         license = lib.licenses.mit;
-        mainProgram = "opemux";
+        mainProgram = "openemux";
         platforms = lib.platforms.linux;
       };
     };
@@ -295,7 +290,7 @@ in
     heroicWithNativeLibraries
     heroicSyncGogGenres
     openhv
-    opemux
+    openemux
     scanmem
     scummvm
     uzdoom
@@ -306,9 +301,9 @@ in
     ]))
   ];
 
-  home.file.".local/share/applications/org.opemux.Opemux.desktop" = {
+  home.file.".local/share/applications/io.github.guilhermefeitosa66.OpenEmux.desktop" = {
     force = true;
-    source = "${opemux}/share/applications/org.opemux.Opemux.desktop";
+    source = "${openemux}/share/applications/io.github.guilhermefeitosa66.OpenEmux.desktop";
   };
 
   home.file.".local/share/applications/cheat-engine.desktop" = {
@@ -339,10 +334,13 @@ in
     '';
   };
 
-  home.activation.shareRomsBetweenRetroarchAndOpemux = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.shareRomsBetweenRetroarchAndOpenEmux = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     roms_path="${romsPath}"
+    if [ -d "$HOME/.opemux" ] && [ ! -e "$HOME/.openemux" ]; then
+      mv "$HOME/.opemux" "$HOME/.openemux"
+    fi
     mkdir -p "$roms_path"
-    mkdir -p "$HOME/.opemux" "$HOME/.config/retroarch"
+    mkdir -p "$HOME/.openemux" "$HOME/.config/retroarch"
 
     ${pkgs.python3.withPackages (pythonPackages: [ pythonPackages.pyyaml ])}/bin/python3 - "$roms_path" <<'PY'
 import sys
@@ -351,7 +349,7 @@ from pathlib import Path
 import yaml
 
 roms_path = sys.argv[1]
-config_path = Path.home() / ".opemux" / "config.yaml"
+config_path = Path.home() / ".openemux" / "config.yaml"
 
 if config_path.exists():
     with config_path.open("r", encoding="utf-8") as f:
