@@ -10,7 +10,7 @@
     configurationLimit = 10;
   };
   boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "lenovo-ideapadslim3";
+  networking.hostName = "sg-lenovo";
   networking.networkmanager.enable = true;
   networking.firewall.allowedTCPPorts = [
     3389 # GNOME Remote Desktop (RDP)

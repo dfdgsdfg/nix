@@ -57,7 +57,7 @@ in
     homePackageName = "desktop";
   };
 
-  lenovo-ideapadslim3 = {
+  sg-lenovo = {
     type = "nixos";
     system = "x86_64-linux";
     inherit username;
@@ -68,7 +68,7 @@ in
     homeModules = [
       ../home/hosts/nixos/lenovo-ideapadslim3
     ];
-    homePackageName = "lenovo-ideapadslim3";
+    homePackageName = "sg-lenovo";
   };
 
   wsl = {

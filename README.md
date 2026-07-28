@@ -29,8 +29,8 @@ nix flake check ./home
 For host-specific changes, build the target before switching when practical:
 
 ```bash
-nixos-rebuild build --flake ./system#lenovo-ideapadslim3
-home-manager build --flake ./home#dididi@lenovo-ideapadslim3
+nixos-rebuild build --flake ./system#sg-lenovo
+home-manager build --flake ./home#dididi@sg-lenovo
 ```
 
 ## SOPS Bootstrap
@@ -56,7 +56,7 @@ before activating a profile that manages SSH:
 
 ```bash
 ./scripts/adopt-ssh-to-nix.sh
-home-manager switch --flake ./home#dididi@lenovo-ideapadslim3
+home-manager switch --flake ./home#dididi@sg-lenovo
 ```
 
 The adoption script moves existing SSH files into a timestamped backup directory
