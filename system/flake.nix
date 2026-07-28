@@ -44,6 +44,10 @@
           inherit (host) system;
           modules = host.systemModules ++ [
             ./modules/packages
+            ({ ... }: {
+              system.configurationRevision =
+                inputs.self.rev or inputs.self.dirtyRev or null;
+            })
           ];
           specialArgs = mkSpecialArgs host.system;
         };
