@@ -14,6 +14,7 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "sg-lenovo";
   networking.networkmanager.enable = true;
+  nixpkgs.overlays = [ (import ../../../system/overlays/kime.nix) ];
   networking.firewall.allowedTCPPorts = [
     3389 # GNOME Remote Desktop (RDP)
     53317
