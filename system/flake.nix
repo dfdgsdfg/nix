@@ -10,9 +10,11 @@
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.url = "github:nix-community/nixvim/nixos-26.05";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ nixpkgs, nix-darwin, nixos-wsl, nixvim, nixpkgs-unstable, ... }:
+  outputs = inputs@{ nixpkgs, nix-darwin, nixos-wsl, nixvim, nixpkgs-unstable, sops-nix, ... }:
     let
       lib = nixpkgs.lib;
       hosts = import ../hosts { inherit inputs; };
@@ -43,6 +45,7 @@
         nixpkgs.lib.nixosSystem {
           inherit (host) system;
           modules = host.systemModules ++ [
+            sops-nix.nixosModules.sops
             ./modules/packages
             ({ ... }: {
               system.configurationRevision =

@@ -73,3 +73,19 @@ The current Lenovo profile manages:
 - `~/.ssh/authorized_keys`
 - `~/.ssh/config`
 - `~/.ssh/config.d/hosts.conf`
+
+## Cloudflare Tunnel
+
+The Lenovo NixOS profile runs `cloudflared` as a system service. Its remotely
+managed tunnel token is decrypted at activation time and passed to the service
+with a systemd credential, so the plaintext token never enters the Nix store.
+
+After rotating the token in the Cloudflare dashboard, replace the encrypted
+placeholder with:
+
+```bash
+SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/cloudflare.yaml
+```
+
+Set `cloudflare-tunnel-token` to the new token, then rebuild the system. Do not
+put the token directly in a Nix file or commit it as plaintext.

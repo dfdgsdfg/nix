@@ -1,6 +1,8 @@
 { config, inputs, lib, pkgs, ... }:
 
-{
+let
+  cloudflareSecrets = ../../../secrets/cloudflare.yaml;
+in {
   imports = [
     ./hardware-configuration.nix
   ];
@@ -50,6 +52,32 @@
   services.desktopManager.gnome.enable = true;
   services.gnome.gnome-remote-desktop.enable = true;
   systemd.services.gnome-remote-desktop.wantedBy = [ "graphical.target" ];
+
+  sops = {
+    defaultSopsFile = cloudflareSecrets;
+    age.keyFile = "/home/dididi/.config/sops/age/keys.txt";
+    useSystemdActivation = true;
+    secrets.cloudflare-tunnel-token = {
+      mode = "0400";
+      restartUnits = [ "cloudflared.service" ];
+    };
+  };
+
+  systemd.services.cloudflared = {
+    description = "Cloudflare Tunnel";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    requires = [ "sops-install-secrets.service" ];
+    after = [ "network-online.target" "sops-install-secrets.service" ];
+    serviceConfig = {
+      DynamicUser = true;
+      LoadCredential = "tunnel-token:${config.sops.secrets.cloudflare-tunnel-token.path}";
+      ExecCondition = "${pkgs.gnugrep}/bin/grep --quiet ^eyJ %d/tunnel-token";
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file %d/tunnel-token";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+  };
 
   # Keep the laptop available as a server while connected to AC power.
   # The battery lid-close policy remains at its default (suspend).
