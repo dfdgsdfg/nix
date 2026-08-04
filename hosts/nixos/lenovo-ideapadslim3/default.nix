@@ -20,6 +20,7 @@ in {
     53317
   ];
   networking.firewall.allowedUDPPorts = [ 53317 5353 ];
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 6768 ];
 
   time.timeZone = "Asia/Seoul";
 
@@ -139,6 +140,7 @@ in {
   users.users.dididi = {
     isNormalUser = true;
     description = "dididi";
+    linger = true;
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [
