@@ -2,7 +2,6 @@
 
 let
   localSendPort = 53317;
-  orcaServePort = 6768;
   setLocalSendPort = pkgs.writeShellScript "set-localsend-port" ''
     prefs="''${XDG_DATA_HOME:-$HOME/.local/share}/org.localsend.localsend_app/shared_preferences.json"
     ${pkgs.coreutils}/bin/mkdir -p "$(${pkgs.coreutils}/bin/dirname "$prefs")"
@@ -44,10 +43,11 @@ let
         install -Dm444 ${appimageContents}/orca-ide.desktop \
           $out/share/applications/orca-ide.desktop
         substituteInPlace $out/share/applications/orca-ide.desktop \
-          --replace-fail 'Exec=AppRun' "Exec=$out/bin/orca"
+          --replace-fail 'Exec=AppRun' "Exec=$out/bin/orca-ui"
         cp -R ${appimageContents}/usr/share/icons $out/share/
-        wrapProgram $out/bin/orca \
-          --add-flags '--ozone-platform=x11'
+        makeWrapper $out/bin/orca $out/bin/orca-ui \
+          --add-flags '--ozone-platform=x11' \
+          --add-flags '--force-prefers-reduced-motion'
       '';
 
       meta = {
@@ -59,32 +59,6 @@ let
         sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
       };
     };
-  orcaServe = pkgs.writeShellApplication {
-    name = "orca-serve";
-    runtimeInputs = [
-      pkgs.tailscale
-      pkgs.xorg-server
-    ];
-    text = ''
-      if ! pairingAddress="$(${pkgs.tailscale}/bin/tailscale ip -4)"; then
-        echo "Waiting for a Tailscale IPv4 address" >&2
-        exit 1
-      fi
-      if [ -z "$pairingAddress" ]; then
-        echo "Tailscale did not return an IPv4 address" >&2
-        exit 1
-      fi
-
-      export LIBGL_ALWAYS_SOFTWARE=1
-      export XDG_CONFIG_HOME="''${XDG_CONFIG_HOME:-$HOME/.config}/orca-serve"
-      ${pkgs.coreutils}/bin/mkdir -p "$XDG_CONFIG_HOME"
-
-      exec ${orca}/bin/orca serve \
-        --port ${toString orcaServePort} \
-        --pairing-address "$pairingAddress" \
-        --json
-    '';
-  };
 in
 {
   imports = [
@@ -112,24 +86,6 @@ in
   home.activation.setLocalSendPort = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${setLocalSendPort}
   '';
-
-  systemd.user.services.orca-serve = {
-    Unit = {
-      Description = "Orca headless runtime server";
-      StartLimitIntervalSec = 300;
-      StartLimitBurst = 5;
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${orcaServe}/bin/orca-serve";
-      WorkingDirectory = "%h";
-      UMask = "0077";
-      Restart = "on-failure";
-      RestartPreventExitStatus = 3;
-      RestartSec = "5s";
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
 
   xdg.desktopEntries.LocalSend = {
     name = "LocalSend";
