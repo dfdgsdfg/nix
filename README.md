@@ -33,6 +33,17 @@ nixos-rebuild build --flake ./system#sg-lenovo
 home-manager build --flake ./home#dididi@sg-lenovo
 ```
 
+## Codex agent routing
+
+`modules/codex` keeps the Codex main agent on GPT-5.6 Sol with medium
+reasoning, defaults subagents to GPT-5.6 Luna with high reasoning, and defines
+the `worker`, `explorer`, `tester`, and `powerhouse` roles. The module merges
+only these owned keys into `~/.codex/config.toml`, leaving app-managed MCP,
+plugin, notice, and project settings mutable.
+
+The Sol Medium parent, built-in `default`, and Sol High `powerhouse` use the
+Standard service tier. Custom Luna roles explicitly use Fast mode.
+
 ## SOPS Bootstrap
 
 Secrets are encrypted for the age recipient listed in `.sops.yaml`. A fresh

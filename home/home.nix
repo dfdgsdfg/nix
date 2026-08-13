@@ -71,6 +71,7 @@ let
 in
 {
   imports = [
+    ../modules/codex
     ../modules/nvim
     ../modules/ssh
     ../packages
@@ -126,6 +127,7 @@ in
   };
 
   modules.nvim.enable = true;
+  modules.codex.enable = true;
   modules.ssh = {
     enable = true;
     identities.github = {

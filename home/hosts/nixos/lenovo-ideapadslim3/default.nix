@@ -41,6 +41,7 @@ in
 
 {
   imports = [
+    ../../../../modules/codex
     ../../../../modules/ssh
     ./modules/fonts.nix
     ./modules/fish.nix
@@ -59,6 +60,8 @@ in
   home.username = "dididi";
   home.homeDirectory = "/home/dididi";
   home.stateVersion = "26.05";
+
+  modules.codex.enable = true;
 
   home.sessionVariables = {
     EDITOR = "hx";
