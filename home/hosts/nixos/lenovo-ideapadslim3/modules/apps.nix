@@ -73,6 +73,7 @@ in
    vscode
    discord-ptb
    slack
+   telegram-desktop
    zed-editor
    bitwarden-desktop
    zoom-us
