@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, pkgsUnstable, inputs, ... }:
 
 let
   system = pkgs.stdenv.hostPlatform.system;
@@ -55,7 +55,7 @@ in
     # '')
 
     inputs.codex-cli-nix.packages.${system}.codex
-    pi-coding-agent
+    pkgsUnstable.pi-coding-agent
     omp
   ];
 
