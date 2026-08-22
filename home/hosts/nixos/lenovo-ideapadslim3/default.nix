@@ -42,6 +42,8 @@ in
 {
   imports = [
     ../../../../modules/codex
+    ../../../../modules/omp
+    ../../../../modules/pi
     ../../../../modules/ssh
     ./modules/fonts.nix
     ./modules/fish.nix
@@ -62,6 +64,8 @@ in
   home.stateVersion = "26.05";
 
   modules.codex.enable = true;
+  modules.omp.enable = true;
+  modules.pi.enable = true;
 
   home.sessionVariables = {
     EDITOR = "hx";
