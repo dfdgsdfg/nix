@@ -71,7 +71,10 @@ let
 in
 {
   imports = [
+    ../modules/claude
     ../modules/codex
+    ../modules/omp
+    ../modules/pi
     ../modules/nvim
     ../modules/ssh
     ../packages
@@ -127,7 +130,10 @@ in
   };
 
   modules.nvim.enable = true;
+  modules.claude.enable = true;
   modules.codex.enable = true;
+  modules.omp.enable = true;
+  modules.pi.enable = true;
   modules.ssh = {
     enable = true;
     identities.github = {

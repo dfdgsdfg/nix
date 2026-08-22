@@ -1,0 +1,139 @@
+{
+  "providers": {
+    "omniroute-deepseek": {
+      "baseUrl": "https://omni.tail484abe.ts.net/v1",
+      "api": "openai-completions",
+      "models": [
+        {
+          "id": "agent/cheap",
+          "name": "DeepSeek cheap worker (non-thinking)",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 16384,
+          "samplingParams": {
+            "thinking": {
+              "type": "disabled"
+            },
+            "reasoning_effort": "none"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "thinkingFormat": "deepseek",
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/bulk",
+          "name": "DeepSeek bulk worker (High)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 32768,
+          "samplingParams": {
+            "thinking": {
+              "type": "enabled"
+            },
+            "reasoning_effort": "high"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "thinkingFormat": "deepseek",
+            "requiresReasoningContentOnAssistantMessages": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/worker",
+          "name": "Gemini 3.7 Flash worker (Medium)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "samplingParams": {
+            "reasoning_effort": "medium"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/reasoner",
+          "name": "Luna reasoning worker (High)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 272000,
+          "maxTokens": 32768,
+          "samplingParams": {
+            "reasoning_effort": "high"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/orchestrator",
+          "name": "Sol orchestrator (Medium)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 272000,
+          "maxTokens": 32768,
+          "samplingParams": {
+            "reasoning_effort": "medium"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/expert",
+          "name": "Sol expert escalation (High)",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 272000,
+          "maxTokens": 32768,
+          "samplingParams": {
+            "reasoning_effort": "high"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/multimodal",
+          "name": "Gemini Flash-Lite multimodal (Low)",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "samplingParams": {
+            "reasoning_effort": "low"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        }
+      ]
+    }
+  }
+}

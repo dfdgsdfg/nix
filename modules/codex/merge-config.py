@@ -7,6 +7,7 @@ import os
 import re
 import stat
 import sys
+import tomllib
 import tempfile
 from pathlib import Path
 
@@ -73,7 +74,19 @@ def set_section(text: str, name: str, values: dict[str, str]) -> str:
     return text[: match.end()] + set_keys(text[match.end() : end], values) + text[end:]
 
 
+def validate(text: str) -> None:
+    if not text.strip():
+        return
+    try:
+        parsed = tomllib.loads(text)
+    except tomllib.TOMLDecodeError as error:
+        raise SystemExit(f"config.toml is invalid TOML; refusing to overwrite: {error}") from error
+    if not isinstance(parsed, dict):
+        raise SystemExit("config.toml is not a TOML table; refusing to overwrite")
+
+
 def merge(text: str) -> str:
+    validate(text)
     text = remove_top_level(text, REMOVE_TOP_LEVEL)
     text = set_top_level(text, TOP_LEVEL)
     for section, values in SECTIONS.items():
