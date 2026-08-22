@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
   autoMoveWindowsUuid = "auto-move-windows@gnome-shell-extensions.gcampax.github.com";
@@ -12,6 +12,10 @@ in
     "${pkgs.gnomeExtensions.auto-move-windows}/share/gnome-shell/extensions/${autoMoveWindowsUuid}";
 
   dconf.settings = {
+    "org/gnome/desktop/session" = {
+      idle-delay = lib.hm.gvariant.mkUint32 0;
+    };
+
     # Keep the session available to GNOME Remote Desktop when the display
     # blanks. Explicit locking (for example, Super+L) still remains available.
     "org/gnome/desktop/screensaver" = {
@@ -28,6 +32,7 @@ in
     "org/gnome/shell/extensions/auto-move-windows" = {
       application-list = [
         "com.seance.app.desktop:2"
+        "orca-ide.desktop:2"
         "zen-beta.desktop:3"
         "discord-ptb.desktop:4"
       ];
