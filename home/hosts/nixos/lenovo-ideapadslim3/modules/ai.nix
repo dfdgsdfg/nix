@@ -2,6 +2,35 @@
 
 let
   system = pkgs.stdenv.hostPlatform.system;
+  omp = pkgs.stdenvNoCC.mkDerivation {
+    pname = "omp";
+    version = "17.4.0";
+
+    src = pkgs.fetchurl {
+      url = "https://github.com/can1357/oh-my-pi/releases/download/v17.4.0/omp-linux-x64";
+      hash = "sha256-bVQxxp/W25dxq9Uax234gg/XGK4zrGVKgF/X+0S2hcc=";
+    };
+
+    dontUnpack = true;
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 "$src" "$out/libexec/omp"
+      makeWrapper ${pkgs.stdenv.cc.bintools.dynamicLinker} "$out/bin/omp" \
+        --add-flags "$out/libexec/omp"
+      runHook postInstall
+    '';
+
+    meta = {
+      description = "AI coding agent for the terminal";
+      homepage = "https://omp.sh/";
+      license = lib.licenses.mit;
+      mainProgram = "omp";
+      platforms = [ "x86_64-linux" ];
+      sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    };
+  };
 in
 
 {
@@ -26,6 +55,8 @@ in
     # '')
 
     inputs.codex-cli-nix.packages.${system}.codex
+    pi-coding-agent
+    omp
   ];
 
   programs.claude-code = {
