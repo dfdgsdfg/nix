@@ -77,11 +77,11 @@ in
     inherit username;
     homeDirectory = linuxHome;
     systemModules = [
-      ./wsl/default
+      ./wsl/sg-asus
     ];
     homeModules = [
       ../home/home.nix
-      ../home/hosts/wsl/default
+      ../home/hosts/wsl/sg-asus
     ];
     homePackageName = "sg-asus";
   };

@@ -8,7 +8,7 @@
 
   wsl.enable = true;
   wsl.defaultUser = "dididi";
-  wsl.startMenuLaunchers = true;
+  wsl.startMenuLaunchers = false;
 
   nix.registry.unstable.flake = inputs.nixpkgs-unstable;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
