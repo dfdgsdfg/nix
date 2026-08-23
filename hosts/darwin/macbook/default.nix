@@ -1,6 +1,7 @@
 { inputs, pkgs, pkgsUnstable, ... }:
 {
   networking.hostName = "macbook";
+  system.primaryUser = "dididi";
   nixpkgs = {
     hostPlatform = "aarch64-darwin";
     config.allowUnfreePredicate = _: true;
@@ -8,7 +9,6 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.registry.unstable.flake = inputs.nixpkgs-unstable;
-  services.nix-daemon.enable = true;
 
   users.users.dididi = {
     home = "/Users/dididi";
@@ -109,8 +109,8 @@
     };
   };
 
-  fonts.fonts = [
-    (pkgs.nerdfonts.override { fonts = [ "Meslo" ]; })
+  fonts.packages = [
+    pkgs.nerd-fonts.meslo-lg
   ];
 
   programs.zsh.enable = true;

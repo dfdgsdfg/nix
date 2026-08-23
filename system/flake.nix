@@ -34,8 +34,9 @@
             host.systemModules
             ++ [
               ./modules/packages
-              ({ self, ... }: {
-                system.configurationRevision = self.rev or self.dirtyRev or null;
+              ({ ... }: {
+                system.configurationRevision =
+                  inputs.self.rev or inputs.self.dirtyRev or null;
               })
             ];
           specialArgs = mkSpecialArgs host.system;
