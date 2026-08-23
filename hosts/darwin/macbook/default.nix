@@ -25,7 +25,6 @@
     onActivation = {
       autoUpdate = true;
       upgrade = true;
-      cleanup = "uninstall";
     };
     taps = [
       "homebrew/bundle"
