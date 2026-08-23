@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import stat
@@ -205,7 +206,11 @@ def extract_existing_api_key(text: str, provider: str = "omniroute") -> str | No
 
 def resolve_api_key(existing_text: str, provider: str = "omniroute") -> str:
     del existing_text, provider
-    return "'!security find-generic-password -a \"$USER\" -s \"omniroute-us-mbp-omp-deepseek\" -w'"
+    command = os.environ.get(
+        "OMP_API_KEY_COMMAND",
+        '!security find-generic-password -a "$USER" -s "omniroute-us-mbp-omp-deepseek" -w',
+    )
+    return json.dumps(command)
 
 
 def merge_models(original: str) -> str:

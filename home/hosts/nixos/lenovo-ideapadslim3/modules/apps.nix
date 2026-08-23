@@ -31,7 +31,7 @@ let
         url = "https://github.com/stablyai/orca/releases/download/v${version}/orca-linux.AppImage";
         hash = "sha256-LnDLXhmXQeVgKnBgglV1MZ9eA7wvqkuJzScyjz9V1LQ=";
       };
-      appimageContents = pkgs.appimageTools.extractType2 {
+      appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
       };
     in

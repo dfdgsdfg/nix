@@ -55,6 +55,7 @@ in
     # '')
 
     inputs.codex-cli-nix.packages.${system}.codex
+    libsecret
     pkgsUnstable.pi-coding-agent
     omp
   ];

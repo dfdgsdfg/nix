@@ -64,7 +64,10 @@ in
   home.stateVersion = "26.05";
 
   modules.codex.enable = true;
-  modules.omp.enable = true;
+  modules.omp = {
+    enable = true;
+    apiKeyCommand = "!secret-tool lookup service omniroute client sg-lenovo-omp";
+  };
   modules.pi.enable = true;
 
   home.sessionVariables = {
