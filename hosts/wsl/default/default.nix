@@ -13,6 +13,9 @@
   nix.registry.unstable.flake = inputs.nixpkgs-unstable;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  services.tailscale.enable = false;
+  systemd.services.cloudflared.enable = false;
+
   modules.systemPackages.core.enable = true;
 
   environment.systemPackages = with pkgsUnstable; [
