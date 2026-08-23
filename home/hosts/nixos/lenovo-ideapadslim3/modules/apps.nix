@@ -100,6 +100,13 @@ in
 
   programs.firefox.enable = true;
 
+  programs.ghostty = {
+    enable = true;
+    # Seance bundles libghostty resources too. Prefer the standalone Ghostty
+    # files when both packages expose the same themes in the HM profile.
+    package = lib.meta.hiPrio pkgs.ghostty;
+  };
+
   programs.zen-browser = {
     enable = true;
     unwrappedPackage = zenPackages.beta-unwrapped;
