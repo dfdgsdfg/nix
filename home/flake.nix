@@ -22,10 +22,6 @@
       url = "github:sadjow/codex-cli-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    seance = {
-      url = "git+https://github.com/dfdgsdfg/seance.git?ref=codex/fix-ime-composition-key-routing&submodules=1";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     herdr = {
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";

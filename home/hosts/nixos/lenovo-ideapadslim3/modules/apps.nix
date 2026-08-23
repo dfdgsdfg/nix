@@ -81,7 +81,6 @@ in
    localsend
    localSendWithPort
    orca
-   inputs.seance.packages.${pkgs.stdenv.hostPlatform.system}.seance
   ];
 
   home.activation.setLocalSendPort = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -99,13 +98,7 @@ in
   };
 
   programs.firefox.enable = true;
-
-  programs.ghostty = {
-    enable = true;
-    # Seance bundles libghostty resources too. Prefer the standalone Ghostty
-    # files when both packages expose the same themes in the HM profile.
-    package = lib.meta.hiPrio pkgs.ghostty;
-  };
+  programs.ghostty.enable = true;
 
   programs.zen-browser = {
     enable = true;

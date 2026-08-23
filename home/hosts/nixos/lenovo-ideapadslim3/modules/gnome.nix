@@ -31,7 +31,7 @@ in
 
     "org/gnome/shell/extensions/auto-move-windows" = {
       application-list = [
-        "com.seance.app.desktop:2"
+        "com.mitchellh.ghostty.desktop:2"
         "orca-ide.desktop:2"
         "zen-beta.desktop:3"
         "discord-ptb.desktop:4"
