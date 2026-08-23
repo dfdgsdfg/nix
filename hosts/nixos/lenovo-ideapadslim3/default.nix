@@ -151,18 +151,6 @@ in {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
   };
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "";
-  };
-  systemd.services.nix-gc = {
-    path = [ config.nix.package pkgs.coreutils pkgs.findutils ];
-    preStart = ''
-      ${pkgs.bash}/bin/bash ${../../../scripts/prune-nixos-generations.sh} \
-        /nix/var/nix/profiles/system 5 30
-    '';
-  };
 
   modules.systemPackages = {
     core.enable = true;

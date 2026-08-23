@@ -12,9 +12,10 @@
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
   };
 
-  outputs = inputs@{ nixpkgs, nix-darwin, nixos-wsl, nixvim, nixpkgs-unstable, sops-nix, ... }:
+  outputs = inputs@{ nixpkgs, nix-darwin, nixos-wsl, nixvim, nixpkgs-unstable, sops-nix, determinate, ... }:
     let
       lib = nixpkgs.lib;
       hosts = import ../hosts { inherit inputs; };
@@ -45,14 +46,19 @@
       mkNixos = host:
         nixpkgs.lib.nixosSystem {
           inherit (host) system;
-          modules = host.systemModules ++ [
-            sops-nix.nixosModules.sops
-            ./modules/packages
-            ({ ... }: {
-              system.configurationRevision =
-                inputs.self.rev or inputs.self.dirtyRev or null;
-            })
-          ];
+          modules =
+            host.systemModules
+            ++ [
+              determinate.nixosModules.default
+            ]
+            ++ [
+              sops-nix.nixosModules.sops
+              ./modules/packages
+              ({ ... }: {
+                system.configurationRevision =
+                  inputs.self.rev or inputs.self.dirtyRev or null;
+              })
+            ];
           specialArgs = mkSpecialArgs host.system;
         };
     in {
