@@ -207,8 +207,23 @@ in
     enable = true;
     shellAliases = commonShellAliases;
     envExtra = ''
-      if [ -f "$HOME/.shell_env" ]; then
-        . "$HOME/.shell_env"
+      if [ -f "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
+      fi
+      if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+      if command -v mise >/dev/null 2>&1; then
+        eval "$(mise activate zsh --shims)"
+      fi
+      if command -v ccache >/dev/null 2>&1; then
+        export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
+        export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
+        export CCACHE_FILECLONE="true"
+        export CCACHE_DEPEND="true"
+        export CCACHE_INODECACHE="true"
       fi
     '';
     oh-my-zsh = {
@@ -251,17 +266,54 @@ in
     enable = true;
     shellAliases = commonShellAliases;
     profileExtra = ''
-      if [ -f "$HOME/.shell_env" ]; then
-        . "$HOME/.shell_env"
+      if [ -n "''${_NIX_BASH_ENV_LOADED:-}" ]; then
+        return 0
+      fi
+      export _NIX_BASH_ENV_LOADED=1
+      if [ -f "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
+      fi
+      if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+      if command -v mise >/dev/null 2>&1; then
+        eval "$(mise activate bash --shims)"
+      fi
+      if command -v ccache >/dev/null 2>&1; then
+        export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
+        export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
+        export CCACHE_FILECLONE="true"
+        export CCACHE_DEPEND="true"
+        export CCACHE_INODECACHE="true"
       fi
     '';
     initExtra = ''
-      if [ -f "$HOME/.shell_env" ]; then
-        . "$HOME/.shell_env"
+      if [ -n "''${_NIX_BASH_ENV_LOADED:-}" ]; then
+        return 0
+      fi
+      export _NIX_BASH_ENV_LOADED=1
+      if [ -f "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
+      fi
+      if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+      if command -v mise >/dev/null 2>&1; then
+        eval "$(mise activate bash --shims)"
+      fi
+      if command -v ccache >/dev/null 2>&1; then
+        export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
+        export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
+        export CCACHE_FILECLONE="true"
+        export CCACHE_DEPEND="true"
+        export CCACHE_INODECACHE="true"
       fi
     '';
   };
-
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
@@ -372,53 +424,6 @@ in
     neovim
   '';
 
-  home.file.".shell_env".text = ''
-    # Compatibility shim for legacy chezmoi-managed POSIX shell entrypoints.
-    if [ -n "''${_SHELL_ENV_LOADED:-}" ]; then
-      return 0 2>/dev/null || true
-    fi
-    export _SHELL_ENV_LOADED=1
-
-    if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
-      . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-    fi
-
-    if [ -f "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh" ]; then
-      . "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh"
-    fi
-
-    if [ -f "$HOME/.cargo/env" ]; then
-      . "$HOME/.cargo/env"
-    fi
-
-    if [ -x /opt/homebrew/bin/brew ]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [ -x /usr/local/bin/brew ]; then
-      eval "$(/usr/local/bin/brew shellenv)"
-    fi
-
-    path_prepend() {
-      case ":$PATH:" in
-        *":$1:"*) ;;
-        *) PATH="$1:$PATH" ;;
-      esac
-    }
-
-    if command -v ccache >/dev/null 2>&1; then
-      path_prepend "/opt/homebrew/opt/ccache/libexec"
-      export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
-      export CCACHE_FILECLONE="true"
-      export CCACHE_DEPEND="true"
-      export CCACHE_INODECACHE="true"
-    fi
-
-    if [ -f "$HOME/.ghcup/env" ]; then
-      . "$HOME/.ghcup/env"
-    fi
-
-    export PATH
-    unset -f path_prepend 2>/dev/null || true
-  '';
 
   xdg.configFile."direnv/direnvrc".text = ''
     # Uncomment the following line to make direnv silent by default.
