@@ -4,11 +4,11 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   omp = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "omp";
-    version = "17.4.2";
+    version = "18.0.3";
 
     src = pkgs.fetchurl {
       url = "https://github.com/can1357/oh-my-pi/releases/download/v${version}/omp-linux-x64";
-      hash = "sha256-IYqGhMKxEla0fii6ExrfsqA+mI7d2FZ72Da3xR3QIAU=";
+      hash = "sha256-RzNmIGK/tDZOSrOH15QOVqcUPl3BwgcmeH5huxtS3yg=";
     };
 
     dontUnpack = true;
