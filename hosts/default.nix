@@ -71,7 +71,7 @@ in
     homePackageName = "sg-lenovo";
   };
 
-  wsl = {
+  sg-asus = {
     type = "wsl";
     system = "x86_64-linux";
     inherit username;
@@ -83,6 +83,6 @@ in
       ../home/home.nix
       ../home/hosts/wsl/default
     ];
-    homePackageName = "wsl";
+    homePackageName = "sg-asus";
   };
 }

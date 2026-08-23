@@ -4,7 +4,7 @@
     inputs.nixos-wsl.nixosModules.wsl
   ];
 
-  networking.hostName = "wsl";
+  networking.hostName = "sg-asus";
 
   wsl.enable = true;
   wsl.defaultUser = "dididi";
