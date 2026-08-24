@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 - `flake.nix` – single entry point for nix-darwin, NixOS, WSL, and Home Manager outputs.
-- `home/` – Home Manager entrypoint, host modules, reusable modules, and package groups; Home packages use `nixpkgs-unstable`.
+- `home/` – Home Manager entrypoint, profiles, host settings, leaf modules, and package groups; dependencies flow host → profile → module.
 - `system/hosts/` – host registry and per-machine system modules; keep host-specific tweaks here.
 - `system/` – shared system profiles, modules, and overlays; profiles compose `nixos/base` into `headless`/`desktop`, and `headless` into `wsl`.
 - `secrets/` – SOPS-encrypted data; `.sops.yaml` defines recipients. Never commit private keys.

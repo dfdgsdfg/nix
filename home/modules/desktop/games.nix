@@ -167,7 +167,7 @@ let
   heroicSyncGogGenres = pkgs.writeShellApplication {
     name = "heroic-sync-gog-genres";
     text = ''
-      exec ${pkgs.python3}/bin/python3 ${../../../../scripts/heroic-sync-gog-genres.py} "$@"
+      exec ${pkgs.python3}/bin/python3 ${../../scripts/heroic-sync-gog-genres.py} "$@"
     '';
   };
 

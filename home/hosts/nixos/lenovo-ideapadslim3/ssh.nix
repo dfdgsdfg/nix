@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 let
-  sshSecrets = ../../../../../secrets/ssh.yaml;
+  sshSecrets = ../../../../secrets/ssh.yaml;
 in
 {
   sops.age.keyFile = lib.mkDefault "${config.home.homeDirectory}/.config/sops/age/keys.txt";

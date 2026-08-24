@@ -9,9 +9,9 @@ NixOS, and WSL hosts.
 - `system/hosts/default.nix` is the host registry shared by system and Home Manager configurations.
 - `system/hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
 - `system/profiles/` contains reusable system roles: `nixos/base`, `nixos/headless` → `nixos/wsl`, `nixos/desktop`, and `darwin/base`.
-- `home/hosts/` contains host-specific Home Manager modules.
-- `home/modules/` contains reusable Home Manager modules.
-- `home/packages/` contains grouped Home Manager package selections.
+- `home/profiles/` composes reusable Home Manager roles such as `nixos/desktop`.
+- `home/hosts/` contains machine-specific Home Manager settings and imports profiles inward.
+- `home/modules/` contains leaf Home Manager modules; modules do not import profiles or hosts.
 - `secrets/` contains SOPS-encrypted data consumed by `sops-nix`.
 - `scripts/` contains bootstrap and one-time migration helpers.
 
