@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 
 let
   cfg = config.modules.codex;
@@ -8,6 +8,8 @@ in
   options.modules.codex.enable = lib.mkEnableOption "Codex multi-model agent routing";
 
   config = lib.mkIf cfg.enable {
+    home.packages = [ inputs.codex-cli-nix.packages.${pkgs.stdenv.hostPlatform.system}.codex ];
+
     home.file = {
       ".codex/AGENTS.md" = {
         source = ./AGENTS.md;

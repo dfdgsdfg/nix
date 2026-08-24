@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgsUnstable, ... }:
 
 let
   cfg = config.modules.pi;
@@ -8,6 +8,8 @@ in
   options.modules.pi.enable = lib.mkEnableOption "Pi multi-model agent routing and configuration";
 
   config = lib.mkIf cfg.enable {
+    home.packages = [ pkgsUnstable.pi-coding-agent ];
+
     # Keep settings.json and models.json mutable because Pi also records runtime
     # changelog versions, local model overrides, and dynamic provider state.
     # Only merge the managed policies and models owned here.

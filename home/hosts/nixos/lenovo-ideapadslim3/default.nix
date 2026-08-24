@@ -41,6 +41,7 @@ in
 
 {
   imports = [
+    ../../../../modules/claude
     ../../../../modules/codex
     ../../../../modules/omp
     ../../../../modules/pi
@@ -62,6 +63,7 @@ in
   home.homeDirectory = "/home/dididi";
   home.stateVersion = "26.05";
 
+  modules.claude.enable = true;
   modules.codex.enable = true;
   modules.omp = {
     enable = true;

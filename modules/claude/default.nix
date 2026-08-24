@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 
 let
   cfg = config.modules.claude;
@@ -8,6 +8,8 @@ in
   options.modules.claude.enable = lib.mkEnableOption "Claude Code subagent routing and policy configuration";
 
   config = lib.mkIf cfg.enable {
+    home.packages = [ inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.claude-code ];
+
     home.file = {
       ".claude/CLAUDE.md" = {
         source = ./CLAUDE.md;
