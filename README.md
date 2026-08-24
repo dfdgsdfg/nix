@@ -8,6 +8,7 @@ NixOS, and WSL hosts.
 - `flake.nix` evaluates nix-darwin, NixOS, WSL, and Home Manager outputs.
 - `hosts/default.nix` is the host registry shared by system and Home Manager configurations.
 - `hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
+- `system/profiles/` contains reusable system roles: `nixos/base`, `nixos/headless` → `nixos/wsl`, `nixos/desktop`, and `darwin/base`.
 - `home/hosts/nixos/lenovo-ideapadslim3/` contains Linux desktop Home Manager modules migrated from the old `~/hm` setup.
 - `modules/` contains reusable Home Manager modules.
 - `packages/` contains grouped Home Manager package selections.

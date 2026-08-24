@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 - `flake.nix` – single entry point for nix-darwin, NixOS, WSL, and Home Manager outputs.
-- `system/` – shared system modules and overlays; system packages use stable `nixpkgs`.
+- `system/` – shared system profiles, modules, and overlays; profiles compose `nixos/base` into `headless`/`desktop`, and `headless` into `wsl`.
 - `home/` – shared and host-specific Home Manager modules; Home packages use `nixpkgs-unstable`.
 - `hosts/{darwin,nixos,wsl}/` – per-machine system modules; keep host-specific tweaks here.
 - `modules/` – reusable home modules (e.g., `modules/nvim` for LazyVim).

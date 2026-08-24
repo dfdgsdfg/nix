@@ -4,6 +4,7 @@ let
   cloudflareSecrets = ../../../secrets/cloudflare.yaml;
 in {
   imports = [
+    ../../../system/profiles/nixos/desktop.nix
     ./hardware-configuration.nix
   ];
 
@@ -13,7 +14,6 @@ in {
   };
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "sg-lenovo";
-  networking.networkmanager.enable = true;
   nixpkgs.overlays = [ (import ../../../system/overlays/kime.nix) ];
   networking.firewall.allowedTCPPorts = [
     3389 # GNOME Remote Desktop (RDP)
@@ -42,15 +42,10 @@ in {
     };
   };
 
-  services.xserver = {
-    enable = true;
-    xkb = {
-      layout = "kr";
-      variant = "";
-    };
+  services.xserver.xkb = {
+    layout = "kr";
+    variant = "";
   };
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
   services.gnome.gnome-remote-desktop.enable = true;
   systemd.services.gnome-remote-desktop.wantedBy = [ "graphical.target" ];
 
@@ -126,39 +121,22 @@ in {
     openFirewall = true;
   };
 
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-  services.illum.enable = false;
 
   users.users.dididi = {
-    isNormalUser = true;
-    description = "dididi";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH6ax5WnlNo8xT6qvvKQbCyHtC5cvTgwX2aPC48CxD5x dfdgsdfg@gmail.com"
     ];
   };
-
-  nixpkgs.config.allowUnfree = true;
-  nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    auto-optimise-store = true;
-  };
-
   modules.systemPackages = {
-    core.enable = true;
     workstation.enable = true;
     fish.enable = true;
     games.enable = true;
     nixLd.enable = true;
   };
+
+  nixpkgs.config.allowUnfree = true;
 
   programs.nixvim = {
     enable = true;
@@ -168,5 +146,4 @@ in {
     clipboard.providers.wl-copy.enable = true;
   };
 
-  system.stateVersion = "26.05";
 }
