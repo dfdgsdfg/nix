@@ -2,15 +2,17 @@
 
 ## Project Structure & Module Organization
 - `flake.nix` – single entry point for nix-darwin, NixOS, WSL, and Home Manager outputs.
-- `home/` – Home Manager entrypoint, profiles, host settings, leaf modules, and package groups; dependencies flow host → profile → module.
-- `system/hosts/` – host registry and per-machine system modules; keep host-specific tweaks here.
-- `system/` – shared system profiles, modules, and overlays; profiles compose `nixos/base` into `headless`/`desktop`, and `headless` into `wsl`.
+- `home/` – Home Manager entrypoint, target registry, profiles, host settings, leaf modules, and package groups; dependencies flow target → host → profile → module.
+- `system/targets.nix` – registry for nix-darwin, NixOS, and WSL system targets.
+- `home/targets.nix` – independent registry for Home Manager targets.
+- `system/hosts/` – per-machine system modules; keep host-specific tweaks here.
+- `system/` – shared system profiles and modules; profiles compose `nixos/base` into `headless`/`desktop`, and `headless` into `wsl`.
 - `secrets/` – SOPS-encrypted data; `.sops.yaml` defines recipients. Never commit private keys.
 - `scripts/` – bootstrap and one-time migration helpers such as SOPS age setup and SSH adoption.
 
 ## Build, Test, and Development Commands
 - `nix flake check` – validates all system and Home Manager outputs.
-- `darwin-rebuild switch --flake .#macbook` – apply macOS system changes.
+- `darwin-rebuild switch --flake .#sg-macbook` – apply the macOS system configuration.
 - `nixos-rebuild switch --flake .#sg-lenovo` – apply NixOS system changes.
 - `home-manager switch --flake .#dididi@sg-lenovo` – apply Home Manager changes.
 - `SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/<file>.yaml` – edit encrypted secrets locally.
@@ -20,7 +22,7 @@
 ## Coding Style & Naming Conventions
 - Nix files use two-space indentation; align attribute sets vertically for readability.
 - Home modules export options under `modules.<name>.*`; keep directory paths aligned with option prefixes (e.g., `modules.nvim`).
-- Prefer descriptive camel-case flake outputs (`darwinConfigurations.macbook`, `homeConfigurations."dididi@macbook"`); host directories are lowercase kebab under `system/hosts/`.
+- Prefer descriptive flake outputs (`darwinConfigurations.sg-macbook`, `homeConfigurations."dididi@sg-macbook"`); host directories are lowercase kebab under `system/hosts/` and `home/hosts/`.
 - Keep package group logic declarative; avoid inline `.override` unless necessary—add helpers under `home/packages/`.
 
 ## Testing Guidelines
@@ -31,7 +33,7 @@
 ## Commit & Pull Request Guidelines
 - Use imperative, scoped commit subjects (e.g., `system: enable sops-nix` or `packages: add dev toolchain group`).
 - Reference issue IDs in the body when applicable and summarize both motivation and impact.
-- Pull requests should list rebuilt targets (e.g., “Run `darwin-rebuild switch` on macbook”) and mention any secrets or manual follow-up steps.
+- Pull requests should list rebuilt targets (e.g., “Run `darwin-rebuild switch` on sg-macbook”) and mention any secrets or manual follow-up steps.
 - Attach screenshots or config snippets when adjusting user-facing tooling (e.g., fish shell changes, GUI package updates).
 
 ## Security & Configuration Tips

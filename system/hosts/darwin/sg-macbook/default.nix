@@ -1,9 +1,5 @@
-{ lib, ... }:
-
+{ ... }:
 {
-  imports = [
-    ../macbook
-  ];
-
-  networking.hostName = lib.mkForce "sg-macbook";
+  imports = [ ../../../profiles/darwin/base.nix ];
+  networking.hostName = "sg-macbook";
 }

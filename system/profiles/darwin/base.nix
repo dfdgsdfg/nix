@@ -15,10 +15,7 @@
     shell = pkgs.zsh;
   };
 
-  modules.systemPackages = {
-    core.enable = true;
-    darwinApps.enable = false;
-  };
+  modules.systemPackages.core.enable = true;
 
   homebrew = {
     enable = true;

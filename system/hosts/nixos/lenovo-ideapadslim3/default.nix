@@ -129,9 +129,8 @@ in {
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH6ax5WnlNo8xT6qvvKQbCyHtC5cvTgwX2aPC48CxD5x dfdgsdfg@gmail.com"
     ];
   };
-  modules.systemPackages = {
-    workstation.enable = true;
-    fish.enable = true;
+  modules.systemPackages.workstation.enable = true;
+  modules.runtime = {
     games.enable = true;
     nixLd.enable = true;
   };

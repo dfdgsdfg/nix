@@ -47,20 +47,22 @@
   }:
     let
       lib = nixpkgs.lib;
-      hosts = import ./system/hosts { inherit inputs; };
-      systems = lib.unique (map (host: host.system) (lib.attrValues hosts));
+      systemTargets = import ./system/targets.nix { inherit inputs; };
+      homeTargets = import ./home/targets.nix;
+      systems = lib.unique (
+        map (target: target.system) (lib.attrValues systemTargets ++ lib.attrValues homeTargets)
+      );
 
       mkSystemSpecialArgs = system: {
         inherit inputs;
-        isLinuxSystem = lib.hasSuffix "-linux" system;
         pkgsUnstable = import nixpkgs-unstable { inherit system; };
       };
 
       mkDarwin = host:
         nix-darwin.lib.darwinSystem {
           inherit (host) system;
-          modules = host.systemModules ++ [
-            ./system/modules/packages
+          modules = host.modules ++ [
+            ./system/modules/packages.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
@@ -71,10 +73,11 @@
       mkNixos = host:
         nixpkgs.lib.nixosSystem {
           inherit (host) system;
-          modules = host.systemModules ++ [
+          modules = host.modules ++ [
             determinate.nixosModules.default
             sops-nix.nixosModules.sops
-            ./system/modules/packages
+            ./system/modules/packages.nix
+            ./system/modules/runtime.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
@@ -116,49 +119,46 @@
           };
         };
 
-      mkHostHome = host:
+      mkTargetHome = target:
         let
           platformModules =
-            lib.optionals (lib.hasSuffix "-darwin" host.system) [ ./home/platforms/darwin.nix ]
-            ++ lib.optionals (lib.hasSuffix "-linux" host.system) [ ./home/platforms/linux.nix ];
+            lib.optionals (lib.hasSuffix "-darwin" target.system) [ ./home/platforms/darwin.nix ]
+            ++ lib.optionals (lib.hasSuffix "-linux" target.system) [ ./home/platforms/linux.nix ];
         in
         mkHome {
-          inherit (host) system username homeDirectory;
-          modules = platformModules ++ host.homeModules;
+          inherit (target) system username homeDirectory;
+          modules = platformModules ++ target.modules;
         };
 
       homeConfigurations =
         lib.mapAttrs'
-          (name: host: lib.nameValuePair "${host.username}@${name}" (mkHostHome host))
-          hosts;
+          (name: target: lib.nameValuePair "${target.username}@${name}" (mkTargetHome target))
+          homeTargets;
 
       mkActivationPackage = packages: name:
         let
-          host = hosts.${name};
-          packageName = host.homePackageName or name;
-          configName = "${host.username}@${name}";
+          target = homeTargets.${name};
+          configName = "${target.username}@${name}";
         in
         packages
         // {
-          ${host.system} = (packages.${host.system} or { }) // {
-            ${packageName} = homeConfigurations.${configName}.activationPackage;
+          ${target.system} = (packages.${target.system} or { }) // {
+            ${target.packageName} = homeConfigurations.${configName}.activationPackage;
           };
         };
     in
     {
       darwinConfigurations =
-        lib.mapAttrs
-          (_: mkDarwin)
-          (lib.filterAttrs (_: host: (host.systemEnabled or true) && host.type == "darwin") hosts);
+        lib.mapAttrs (_: mkDarwin) (lib.filterAttrs (_: target: target.type == "darwin") systemTargets);
 
       nixosConfigurations =
         lib.mapAttrs
           (_: mkNixos)
-          (lib.filterAttrs (_: host: (host.systemEnabled or true) && (host.type == "nixos" || host.type == "wsl")) hosts);
+          (lib.filterAttrs (_: target: target.type == "nixos" || target.type == "wsl") systemTargets);
 
       inherit homeConfigurations;
 
-      packages = lib.foldl' mkActivationPackage { } (lib.attrNames hosts);
+      packages = lib.foldl' mkActivationPackage { } (lib.attrNames homeTargets);
 
       devShells = forAllSystems (pkgs: {
         build = pkgs.mkShell {

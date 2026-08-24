@@ -6,7 +6,7 @@ NixOS, and WSL hosts.
 ## Layout
 
 - `flake.nix` evaluates nix-darwin, NixOS, WSL, and Home Manager outputs.
-- `system/hosts/default.nix` is the host registry shared by system and Home Manager configurations.
+- `system/targets.nix` and `home/targets.nix` independently declare system and Home Manager targets.
 - `system/hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
 - `system/profiles/` contains reusable system roles: `nixos/base`, `nixos/headless` → `nixos/wsl`, `nixos/desktop`, and `darwin/base`.
 - `home/profiles/` composes reusable Home Manager roles such as `nixos/desktop`.
