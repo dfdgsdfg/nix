@@ -1,7 +1,8 @@
 { config, lib, ... }:
+
 let
   home = config.home.homeDirectory;
-  sshSecrets = ../../../../secrets/ssh.yaml;
+  sshSecrets = ../../secrets/ssh.yaml;
 in
 {
   modules.packages.gui.enable = lib.mkForce false;

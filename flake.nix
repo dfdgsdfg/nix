@@ -118,7 +118,9 @@
 
       mkHostHome = host:
         let
-          platformModules = lib.optionals (lib.hasSuffix "-linux" host.system) [ ./home/platforms/linux.nix ];
+          platformModules =
+            lib.optionals (lib.hasSuffix "-darwin" host.system) [ ./home/platforms/darwin.nix ]
+            ++ lib.optionals (lib.hasSuffix "-linux" host.system) [ ./home/platforms/linux.nix ];
         in
         mkHome {
           inherit (host) system username homeDirectory;

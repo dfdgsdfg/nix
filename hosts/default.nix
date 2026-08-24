@@ -22,7 +22,6 @@ in
     ];
     homeModules = [
       ../home/home.nix
-      ../home/hosts/darwin/macbook
     ];
     homePackageName = "default";
   };
@@ -37,7 +36,6 @@ in
     ];
     homeModules = [
       ../home/home.nix
-      ../home/hosts/darwin/sg-macbook
     ];
     homePackageName = "sg-macbook";
   };
