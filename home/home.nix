@@ -83,12 +83,7 @@ in
   nixpkgs.config.allowUnfree = true;
 
   sops = {
-    defaultSopsFile = ../secrets/example.yaml;
     age.keyFile = lib.mkDefault "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    secrets."example-token" = {
-      format = "yaml";
-      key = "example.token";
-    };
     secrets."ssh/github/id_ed25519" = {
       format = "yaml";
       sopsFile = ../secrets/ssh.yaml;
