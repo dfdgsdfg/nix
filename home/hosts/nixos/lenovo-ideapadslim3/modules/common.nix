@@ -39,7 +39,6 @@ in
     lsd # A modern replacement for ‘ls’
     fzf # A command-line fuzzy finder
     zoxide
-    atuin
     bat
     bandwhich
     delta
