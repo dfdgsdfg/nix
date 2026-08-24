@@ -2,7 +2,7 @@
 set -euo pipefail
 
 target="/etc/nixos"
-host="lenovo-ideapadslim3"
+host="sg-lenovo"
 rebuild_action=""
 dry_run=0
 
@@ -14,13 +14,13 @@ Copies this repository's NixOS system configuration into /etc/nixos.
 
 Options:
   --target PATH          Target directory. Defaults to /etc/nixos.
-  --host NAME            NixOS flake host. Defaults to lenovo-ideapadslim3.
+  --host NAME            NixOS flake host. Defaults to sg-lenovo.
   --rebuild ACTION       Run nixos-rebuild after copying: build, test, or switch.
   --dry-run              Print actions without changing files.
   -h, --help             Show this help.
 
 After copying, rebuild with:
-  sudo nixos-rebuild switch --flake 'path:/etc/nixos?dir=system#lenovo-ideapadslim3'
+  sudo nixos-rebuild switch --flake 'path:/etc/nixos#sg-lenovo'
 EOF
 }
 
@@ -83,9 +83,9 @@ run() {
   fi
 }
 
-require_path "${repo_root}/system/flake.nix"
-require_path "${repo_root}/system/flake.lock"
-require_path "${repo_root}/hosts/nixos/${host}/default.nix"
+require_path "${repo_root}/flake.nix"
+require_path "${repo_root}/flake.lock"
+require_path "${repo_root}/hosts/nixos/lenovo-ideapadslim3/default.nix"
 
 if [[ "$dry_run" -eq 0 && "${EUID}" -ne 0 ]]; then
   echo "Run as root, for example: sudo scripts/nix_os.sh" >&2
@@ -99,12 +99,14 @@ if [[ -e "$target" && ! -e "${target}/${marker}" ]]; then
 fi
 
 run install -d -- "$target"
-run rm -rf -- "${target}/system" "${target}/hosts"
-run cp -a -- "${repo_root}/system" "${target}/system"
-run cp -a -- "${repo_root}/hosts" "${target}/hosts"
+run rm -rf -- "${target}/system" "${target}/home" "${target}/hosts" \
+  "${target}/modules" "${target}/packages" "${target}/secrets"
+run cp -a -- "${repo_root}/flake.nix" "${repo_root}/flake.lock" "${target}/"
+run cp -a -- "${repo_root}/system" "${repo_root}/home" "${repo_root}/hosts" \
+  "${repo_root}/modules" "${repo_root}/packages" "${repo_root}/secrets" "${target}/"
 run touch -- "${target}/${marker}"
 
-flake_ref="path:${target}?dir=system#${host}"
+flake_ref="path:${target}#${host}"
 
 if [[ -n "$rebuild_action" ]]; then
   run nixos-rebuild "$rebuild_action" --flake "$flake_ref"

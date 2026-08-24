@@ -5,10 +5,9 @@ NixOS, and WSL hosts.
 
 ## Layout
 
-- `system/flake.nix` evaluates nix-darwin, NixOS, and WSL systems.
-- `hosts/default.nix` is the host registry shared by system and Home Manager flakes.
+- `flake.nix` evaluates nix-darwin, NixOS, WSL, and Home Manager outputs.
+- `hosts/default.nix` is the host registry shared by system and Home Manager configurations.
 - `hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
-- `home/flake.nix` evaluates Home Manager profiles.
 - `home/hosts/nixos/lenovo-ideapadslim3/` contains Linux desktop Home Manager modules migrated from the old `~/hm` setup.
 - `modules/` contains reusable Home Manager modules.
 - `packages/` contains grouped Home Manager package selections.
@@ -22,15 +21,14 @@ them from the shared Home Manager base.
 ## Checks
 
 ```bash
-nix flake check ./system
-nix flake check ./home
+nix flake check
 ```
 
 For host-specific changes, build the target before switching when practical:
 
 ```bash
-nixos-rebuild build --flake ./system#sg-lenovo
-home-manager build --flake ./home#dididi@sg-lenovo
+nixos-rebuild build --flake .#sg-lenovo
+home-manager build --flake .#dididi@sg-lenovo
 ```
 
 ## Codex agent routing
@@ -77,7 +75,7 @@ before activating a profile that manages SSH:
 
 ```bash
 ./scripts/adopt-ssh-to-nix.sh
-home-manager switch --flake ./home#dididi@sg-lenovo
+home-manager switch --flake .#dididi@sg-lenovo
 ```
 
 The adoption script moves existing SSH files into a timestamped backup directory

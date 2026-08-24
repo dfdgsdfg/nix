@@ -1,19 +1,20 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `system/flake.nix` – entry point for nix-darwin, NixOS, and WSL hosts; pulls host modules from `hosts/`.
+- `flake.nix` – single entry point for nix-darwin, NixOS, WSL, and Home Manager outputs.
+- `system/` – shared system modules and overlays; system packages use stable `nixpkgs`.
+- `home/` – shared and host-specific Home Manager modules; Home packages use `nixpkgs-unstable`.
 - `hosts/{darwin,nixos,wsl}/` – per-machine system modules; keep host-specific tweaks here.
-- `home/flake.nix` – Home Manager flake exporting each user profile; shared logic lives in `home/home.nix`.
 - `modules/` – reusable home modules (e.g., `modules/nvim` for LazyVim).
 - `packages/` – grouped package selections (`default.nix` toggles core/dev/etc.; `apps.nix` handles macOS GUI apps).
 - `secrets/` – SOPS-encrypted data; `.sops.yaml` defines recipients. Never commit private keys.
 - `scripts/` – bootstrap and one-time migration helpers such as SOPS age setup and SSH adoption.
 
 ## Build, Test, and Development Commands
-- `nix flake check ./system` – validates system modules (darwin/NixOS/WSL) for evaluation errors.
-- `nix flake check ./home` – evaluates Home Manager configurations.
-- `darwin-rebuild switch --flake ./system#macbook` – apply macOS system changes.
-- `nixos-rebuild switch --flake ./system#desktop` / `nix run .#homeConfigurations."dididi@macbook".activationPackage` – deploy NixOS or Home Manager updates.
+- `nix flake check` – validates all system and Home Manager outputs.
+- `darwin-rebuild switch --flake .#macbook` – apply macOS system changes.
+- `nixos-rebuild switch --flake .#sg-lenovo` – apply NixOS system changes.
+- `home-manager switch --flake .#dididi@sg-lenovo` – apply Home Manager changes.
 - `SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt sops secrets/<file>.yaml` – edit encrypted secrets locally.
 - `./scripts/bootstrap-sops-age.sh` – install the local age identity before using `sops-nix` secrets.
 - `./scripts/adopt-ssh-to-nix.sh` – move existing chezmoi-managed SSH files aside before first Nix-managed SSH activation.
