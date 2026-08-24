@@ -1,6 +1,6 @@
 { lib, ... }:
 {
-  imports = [ ../../../system/profiles/nixos/desktop.nix ];
+  imports = [ ../../../profiles/nixos/desktop.nix ];
   networking.hostName = "desktop";
   time.timeZone = "UTC";
 

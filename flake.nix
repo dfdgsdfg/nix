@@ -47,7 +47,7 @@
   }:
     let
       lib = nixpkgs.lib;
-      hosts = import ./hosts { inherit inputs; };
+      hosts = import ./system/hosts { inherit inputs; };
       systems = lib.unique (map (host: host.system) (lib.attrValues hosts));
 
       mkSystemSpecialArgs = system: {

@@ -6,12 +6,12 @@ NixOS, and WSL hosts.
 ## Layout
 
 - `flake.nix` evaluates nix-darwin, NixOS, WSL, and Home Manager outputs.
-- `hosts/default.nix` is the host registry shared by system and Home Manager configurations.
-- `hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
+- `system/hosts/default.nix` is the host registry shared by system and Home Manager configurations.
+- `system/hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
 - `system/profiles/` contains reusable system roles: `nixos/base`, `nixos/headless` → `nixos/wsl`, `nixos/desktop`, and `darwin/base`.
-- `home/hosts/nixos/lenovo-ideapadslim3/` contains Linux desktop Home Manager modules migrated from the old `~/hm` setup.
-- `modules/` contains reusable Home Manager modules.
-- `packages/` contains grouped Home Manager package selections.
+- `home/hosts/` contains host-specific Home Manager modules.
+- `home/modules/` contains reusable Home Manager modules.
+- `home/packages/` contains grouped Home Manager package selections.
 - `secrets/` contains SOPS-encrypted data consumed by `sops-nix`.
 - `scripts/` contains bootstrap and one-time migration helpers.
 
@@ -34,7 +34,7 @@ home-manager build --flake .#dididi@sg-lenovo
 
 ## Codex agent routing
 
-`modules/codex` keeps the Codex main agent on GPT-5.6 Sol with high reasoning,
+`home/modules/codex` keeps the Codex main agent on GPT-5.6 Sol with high reasoning,
 defaults unspecified subagents to GPT-5.6 Luna with high reasoning, and defines
 the `scout`, `explorer`, `worker`, and `powerhouse` roles. The module merges only
 these owned keys into `~/.codex/config.toml`, leaving app-managed MCP, plugin,
@@ -45,7 +45,7 @@ Spark High `scout`, Terra Medium `explorer`, the Sol High parent, and Sol High
 
 ## Claude agent routing
 
-`modules/claude` pins the Claude main session to Opus with high effort and
+`home/modules/claude` pins the Claude main session to Opus with high effort and
 defines `scout`, `Explore`, `general-purpose`, and `powerhouse`. The exact
 `Explore` and `general-purpose` names override Claude Code's built-in agents,
 keeping broad exploration on Sonnet Medium and implementation on Sonnet High.

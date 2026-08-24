@@ -71,13 +71,13 @@ let
 in
 {
   imports = [
-    ../modules/claude
-    ../modules/codex
-    ../modules/omp
-    ../modules/pi
-    ../modules/nvim
-    ../modules/ssh
-    ../packages
+    ./modules/claude
+    ./modules/codex
+    ./modules/omp
+    ./modules/pi
+    ./modules/nvim
+    ./modules/ssh
+    ./packages
   ];
 
   nixpkgs.config.allowUnfree = true;

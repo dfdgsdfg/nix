@@ -2,11 +2,9 @@
 
 ## Project Structure & Module Organization
 - `flake.nix` – single entry point for nix-darwin, NixOS, WSL, and Home Manager outputs.
+- `home/` – Home Manager entrypoint, host modules, reusable modules, and package groups; Home packages use `nixpkgs-unstable`.
+- `system/hosts/` – host registry and per-machine system modules; keep host-specific tweaks here.
 - `system/` – shared system profiles, modules, and overlays; profiles compose `nixos/base` into `headless`/`desktop`, and `headless` into `wsl`.
-- `home/` – shared and host-specific Home Manager modules; Home packages use `nixpkgs-unstable`.
-- `hosts/{darwin,nixos,wsl}/` – per-machine system modules; keep host-specific tweaks here.
-- `modules/` – reusable home modules (e.g., `modules/nvim` for LazyVim).
-- `packages/` – grouped package selections (`default.nix` toggles core/dev/etc.; `apps.nix` handles macOS GUI apps).
 - `secrets/` – SOPS-encrypted data; `.sops.yaml` defines recipients. Never commit private keys.
 - `scripts/` – bootstrap and one-time migration helpers such as SOPS age setup and SSH adoption.
 
@@ -22,8 +20,8 @@
 ## Coding Style & Naming Conventions
 - Nix files use two-space indentation; align attribute sets vertically for readability.
 - Home modules export options under `modules.<name>.*`; keep directory paths aligned with option prefixes (e.g., `modules.nvim`).
-- Prefer descriptive camel-case flake outputs (`darwinConfigurations.macbook`, `homeConfigurations."dididi@macbook"`); host files are lowercase kebab (`hosts/darwin/macbook.nix`).
-- Keep package group logic declarative; avoid inline `.override` unless necessary—add helpers under `packages/`.
+- Prefer descriptive camel-case flake outputs (`darwinConfigurations.macbook`, `homeConfigurations."dididi@macbook"`); host directories are lowercase kebab under `system/hosts/`.
+- Keep package group logic declarative; avoid inline `.override` unless necessary—add helpers under `home/packages/`.
 
 ## Testing Guidelines
 - Run `nix flake check` before every commit to catch evaluation regressions.
@@ -39,4 +37,4 @@
 ## Security & Configuration Tips
 - Keep `.sops.yaml` recipients aligned with the age identity installed by `scripts/bootstrap-sops-age.sh`.
 - Store age private keys under `~/.config/sops/age/`; never commit them.
-- Keep GUI apps in `packages/apps.nix`; the system layer should avoid duplicating Home Manager packages to maintain a single source of truth.
+- Keep GUI apps in `home/packages/apps.nix`; the system layer should avoid duplicating Home Manager packages to maintain a single source of truth.

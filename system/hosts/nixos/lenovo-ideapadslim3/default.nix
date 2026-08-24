@@ -1,10 +1,10 @@
 { config, inputs, lib, pkgs, ... }:
 
 let
-  cloudflareSecrets = ../../../secrets/cloudflare.yaml;
+  cloudflareSecrets = ../../../../secrets/cloudflare.yaml;
 in {
   imports = [
-    ../../../system/profiles/nixos/desktop.nix
+    ../../../profiles/nixos/desktop.nix
     ./hardware-configuration.nix
   ];
 
@@ -14,7 +14,7 @@ in {
   };
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "sg-lenovo";
-  nixpkgs.overlays = [ (import ../../../system/overlays/kime.nix) ];
+  nixpkgs.overlays = [ (import ../../../overlays/kime.nix) ];
   networking.firewall.allowedTCPPorts = [
     3389 # GNOME Remote Desktop (RDP)
     53317

@@ -21,7 +21,7 @@ in
       ./darwin/macbook
     ];
     homeModules = [
-      ../home/home.nix
+      ../../home/home.nix
     ];
     homePackageName = "default";
   };
@@ -35,7 +35,7 @@ in
       ./darwin/sg-macbook
     ];
     homeModules = [
-      ../home/home.nix
+      ../../home/home.nix
     ];
     homePackageName = "sg-macbook";
   };
@@ -50,7 +50,7 @@ in
       ./nixos/desktop
     ];
     homeModules = [
-      ../home/home.nix
+      ../../home/home.nix
     ];
     homePackageName = "desktop";
   };
@@ -64,8 +64,8 @@ in
       ./nixos/lenovo-ideapadslim3
     ] ++ nixvimModules;
     homeModules = [
-      ../home/home.nix
-      ../home/hosts/nixos/lenovo-ideapadslim3
+      ../../home/home.nix
+      ../../home/hosts/nixos/lenovo-ideapadslim3
     ];
     homePackageName = "sg-lenovo";
   };
@@ -79,8 +79,8 @@ in
       ./wsl/sg-asus
     ];
     homeModules = [
-      ../home/home.nix
-      ../home/hosts/wsl/sg-asus
+      ../../home/home.nix
+      ../../home/hosts/wsl/sg-asus
     ];
     homePackageName = "sg-asus";
   };
