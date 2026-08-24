@@ -13,24 +13,16 @@ in
         source = ./CLAUDE.md;
         force = true;
       };
-      ".claude/agents/worker.md" = {
-        source = ./agents/worker.md;
+      ".claude/agents/scout.md" = {
+        source = ./agents/scout.md;
         force = true;
       };
-      ".claude/agents/explorer.md" = {
-        source = ./agents/explorer.md;
+      ".claude/agents/Explore.md" = {
+        source = ./agents/Explore.md;
         force = true;
       };
-      ".claude/agents/verifier.md" = {
-        source = ./agents/verifier.md;
-        force = true;
-      };
-      ".claude/agents/hard-worker.md" = {
-        source = ./agents/hard-worker.md;
-        force = true;
-      };
-      ".claude/agents/hard-reasoner.md" = {
-        source = ./agents/hard-reasoner.md;
+      ".claude/agents/general-purpose.md" = {
+        source = ./agents/general-purpose.md;
         force = true;
       };
       ".claude/agents/powerhouse.md" = {

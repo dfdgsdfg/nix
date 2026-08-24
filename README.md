@@ -35,14 +35,24 @@ home-manager build --flake ./home#dididi@sg-lenovo
 
 ## Codex agent routing
 
-`modules/codex` keeps the Codex main agent on GPT-5.6 Sol with medium
-reasoning, defaults subagents to GPT-5.6 Luna with high reasoning, and defines
-the `worker`, `explorer`, `tester`, and `powerhouse` roles. The module merges
-only these owned keys into `~/.codex/config.toml`, leaving app-managed MCP,
-plugin, notice, and project settings mutable.
+`modules/codex` keeps the Codex main agent on GPT-5.6 Sol with high reasoning,
+defaults unspecified subagents to GPT-5.6 Luna with high reasoning, and defines
+the `scout`, `explorer`, `worker`, and `powerhouse` roles. The module merges only
+these owned keys into `~/.codex/config.toml`, leaving app-managed MCP, plugin,
+notice, and project settings mutable.
 
-The Sol Medium parent, built-in `default`, and Sol High `powerhouse` use the
-Standard service tier. Custom Luna roles explicitly use Fast mode.
+Spark High `scout`, Terra Medium `explorer`, the Sol High parent, and Sol High
+`powerhouse` use the Standard service tier. Luna High `worker` uses Fast mode.
+
+## Claude agent routing
+
+`modules/claude` pins the Claude main session to Opus with high effort and
+defines `scout`, `Explore`, `general-purpose`, and `powerhouse`. The exact
+`Explore` and `general-purpose` names override Claude Code's built-in agents,
+keeping broad exploration on Sonnet Medium and implementation on Sonnet High.
+The module merges only `model` and `effortLevel` into
+`~/.claude/settings.json`, leaving hooks, plugins, permissions, and other
+app-managed state mutable.
 
 ## SOPS Bootstrap
 

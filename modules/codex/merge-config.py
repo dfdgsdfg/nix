@@ -14,7 +14,7 @@ from pathlib import Path
 
 TOP_LEVEL = {
     "model": '"gpt-5.6-sol"',
-    "model_reasoning_effort": '"medium"',
+    "model_reasoning_effort": '"high"',
     "plan_mode_reasoning_effort": '"medium"',
 }
 

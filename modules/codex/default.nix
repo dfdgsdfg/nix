@@ -21,8 +21,8 @@ in
         source = ./agents/explorer.toml;
         force = true;
       };
-      ".codex/agents/tester.toml" = {
-        source = ./agents/tester.toml;
+      ".codex/agents/scout.toml" = {
+        source = ./agents/scout.toml;
         force = true;
       };
       ".codex/agents/powerhouse.toml" = {
