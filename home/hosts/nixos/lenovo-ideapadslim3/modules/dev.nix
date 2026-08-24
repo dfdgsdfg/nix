@@ -74,27 +74,19 @@ in
   home.sessionVariables = {
     ANDROID_HOME = androidSdkRoot;
     ANDROID_SDK_ROOT = androidSdkRoot;
-    COREPACK_HOME = "$HOME/.cache/corepack";
-    PNPM_HOME = "$HOME/.local/share/pnpm";
   };
 
   home.sessionPath = [
     "${androidSdkRoot}/platform-tools"
     "${androidSdkRoot}/cmdline-tools/latest/bin"
-    "$HOME/.local/share/pnpm"
-    "$HOME/.local/share/pnpm/bin"
   ];
 
   programs.fish.shellInit = ''
     set -gx ANDROID_HOME "${androidSdkRoot}"
     set -gx ANDROID_SDK_ROOT "${androidSdkRoot}"
-    set -gx COREPACK_HOME "$HOME/.cache/corepack"
-    set -gx PNPM_HOME "$HOME/.local/share/pnpm"
 
     fish_add_path "${androidSdkRoot}/platform-tools"
     fish_add_path "${androidSdkRoot}/cmdline-tools/latest/bin"
-    fish_add_path "$HOME/.local/share/pnpm"
-    fish_add_path "$HOME/.local/share/pnpm/bin"
   '';
 
   programs.mise = {

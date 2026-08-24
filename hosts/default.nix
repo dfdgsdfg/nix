@@ -66,6 +66,7 @@ in
       ./nixos/lenovo-ideapadslim3
     ] ++ nixvimModules;
     homeModules = [
+      ../home/home.nix
       ../home/hosts/nixos/lenovo-ideapadslim3
     ];
     homePackageName = "sg-lenovo";
