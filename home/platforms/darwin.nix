@@ -5,7 +5,6 @@ let
   sshSecrets = ../../secrets/ssh.yaml;
 in
 {
-  modules.packages.gui.enable = lib.mkForce false;
 
   sops.secrets = {
     "ssh/id_ed25519" = {

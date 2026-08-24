@@ -37,4 +37,4 @@
 ## Security & Configuration Tips
 - Keep `.sops.yaml` recipients aligned with the age identity installed by `scripts/bootstrap-sops-age.sh`.
 - Store age private keys under `~/.config/sops/age/`; never commit them.
-- Keep GUI apps in `home/packages/apps.nix`; the system layer should avoid duplicating Home Manager packages to maintain a single source of truth.
+- Keep NixOS desktop applications in `home/modules/desktop/`; keep Darwin GUI delivery in `system/profiles/darwin/base.nix` Homebrew declarations.

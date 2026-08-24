@@ -109,9 +109,6 @@ let
       ]
     );
 
-  guiPkgs = import ./apps.nix {
-    inherit pkgs unstablePkgs;
-  };
 in
 {
   options.modules.packages = {
@@ -120,7 +117,6 @@ in
     network.enable = lib.mkEnableOption "networking and debugging utilities";
     ops.enable = lib.mkEnableOption "DevOps and infrastructure tooling";
     mobile.enable = lib.mkEnableOption "mobile and device tooling";
-    gui.enable = lib.mkEnableOption "graphical applications";
   };
 
   config.home.packages = lib.unique (
@@ -130,7 +126,6 @@ in
       (lib.optionals cfg.network.enable networkPkgs)
       (lib.optionals cfg.ops.enable opsPkgs)
       (lib.optionals cfg.mobile.enable mobilePkgs)
-      (lib.optionals cfg.gui.enable guiPkgs)
     ]
   );
 }

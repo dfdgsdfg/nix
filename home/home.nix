@@ -158,7 +158,6 @@ in
     network.enable = true;
     ops.enable = true;
     mobile.enable = pkgs.stdenv.isDarwin;
-    gui.enable = pkgs.stdenv.isDarwin;
   };
 
   programs.home-manager.enable = true;
