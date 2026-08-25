@@ -3,7 +3,10 @@
     system = "aarch64-darwin";
     username = "dididi";
     homeDirectory = "/Users/dididi";
-    modules = [ ./home.nix ];
+    modules = [
+      ./home.nix
+      ./hosts/darwin/sg-macbook
+    ];
     packageName = "sg-macbook";
   };
 

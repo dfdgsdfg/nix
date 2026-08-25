@@ -1,6 +1,9 @@
 { pkgsUnstable, ... }:
 {
-  imports = [ ../../../profiles/nixos/wsl.nix ];
+  imports = [
+    ../../../profiles/nixos/wsl.nix
+    ./ssh.nix
+  ];
 
   networking.hostName = "sg-asus";
   environment.systemPackages = with pkgsUnstable; [

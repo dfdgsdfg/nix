@@ -6,6 +6,7 @@ in {
   imports = [
     ../../../profiles/nixos/desktop.nix
     ./hardware-configuration.nix
+    ./ssh.nix
   ];
 
   boot.loader.systemd-boot = {
@@ -79,17 +80,6 @@ in {
   # The battery lid-close policy remains at its default (suspend).
   services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
-  services.openssh = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      AllowUsers = [ "dididi" ];
-      AuthenticationMethods = "publickey";
-      KbdInteractiveAuthentication = false;
-      PasswordAuthentication = false;
-      PermitRootLogin = "no";
-    };
-  };
 
   services.keyd = {
     enable = true;
@@ -125,9 +115,6 @@ in {
   users.users.dididi = {
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.fish;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH6ax5WnlNo8xT6qvvKQbCyHtC5cvTgwX2aPC48CxD5x dfdgsdfg@gmail.com"
-    ];
   };
   modules.systemPackages.workstation.enable = true;
   modules.runtime = {
