@@ -1,33 +1,13 @@
 {
   "providers": {
-    "omniroute-deepseek": {
+    "omniroute": {
       "baseUrl": "https://omni.tail484abe.ts.net/v1",
       "api": "openai-completions",
+      "apiKey": "!security find-generic-password -a \"$USER\" -s \"omniroute-us-mbp-pi\" -w",
       "models": [
         {
-          "id": "agent/cheap",
-          "name": "DeepSeek cheap worker (non-thinking)",
-          "reasoning": false,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 1000000,
-          "maxTokens": 16384,
-          "samplingParams": {
-            "thinking": {
-              "type": "disabled"
-            },
-            "reasoning_effort": "none"
-          },
-          "compat": {
-            "supportsReasoningEffort": true,
-            "thinkingFormat": "deepseek",
-            "maxTokensField": "max_tokens"
-          }
-        },
-        {
-          "id": "agent/bulk",
-          "name": "DeepSeek bulk worker (High)",
+          "id": "agent/worker",
+          "name": "DeepSeek V4 Flash worker (Medium)",
           "reasoning": true,
           "input": [
             "text"
@@ -38,7 +18,7 @@
             "thinking": {
               "type": "enabled"
             },
-            "reasoning_effort": "high"
+            "reasoning_effort": "medium"
           },
           "compat": {
             "supportsReasoningEffort": true,
@@ -48,11 +28,42 @@
           }
         },
         {
-          "id": "agent/worker",
-          "name": "Gemini 3.7 Flash worker (Medium)",
+          "id": "agent/scout",
+          "name": "GPT-5.3 Codex Spark scout",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 128000,
+          "maxTokens": 32768,
+          "compat": {
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/document",
+          "name": "Gemini 3.7 Flash document specialist (Medium)",
           "reasoning": true,
           "input": [
             "text"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "samplingParams": {
+            "reasoning_effort": "medium"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "agent/designer",
+          "name": "Gemini 3.7 Flash designer (Medium)",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
           ],
           "contextWindow": 1048576,
           "maxTokens": 32768,
@@ -128,6 +139,93 @@
           "samplingParams": {
             "reasoning_effort": "low"
           },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/gpt-5.6-luna",
+          "name": "GPT-5.6 Luna identity",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 272000,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/gpt-5.6-sol",
+          "name": "GPT-5.6 Sol identity",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 272000,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/gpt-5.3-codex-spark",
+          "name": "GPT-5.3 Codex Spark identity",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 128000,
+          "maxTokens": 32768,
+          "compat": {
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/deepseek-v4-flash-0731",
+          "name": "DeepSeek V4 Flash 0731 identity",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "thinkingFormat": "deepseek",
+            "requiresReasoningContentOnAssistantMessages": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/gemini-3.7-flash",
+          "name": "Gemini 3.7 Flash identity",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/gemini-3.5-flash-lite",
+          "name": "Gemini 3.5 Flash-Lite identity",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
           "compat": {
             "supportsReasoningEffort": true,
             "maxTokensField": "max_tokens"

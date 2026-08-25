@@ -12,9 +12,9 @@ import tempfile
 from pathlib import Path
 
 SETTINGS_MANAGED = {
-    "defaultProvider": "omniroute-deepseek",
-    "defaultModel": "agent/bulk",
-    "defaultThinkingLevel": "high",
+    "defaultProvider": "omniroute",
+    "defaultModel": "agent/worker",
+    "defaultThinkingLevel": "medium",
     "theme": "dark",
 }
 

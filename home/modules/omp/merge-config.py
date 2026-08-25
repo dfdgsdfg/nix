@@ -17,20 +17,28 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   default: omniroute/agent/orchestrator
   plan: omniroute/agent/orchestrator
   task: omniroute/agent/worker
-  smol: omniroute/agent/cheap
-  tiny: omniroute/agent/cheap
-  commit: omniroute/agent/bulk
+  designer: omniroute/agent/designer
   advisor: omniroute/agent/reasoner
+  smol: omniroute/agent/worker
+  tiny: omniroute/agent/worker
+  commit: omniroute/agent/worker
   vision: omniroute/agent/multimodal
   slow: omniroute/agent/expert""",
     "enabledModels": """enabledModels:
   - omniroute/agent/orchestrator
   - omniroute/agent/worker
+  - omniroute/agent/scout
+  - omniroute/agent/document
+  - omniroute/agent/designer
   - omniroute/agent/reasoner
-  - omniroute/agent/cheap
-  - omniroute/agent/bulk
   - omniroute/agent/expert
-  - omniroute/agent/multimodal""",
+  - omniroute/agent/multimodal
+  - omniroute/model/gpt-5.6-luna
+  - omniroute/model/gpt-5.6-sol
+  - omniroute/model/gpt-5.3-codex-spark
+  - omniroute/model/deepseek-v4-flash-0731
+  - omniroute/model/gemini-3.7-flash
+  - omniroute/model/gemini-3.5-flash-lite""",
     "defaultThinkingLevel": "defaultThinkingLevel: medium",
     "retry": """retry:
   enabled: true
@@ -63,10 +71,48 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
     - id: agent/worker
-      name: Gemini 3.7 Flash worker (Medium)
+      name: DeepSeek V4 Flash worker (Medium)
       reasoning: true
       input:
       - text
+      contextWindow: 1000000
+      maxTokens: 32768
+      samplingParams:
+        thinking:
+          type: enabled
+        reasoning_effort: medium
+      compat:
+        supportsReasoningEffort: true
+        thinkingFormat: openai
+        requiresReasoningContentOnAssistantMessages: true
+        maxTokensField: max_tokens
+    - id: agent/scout
+      name: GPT-5.3 Codex Spark scout
+      reasoning: false
+      input:
+      - text
+      contextWindow: 128000
+      maxTokens: 32768
+      compat:
+        maxTokensField: max_tokens
+    - id: agent/document
+      name: Gemini 3.7 Flash document specialist (Medium)
+      reasoning: true
+      input:
+      - text
+      contextWindow: 1048576
+      maxTokens: 32768
+      samplingParams:
+        reasoning_effort: medium
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: agent/designer
+      name: Gemini 3.7 Flash designer (Medium)
+      reasoning: true
+      input:
+      - text
+      - image
       contextWindow: 1048576
       maxTokens: 32768
       samplingParams:
@@ -85,37 +131,6 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         reasoning_effort: high
       compat:
         supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: agent/cheap
-      name: DeepSeek cheap worker (non-thinking)
-      reasoning: false
-      input:
-      - text
-      contextWindow: 1000000
-      maxTokens: 16384
-      samplingParams:
-        thinking:
-          type: disabled
-        reasoning_effort: none
-      compat:
-        supportsReasoningEffort: true
-        thinkingFormat: openai
-        maxTokensField: max_tokens
-    - id: agent/bulk
-      name: DeepSeek bulk worker (High)
-      reasoning: true
-      input:
-      - text
-      contextWindow: 1000000
-      maxTokens: 32768
-      samplingParams:
-        thinking:
-          type: enabled
-        reasoning_effort: high
-      compat:
-        supportsReasoningEffort: true
-        thinkingFormat: openai
-        requiresReasoningContentOnAssistantMessages: true
         maxTokensField: max_tokens
     - id: agent/expert
       name: Sol High expert reviewer
@@ -139,6 +154,69 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       maxTokens: 32768
       samplingParams:
         reasoning_effort: low
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gpt-5.6-luna
+      name: GPT-5.6 Luna identity
+      reasoning: true
+      input:
+      - text
+      contextWindow: 272000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gpt-5.6-sol
+      name: GPT-5.6 Sol identity
+      reasoning: true
+      input:
+      - text
+      contextWindow: 272000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gpt-5.3-codex-spark
+      name: GPT-5.3 Codex Spark identity
+      reasoning: false
+      input:
+      - text
+      contextWindow: 128000
+      maxTokens: 32768
+      compat:
+        maxTokensField: max_tokens
+    - id: model/deepseek-v4-flash-0731
+      name: DeepSeek V4 Flash 0731 identity
+      reasoning: true
+      input:
+      - text
+      contextWindow: 1000000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        thinkingFormat: openai
+        requiresReasoningContentOnAssistantMessages: true
+        maxTokensField: max_tokens
+    - id: model/gemini-3.7-flash
+      name: Gemini 3.7 Flash identity
+      reasoning: true
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gemini-3.5-flash-lite
+      name: Gemini 3.5 Flash-Lite identity
+      reasoning: true
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens"""
