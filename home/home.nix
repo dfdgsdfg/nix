@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   pnpmHome =
-    if pkgs.stdenv.isDarwin then
+    if pkgs.stdenv.hostPlatform.isDarwin then
       "${config.home.homeDirectory}/Library/pnpm"
     else
       "${config.home.homeDirectory}/.local/share/pnpm";
@@ -150,10 +150,14 @@ in
     dev.enable = true;
     network.enable = true;
     ops.enable = true;
-    mobile.enable = pkgs.stdenv.isDarwin;
+    mobile.enable = pkgs.stdenv.hostPlatform.isDarwin;
   };
 
   programs.home-manager.enable = true;
+
+  # Home Manager's manpage generator currently creates options.json with
+  # builtins.derivation and drops the source store context.
+  manual.manpages.enable = false;
 
   programs.git = {
     enable = true;
@@ -374,7 +378,7 @@ in
       COREPACK_HOME = "${config.home.homeDirectory}/.cache/corepack";
       PNPM_HOME = pnpmHome;
     }
-    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
     };
 
@@ -392,7 +396,7 @@ in
       "${pnpmHome}/bin"
       pnpmHome
     ]
-    ++ lib.optionals pkgs.stdenv.isDarwin [
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
       "${config.home.homeDirectory}/Library/Android/sdk/tools"
       "${config.home.homeDirectory}/Library/Android/sdk/tools/bin"
       "${config.home.homeDirectory}/Library/Android/sdk/platform-tools"

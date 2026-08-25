@@ -56,7 +56,7 @@ let
       zellij
       zoxide
     ])
-    ++ lib.optionals (!pkgs.stdenv.isDarwin) (with pkgs; [
+    ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (with pkgs; [
       mole
     ])
     ++ (with unstablePkgs; [
@@ -84,7 +84,7 @@ let
       cloudflared
       mitmproxy
     ])
-    ++ lib.optional (pkgs.stdenv.isDarwin && lib.hasAttr "whalebrew" pkgs) pkgs.whalebrew;
+    ++ lib.optional (pkgs.stdenv.hostPlatform.isDarwin && lib.hasAttr "whalebrew" pkgs) pkgs.whalebrew;
 
   opsPkgs =
     (with pkgs; [
@@ -92,14 +92,14 @@ let
       kompose
       terraform
     ])
-    ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with pkgs; [
       colima
       lima
       mas
     ]);
 
   mobilePkgs =
-    lib.optionals pkgs.stdenv.isDarwin (
+    lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
       with pkgs; [
         ideviceinstaller
         libimobiledevice
