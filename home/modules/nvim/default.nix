@@ -67,6 +67,20 @@ in
         tree-sitter
       ];
     };
+    # Older generations managed lua as one symlink. Remove only that Nix-store
+    # link before Home Manager creates the new per-file directory hierarchy.
+    home.activation.migrateNvimLua = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+      lua_path="$HOME/.config/nvim/lua"
+      if [ -L "$lua_path" ]; then
+        target="$(${pkgs.coreutils}/bin/readlink "$lua_path")"
+        case "$target" in
+          /nix/store/*)
+            run rm "$lua_path"
+            ;;
+        esac
+      fi
+    '';
+
 
     xdg.configFile."nvim/init.lua".text = ''
       require("config.lazy")
