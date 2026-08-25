@@ -11,7 +11,7 @@
     type = "nixos";
     system = "x86_64-linux";
     modules = [
-      ./hosts/nixos/lenovo-ideapadslim3
+      ./hosts/nixos/sg-lenovo
       inputs.nixvim.nixosModules.default
     ];
   };

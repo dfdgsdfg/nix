@@ -85,7 +85,7 @@ run() {
 
 require_path "${repo_root}/flake.nix"
 require_path "${repo_root}/flake.lock"
-require_path "${repo_root}/hosts/nixos/lenovo-ideapadslim3/default.nix"
+require_path "${repo_root}/system/hosts/nixos/sg-lenovo/default.nix"
 
 if [[ "$dry_run" -eq 0 && "${EUID}" -ne 0 ]]; then
   echo "Run as root, for example: sudo scripts/nix_os.sh" >&2

@@ -16,7 +16,7 @@
     homeDirectory = "/home/dididi";
     modules = [
       ./home.nix
-      ./hosts/nixos/lenovo-ideapadslim3
+      ./hosts/nixos/sg-lenovo
     ];
     packageName = "sg-lenovo";
   };
