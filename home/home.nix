@@ -115,13 +115,6 @@ in
       path = "${config.xdg.configHome}/git/config-user-work-us";
       mode = "0600";
     };
-    secrets."fish/credential.fish" = {
-      format = "yaml";
-      sopsFile = homeSecrets;
-      key = "fish/credential";
-      path = "${config.xdg.configHome}/fish/credential.fish";
-      mode = "0600";
-    };
   };
 
   modules.nvim.enable = true;
@@ -239,7 +232,6 @@ in
       end
 
       test -e ~/.iterm2_shell_integration.fish; and source ~/.iterm2_shell_integration.fish
-      test -f ~/.config/fish/credential.fish; and source ~/.config/fish/credential.fish
 
       if status is-interactive
         if type -q navi
@@ -352,6 +344,7 @@ in
         ruby = "latest";
         go = "latest";
         bun = "latest";
+        erlang = "latest";
         zig = "latest";
         uv = "latest";
         fnox = "latest";
