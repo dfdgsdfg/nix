@@ -22,7 +22,7 @@ let
       url = "https://github.com/xtool-org/xtool/releases/download/${version}/xtool-x86_64.AppImage";
       hash = "sha256-dWbWK4KaTerbAbU4nJT0V2PYUfIExdIvo26fnRyI1Xs=";
     };
-    appimageContents = pkgs.appimageTools.extractType2 {
+    appimageContents = pkgs.appimageTools.extract {
       inherit pname version src;
     };
   in pkgs.appimageTools.wrapType2 {

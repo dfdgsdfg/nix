@@ -25,8 +25,6 @@
     claude-code-nix.url = "github:sadjow/claude-code-nix";
     claude-code-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-    codex-cli-nix.url = "github:sadjow/codex-cli-nix";
-    codex-cli-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     herdr.url = "github:ogulcancelik/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-unstable";

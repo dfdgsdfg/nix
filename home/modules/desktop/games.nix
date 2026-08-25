@@ -36,7 +36,7 @@ let
         url = "https://github.com/OpenHV/OpenHV/releases/download/${version}/OpenHV-${version}-x86_64.AppImage";
         hash = "sha256-AbG/HPhlAPYdgz4iBVoDXlbQez3byDuRRG1oSzWSGqM=";
       };
-      appimageContents = pkgs.appimageTools.extractType2 {
+      appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
       };
     in

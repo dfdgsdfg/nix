@@ -8,7 +8,7 @@ in
   options.modules.codex.enable = lib.mkEnableOption "Codex multi-model agent routing";
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ inputs.codex-cli-nix.packages.${pkgs.stdenv.hostPlatform.system}.codex ];
+    home.packages = [ pkgs.codex ];
 
     home.file = {
       ".codex/AGENTS.md" = {
