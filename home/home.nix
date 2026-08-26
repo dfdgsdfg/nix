@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   pnpmHome =
     if pkgs.stdenv.hostPlatform.isDarwin then
@@ -36,7 +41,7 @@ let
     ".DS_Store"
     ".AppleDouble"
     ".LSOverride"
-    "Icon"
+    "Icon\r"
     "._*"
     ".DocumentRevisions-V100"
     ".fseventsd"
@@ -115,6 +120,13 @@ in
       path = "${config.xdg.configHome}/git/config-user-work-us";
       mode = "0600";
     };
+    secrets."fish/credential" = {
+      format = "yaml";
+      sopsFile = homeSecrets;
+      key = "fish/credential";
+      path = "${config.xdg.configHome}/fish/credential.fish";
+      mode = "0600";
+    };
   };
 
   modules.nvim.enable = true;
@@ -159,6 +171,11 @@ in
   # builtins.derivation and drops the source store context.
   manual.manpages.enable = false;
 
+  programs.helix = {
+    enable = true;
+    defaultEditor = true;
+  };
+
   programs.git = {
     enable = true;
     ignores = globalGitIgnores;
@@ -186,6 +203,14 @@ in
       fetch.pruneTags = true;
       pull.rebase = false;
       push.autoSetupRemote = true;
+      "credential \"https://github.com\"".helper = [
+        ""
+        "!${pkgs.gh}/bin/gh auth git-credential"
+      ];
+      "credential \"https://gist.github.com\"".helper = [
+        ""
+        "!${pkgs.gh}/bin/gh auth git-credential"
+      ];
     };
   };
 
@@ -220,7 +245,10 @@ in
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = [ "git" "fzf" ];
+      plugins = [
+        "git"
+        "fzf"
+      ];
     };
   };
 
@@ -236,6 +264,10 @@ in
       end
 
       test -e ~/.iterm2_shell_integration.fish; and source ~/.iterm2_shell_integration.fish
+
+      if test -f "${config.xdg.configHome}/fish/credential.fish"
+        source "${config.xdg.configHome}/fish/credential.fish"
+      end
 
       if status is-interactive
         if type -q navi
@@ -366,22 +398,23 @@ in
 
   home.stateVersion = lib.mkDefault "24.11";
 
-  home.sessionVariables =
-    {
-      LANG = "ko_KR.UTF-8";
-      EDITOR = "nvim";
-      GO111MODULE = "on";
-      CLOUDSDK_PYTHON_SITEPACKAGES = "1";
-      USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
-      NO_PROXY = "localhost,127.0.0.1";
-      NODE_OPTIONS = "--max-old-space-size=8192";
-      COREPACK_HOME = "${config.home.homeDirectory}/.cache/corepack";
-      PNPM_HOME = pnpmHome;
-      SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    }
-    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
-      ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
-    };
+  home.sessionVariables = {
+    LANG = "ko_KR.UTF-8";
+    EDITOR = "hx";
+    VISUAL = "hx";
+    GIT_EDITOR = "hx";
+    GO111MODULE = "on";
+    CLOUDSDK_PYTHON_SITEPACKAGES = "1";
+    USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
+    NO_PROXY = "localhost,127.0.0.1";
+    NODE_OPTIONS = "--max-old-space-size=8192";
+    COREPACK_HOME = "${config.home.homeDirectory}/.cache/corepack";
+    PNPM_HOME = pnpmHome;
+    SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+  }
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+    ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
+  };
 
   home.sessionPath = lib.mkAfter (
     [
@@ -415,7 +448,6 @@ in
     fastlane
     neovim
   '';
-
 
   xdg.configFile."direnv/direnvrc".text = ''
     # Uncomment the following line to make direnv silent by default.

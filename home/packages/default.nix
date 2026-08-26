@@ -1,4 +1,11 @@
-{ config, lib, pkgs, inputs, pkgsUnstable ? null, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  pkgsUnstable ? null,
+  ...
+}:
 let
   cfg = config.modules.packages;
   system = pkgs.stdenv.hostPlatform.system;
@@ -56,9 +63,12 @@ let
       zellij
       zoxide
     ])
-    ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (with pkgs; [
-      mole
-    ])
+    ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (
+      with pkgs;
+      [
+        mole
+      ]
+    )
     ++ (with unstablePkgs; [
       fastfetch
     ]);
@@ -73,7 +83,6 @@ let
     google-cloud-sdk
     gradle
     grex
-    helix
     imagemagick
     lefthook
   ];
@@ -92,22 +101,25 @@ let
       kompose
       terraform
     ])
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with pkgs; [
-      colima
-      lima
-      mas
-    ]);
-
-  mobilePkgs =
-    lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
-      with pkgs; [
-        ideviceinstaller
-        libimobiledevice
-        libimobiledevice-glue
-        libplist
-        libusbmuxd
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
+      with pkgs;
+      [
+        colima
+        lima
+        mas
       ]
     );
+
+  mobilePkgs = lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
+    with pkgs;
+    [
+      ideviceinstaller
+      libimobiledevice
+      libimobiledevice-glue
+      libplist
+      libusbmuxd
+    ]
+  );
 
 in
 {

@@ -13,6 +13,8 @@
 
     nixvim.url = "github:nix-community/nixvim/nixos-26.05";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
+    nix-wrapper-modules.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
 
@@ -25,7 +27,6 @@
     claude-code-nix.url = "github:sadjow/claude-code-nix";
     claude-code-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-
     herdr.url = "github:ogulcancelik/herdr";
     herdr.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
@@ -33,16 +34,17 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    nix-darwin,
-    home-manager,
-    sops-nix,
-    determinate,
-    ...
-  }:
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      nix-darwin,
+      home-manager,
+      sops-nix,
+      determinate,
+      ...
+    }:
     let
       lib = nixpkgs.lib;
       systemTargets = import ./system/targets.nix { inherit inputs; };
@@ -56,7 +58,8 @@
         pkgsUnstable = import nixpkgs-unstable { inherit system; };
       };
 
-      mkDarwin = host:
+      mkDarwin =
+        host:
         nix-darwin.lib.darwinSystem {
           inherit (host) system;
           modules = host.modules ++ [
@@ -69,7 +72,8 @@
           specialArgs = mkSystemSpecialArgs host.system;
         };
 
-      mkNixos = host:
+      mkNixos =
+        host:
         nixpkgs.lib.nixosSystem {
           inherit (host) system;
           modules = host.modules ++ [
@@ -84,20 +88,26 @@
           specialArgs = mkSystemSpecialArgs host.system;
         };
 
-      forAllSystems = f:
-        lib.genAttrs systems (system:
-          f (import nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          }));
+      forAllSystems =
+        f:
+        lib.genAttrs systems (
+          system:
+          f (
+            import nixpkgs-unstable {
+              inherit system;
+              config.allowUnfree = true;
+            }
+          )
+        );
 
-      mkHome = {
-        system,
-        username,
-        homeDirectory,
-        modules ? [ ./home/home.nix ],
-        overlays ? [ ],
-      }:
+      mkHome =
+        {
+          system,
+          username,
+          homeDirectory,
+          modules ? [ ./home/home.nix ],
+          overlays ? [ ],
+        }:
         let
           pkgs = import nixpkgs-unstable {
             inherit system overlays;
@@ -106,7 +116,11 @@
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          modules = [ sops-nix.homeManagerModules.sops ] ++ modules ++ [
+          modules = [
+            sops-nix.homeManagerModules.sops
+          ]
+          ++ modules
+          ++ [
             {
               home.username = username;
               home.homeDirectory = homeDirectory;
@@ -118,7 +132,8 @@
           };
         };
 
-      mkTargetHome = target:
+      mkTargetHome =
+        target:
         let
           platformModules =
             lib.optionals (lib.hasSuffix "-darwin" target.system) [ ./home/platforms/darwin.nix ]
@@ -129,12 +144,12 @@
           modules = platformModules ++ target.modules;
         };
 
-      homeConfigurations =
-        lib.mapAttrs'
-          (name: target: lib.nameValuePair "${target.username}@${name}" (mkTargetHome target))
-          homeTargets;
+      homeConfigurations = lib.mapAttrs' (
+        name: target: lib.nameValuePair "${target.username}@${name}" (mkTargetHome target)
+      ) homeTargets;
 
-      mkActivationPackage = packages: name:
+      mkActivationPackage =
+        packages: name:
         let
           target = homeTargets.${name};
           configName = "${target.username}@${name}";
@@ -147,13 +162,13 @@
         };
     in
     {
-      darwinConfigurations =
-        lib.mapAttrs (_: mkDarwin) (lib.filterAttrs (_: target: target.type == "darwin") systemTargets);
+      darwinConfigurations = lib.mapAttrs (_: mkDarwin) (
+        lib.filterAttrs (_: target: target.type == "darwin") systemTargets
+      );
 
-      nixosConfigurations =
-        lib.mapAttrs
-          (_: mkNixos)
-          (lib.filterAttrs (_: target: target.type == "nixos" || target.type == "wsl") systemTargets);
+      nixosConfigurations = lib.mapAttrs (_: mkNixos) (
+        lib.filterAttrs (_: target: target.type == "nixos" || target.type == "wsl") systemTargets
+      );
 
       inherit homeConfigurations;
 
