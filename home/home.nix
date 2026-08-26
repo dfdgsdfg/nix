@@ -172,7 +172,7 @@ in
   manual.manpages.enable = false;
 
   programs.helix = {
-    enable = true;
+    enable = pkgs.stdenv.hostPlatform.isDarwin;
     defaultEditor = true;
   };
 
