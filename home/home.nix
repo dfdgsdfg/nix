@@ -377,6 +377,7 @@ in
       NODE_OPTIONS = "--max-old-space-size=8192";
       COREPACK_HOME = "${config.home.homeDirectory}/.cache/corepack";
       PNPM_HOME = pnpmHome;
+      SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     }
     // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
