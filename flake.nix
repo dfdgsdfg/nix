@@ -60,6 +60,7 @@
         nix-darwin.lib.darwinSystem {
           inherit (host) system;
           modules = host.modules ++ [
+            determinate.darwinModules.default
             ./system/modules/packages.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;

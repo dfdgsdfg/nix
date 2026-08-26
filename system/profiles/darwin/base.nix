@@ -7,8 +7,11 @@
     config.allowUnfreePredicate = _: true;
   };
 
-  nix.registry.unstable.flake = inputs.nixpkgs-unstable;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  determinateNix = {
+    enable = true;
+    registry.unstable.flake = inputs.nixpkgs-unstable;
+    customSettings.experimental-features = [ "nix-command" "flakes" ];
+  };
 
   users.users.dididi = {
     home = "/Users/dididi";
