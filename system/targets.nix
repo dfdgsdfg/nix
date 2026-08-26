@@ -16,10 +16,7 @@
   sg-lenovo = {
     type = "nixos";
     system = "x86_64-linux";
-    modules = [
-      ./hosts/nixos/sg-lenovo
-      inputs.nixvim.nixosModules.default
-    ];
+    modules = [ ./hosts/nixos/sg-lenovo ];
   };
 
   sg-asus = {

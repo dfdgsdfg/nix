@@ -11,8 +11,6 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixvim.url = "github:nix-community/nixvim/nixos-26.05";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
     nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
     nix-wrapper-modules.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
@@ -81,6 +79,7 @@
             sops-nix.nixosModules.sops
             ./system/modules/packages.nix
             ./system/modules/runtime.nix
+            ./system/modules/nvim.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }

@@ -1,8 +1,14 @@
-{ config, inputs, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cloudflareSecrets = ../../../../secrets/cloudflare.yaml;
-in {
+in
+{
   imports = [
     ../../../profiles/nixos/desktop.nix
     ./hardware-configuration.nix
@@ -20,7 +26,10 @@ in {
     3389 # GNOME Remote Desktop (RDP)
     53317
   ];
-  networking.firewall.allowedUDPPorts = [ 53317 5353 ];
+  networking.firewall.allowedUDPPorts = [
+    53317
+    5353
+  ];
 
   time.timeZone = "Asia/Seoul";
 
@@ -65,7 +74,10 @@ in {
     wantedBy = [ "multi-user.target" ];
     wants = [ "network-online.target" ];
     requires = [ "sops-install-secrets.service" ];
-    after = [ "network-online.target" "sops-install-secrets.service" ];
+    after = [
+      "network-online.target"
+      "sops-install-secrets.service"
+    ];
     serviceConfig = {
       DynamicUser = true;
       LoadCredential = "tunnel-token:${config.sops.secrets.cloudflare-tunnel-token.path}";
@@ -79,7 +91,6 @@ in {
   # Keep the laptop available as a server while connected to AC power.
   # The battery lid-close policy remains at its default (suspend).
   services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
-
 
   services.keyd = {
     enable = true;
@@ -111,25 +122,19 @@ in {
     openFirewall = true;
   };
 
-
   users.users.dididi = {
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     shell = pkgs.fish;
   };
   modules.systemPackages.workstation.enable = true;
+  modules.nvim.enable = true;
   modules.runtime = {
     games.enable = true;
     nixLd.enable = true;
   };
 
   nixpkgs.config.allowUnfree = true;
-
-  programs.nixvim = {
-    enable = true;
-    nixpkgs.source = inputs.nixpkgs;
-    colorschemes.catppuccin.enable = true;
-    plugins.lualine.enable = true;
-    clipboard.providers.wl-copy.enable = true;
-  };
-
 }

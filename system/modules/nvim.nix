@@ -7,15 +7,15 @@
 }:
 let
   cfg = config.modules.nvim;
-  nvim = import ../../../modules/nvim/package.nix {
+  nvim = import ../../modules/nvim/package.nix {
     inherit inputs pkgs;
-    includeFlutter = true;
+    includeFlutter = false;
   };
 in
 {
   options.modules.nvim.enable = lib.mkEnableOption "Nix-wrapped LazyVim configuration";
 
   config = lib.mkIf cfg.enable {
-    home.packages = nvim.runtimePackages ++ [ nvim.package ];
+    environment.systemPackages = nvim.runtimePackages ++ [ nvim.package ];
   };
 }
