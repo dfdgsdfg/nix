@@ -17,6 +17,7 @@ let
       ''
     else
       "";
+  lazyPath = "${pkgs.vimPlugins.lazy-nvim}";
   configDirectory = pkgs.runCommand "lazyvim-config" { } ''
     mkdir -p "$out/lua/config"
     cat > "$out/init.lua" <<'EOF'
@@ -29,6 +30,7 @@ let
     vim.env.PATH = vim.env.HOME .. "/.local/share/mise/shims:" .. vim.env.PATH
     EOF
     cat > "$out/lua/config/lazy.lua" <<'EOF'
+    vim.opt.rtp:prepend("${lazyPath}")
     require("lazy").setup({
       spec = {
         {
