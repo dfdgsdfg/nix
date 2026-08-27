@@ -31,13 +31,19 @@ let
     EOF
     cat > "$out/lua/config/lazy.lua" <<'EOF'
     vim.opt.rtp:prepend("${lazyPath}")
+    local plugin_tasks = require("lazy.manage.task.plugin")
+    local skip_docs = plugin_tasks.docs.skip
+    plugin_tasks.docs.skip = function(plugin)
+      return vim.startswith(plugin.dir, "/nix/store/") or skip_docs(plugin)
+    end
+
     require("lazy").setup({
       spec = {
         {
           dir = "${pkgs.vimPlugins.LazyVim}",
           name = "LazyVim",
-          import = "lazyvim.plugins",
         },
+        { import = "lazyvim.plugins" },
         { import = "lazyvim.plugins.extras.editor.telescope" },
         { import = "lazyvim.plugins.extras.lang.typescript" },
         { import = "lazyvim.plugins.extras.util.project" },
@@ -98,9 +104,11 @@ in
   package = wrapper.config.wrap { inherit pkgs; };
   runtimePackages = with pkgs; [
     fd
+    cmake
     gcc
     lua5_1
     lua51Packages.luarocks
+    gnumake
     lazygit
     lua-language-server
     nil
