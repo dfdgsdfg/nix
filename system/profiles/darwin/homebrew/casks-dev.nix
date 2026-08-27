@@ -4,6 +4,7 @@
     "bit-slicer"
     "hex-fiend"
     "knuff"
+    "orca"
     "orbstack"
     "pusher"
     "visual-studio-code"

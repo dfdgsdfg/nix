@@ -9,6 +9,8 @@
     "keyboard-cleaner"
     "notion"
     "obsidian"
+    "tailscale"
+    "telegram"
     "vlc"
     "vysor"
     "zoom"
