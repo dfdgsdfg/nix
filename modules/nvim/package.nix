@@ -107,6 +107,7 @@ in
     cmake
     gcc
     lua5_1
+    wl-clipboard
     lua51Packages.luarocks
     gnumake
     lazygit
