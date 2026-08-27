@@ -47,6 +47,9 @@ let
         lazy = false,
         version = false,
       },
+      rocks = {
+        hererocks = false,
+      },
       checker = { enabled = false },
       performance = {
         rtp = {
@@ -95,6 +98,9 @@ in
   package = wrapper.config.wrap { inherit pkgs; };
   runtimePackages = with pkgs; [
     fd
+    gcc
+    lua5_1
+    lua51Packages.luarocks
     lazygit
     lua-language-server
     nil
