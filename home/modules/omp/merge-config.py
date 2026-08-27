@@ -286,7 +286,7 @@ def resolve_api_key(existing_text: str, provider: str = "omniroute") -> str:
     del existing_text, provider
     command = os.environ.get(
         "OMP_API_KEY_COMMAND",
-        '!security find-generic-password -a "$USER" -s "omniroute-us-mbp-omp-deepseek" -w',
+        '!security find-generic-password -a "$USER" -s "omniroute-us-mbp-omp" -w',
     )
     return json.dumps(command)
 
