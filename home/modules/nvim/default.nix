@@ -7,7 +7,7 @@
 }:
 let
   cfg = config.modules.nvim;
-  nvim = import ../../../modules/nvim/package.nix {
+  nvim = import ./package.nix {
     inherit inputs pkgs;
     includeFlutter = true;
   };
