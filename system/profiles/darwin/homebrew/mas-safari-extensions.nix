@@ -7,5 +7,6 @@
     UnTrap = 1637438059;
     Unicorn = 1231935892;
     Userscripts = 1463298887;
+    "Turn Off the Lights for Safari" = 1273998507;
   };
 }
