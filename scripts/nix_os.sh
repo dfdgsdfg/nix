@@ -85,7 +85,10 @@ run() {
 
 require_path "${repo_root}/flake.nix"
 require_path "${repo_root}/flake.lock"
-require_path "${repo_root}/system/hosts/nixos/sg-lenovo/default.nix"
+require_path "${repo_root}/system"
+require_path "${repo_root}/home"
+require_path "${repo_root}/modules"
+require_path "${repo_root}/secrets"
 
 if [[ "$dry_run" -eq 0 && "${EUID}" -ne 0 ]]; then
   echo "Run as root, for example: sudo scripts/nix_os.sh" >&2
@@ -99,11 +102,10 @@ if [[ -e "$target" && ! -e "${target}/${marker}" ]]; then
 fi
 
 run install -d -- "$target"
-run rm -rf -- "${target}/system" "${target}/home" "${target}/hosts" \
-  "${target}/modules" "${target}/packages" "${target}/secrets"
+run rm -rf -- "${target}/system" "${target}/home" "${target}/modules" "${target}/secrets"
 run cp -a -- "${repo_root}/flake.nix" "${repo_root}/flake.lock" "${target}/"
-run cp -a -- "${repo_root}/system" "${repo_root}/home" "${repo_root}/hosts" \
-  "${repo_root}/modules" "${repo_root}/packages" "${repo_root}/secrets" "${target}/"
+run cp -a -- "${repo_root}/system" "${repo_root}/home" "${repo_root}/modules" \
+  "${repo_root}/secrets" "${target}/"
 run touch -- "${target}/${marker}"
 
 flake_ref="path:${target}#${host}"

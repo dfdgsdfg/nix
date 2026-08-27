@@ -99,15 +99,11 @@ let
         );
     }
   );
-in
-{
-  package = wrapper.config.wrap { inherit pkgs; };
-  runtimePackages = with pkgs; [
+  commonRuntimePackages = with pkgs; [
     fd
     cmake
     gcc
     lua5_1
-    wl-clipboard
     lua51Packages.luarocks
     gnumake
     lazygit
@@ -117,4 +113,16 @@ in
     stylua
     tree-sitter
   ];
+  linuxRuntimePackages = with pkgs; [
+    wl-clipboard
+  ];
+  # Neovim uses the macOS-provided pbcopy and pbpaste commands.
+  darwinRuntimePackages = [ ];
+in
+{
+  package = wrapper.config.wrap { inherit pkgs; };
+  runtimePackages =
+    commonRuntimePackages
+    ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux linuxRuntimePackages
+    ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin darwinRuntimePackages;
 }
