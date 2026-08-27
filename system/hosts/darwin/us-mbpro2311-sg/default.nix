@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 
 {
   imports = [
@@ -6,4 +6,5 @@
     ./ssh.nix
   ];
   networking.hostName = "us-mbpro2311-sg";
+  homebrew.enable = lib.mkForce false;
 }
