@@ -388,6 +388,15 @@ in
     };
   };
 
+  # Keep the legacy asdf path working for tools and editor integrations that
+  # still look for mise-managed runtimes under ~/.asdf.
+  home.file.".asdf" = {
+    source = config.lib.file.mkOutOfStoreSymlink (
+      "${config.home.homeDirectory}/.local/share/mise"
+    );
+    force = true;
+  };
+
   programs.direnv = {
     enable = true;
     enableBashIntegration = true;

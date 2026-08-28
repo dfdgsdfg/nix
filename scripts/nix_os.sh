@@ -87,7 +87,6 @@ require_path "${repo_root}/flake.nix"
 require_path "${repo_root}/flake.lock"
 require_path "${repo_root}/system"
 require_path "${repo_root}/home"
-require_path "${repo_root}/modules"
 require_path "${repo_root}/secrets"
 
 if [[ "$dry_run" -eq 0 && "${EUID}" -ne 0 ]]; then
@@ -102,9 +101,9 @@ if [[ -e "$target" && ! -e "${target}/${marker}" ]]; then
 fi
 
 run install -d -- "$target"
-run rm -rf -- "${target}/system" "${target}/home" "${target}/modules" "${target}/secrets"
+run rm -rf -- "${target}/system" "${target}/home" "${target}/secrets"
 run cp -a -- "${repo_root}/flake.nix" "${repo_root}/flake.lock" "${target}/"
-run cp -a -- "${repo_root}/system" "${repo_root}/home" "${repo_root}/modules" \
+run cp -a -- "${repo_root}/system" "${repo_root}/home" \
   "${repo_root}/secrets" "${target}/"
 run touch -- "${target}/${marker}"
 
