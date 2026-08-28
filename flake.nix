@@ -62,7 +62,6 @@
           inherit (host) system;
           modules = host.modules ++ [
             determinate.darwinModules.default
-            ./system/modules/packages.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
@@ -77,7 +76,6 @@
           modules = host.modules ++ [
             determinate.nixosModules.default
             sops-nix.nixosModules.sops
-            ./system/modules/packages.nix
             ./system/modules/runtime.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;

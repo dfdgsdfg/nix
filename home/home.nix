@@ -172,7 +172,7 @@ in
   manual.manpages.enable = false;
 
   programs.helix = {
-    enable = pkgs.stdenv.hostPlatform.isDarwin;
+    enable = true;
     defaultEditor = true;
   };
 
@@ -254,6 +254,12 @@ in
 
   programs.fish = {
     enable = true;
+    plugins = [
+      {
+        name = "grc";
+        src = pkgs.fishPlugins.grc.src;
+      }
+    ];
     shellAliases = fishShellAliases;
     shellInit = ''
       set -gx fisher_home ~/.local/share/fisherman

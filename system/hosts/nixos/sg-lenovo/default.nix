@@ -129,7 +129,6 @@ in
     ];
     shell = pkgs.fish;
   };
-  modules.systemPackages.workstation.enable = true;
   modules.runtime = {
     games.enable = true;
     nixLd.enable = true;

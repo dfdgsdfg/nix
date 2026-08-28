@@ -8,7 +8,6 @@
   wsl.enable = true;
   wsl.defaultUser = "dididi";
   wsl.startMenuLaunchers = false;
-  modules.systemPackages.core.enable = true;
 
   users.users.dididi.shell = pkgs.zsh;
   programs.zsh.enable = true;

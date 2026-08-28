@@ -24,6 +24,7 @@ let
       atuin
       bat
       bottom
+      curl
       delta
       dust
       fd
@@ -31,6 +32,7 @@ let
       fx
       fzf
       gawk
+      grc
       gh
       git
       git-lfs
@@ -61,6 +63,7 @@ let
       wget
       xh
       yq
+      yazi
       zellij
       zoxide
     ])

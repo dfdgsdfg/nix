@@ -25,7 +25,6 @@
     shell = pkgs.zsh;
   };
 
-  modules.systemPackages.core.enable = true;
 
   fonts.packages = [
     pkgs.nerd-fonts.meslo-lg
