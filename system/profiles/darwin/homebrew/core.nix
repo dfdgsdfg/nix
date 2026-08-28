@@ -6,9 +6,6 @@
       autoUpdate = true;
       upgrade = true;
     };
-    taps = [
-      "homebrew/bundle"
-    ];
     brews = [
       "mas"
       "mole"

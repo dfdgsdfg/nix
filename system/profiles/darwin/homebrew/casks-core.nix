@@ -2,7 +2,7 @@
   homebrew.casks = [
     "cmux"
     "ghostty"
-    "gitup"
+    "gitup-app"
     "localsend"
     "rustdesk"
     "zed"
