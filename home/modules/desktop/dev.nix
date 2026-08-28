@@ -89,27 +89,6 @@ in
     fish_add_path "${androidSdkRoot}/cmdline-tools/latest/bin"
   '';
 
-  programs.mise = {
-    enable = true;
-    enableFishIntegration = true;
-    globalConfig = {
-      settings.all_compile = false;
-      tools = {
-        node = "lts";
-        pnpm = "latest";
-        python = "miniconda3-latest";
-        deno = "latest";
-        java = "temurin-25";
-        ruby = "latest";
-        go = "latest";
-        bun = "latest";
-        zig = "latest";
-        uv = "latest";
-        fnox = "latest";
-      };
-    };
-  };
-
   programs.direnv = {
     enable = true;
     enableFishIntegration = true;

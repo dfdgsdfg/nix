@@ -383,7 +383,6 @@ in
         erlang = "latest";
         zig = "latest";
         uv = "latest";
-        fnox = "latest";
       };
     };
   };

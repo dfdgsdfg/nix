@@ -27,6 +27,7 @@ let
       delta
       dust
       fd
+      fnox
       fx
       fzf
       gawk
