@@ -76,6 +76,7 @@ in
    telegram-desktop
    zed-editor
    bitwarden-desktop
+   obsidian
    zoom-us
    rustdesk
    localsend
