@@ -18,114 +18,15 @@ let
         config.allowUnfree = true;
       };
 
-  corePkgs =
-    (with pkgs; [
-      age
-      atuin
-      bat
-      bottom
-      curl
-      delta
-      dust
-      fd
-      fnox
-      fx
-      fzf
-      gawk
-      grc
-      gh
-      git
-      git-lfs
-      gitui
-      glow
-      gnupg
-      inputs.herdr.packages.${system}.herdr
-      jq
-      lazygit
-      lsd
-      mise
-      minisign
-      mosh
-      navi
-      nushell
-      pipx
-      pinentry-curses
-      procs
-      ripgrep
-      sd
-      skim
-      sqlite
-      sops
-      tmux
-      tree-sitter
-      trash-cli
-      unzip
-      wget
-      xh
-      yq
-      yazi
-      zellij
-      zoxide
-    ])
-    ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (
-      with pkgs;
-      [
-        mole
-      ]
-    )
-    ++ (with unstablePkgs; [
-      fastfetch
-    ]);
-
-  devPkgs = with pkgs; [
-    b3sum
-    bfg-repo-cleaner
-    bitwarden-cli
-    ccache
-    cmake
-    chezmoi
-    d2
-    google-cloud-sdk
-    gradle
-    grex
-    imagemagick
-    lefthook
-  ];
-
-  networkPkgs =
-    (with pkgs; [
-      bandwhich
-      cloudflared
-      mitmproxy
-    ])
-    ++ lib.optional (pkgs.stdenv.hostPlatform.isDarwin && lib.hasAttr "whalebrew" pkgs) pkgs.whalebrew;
-
-  opsPkgs =
-    (with pkgs; [
-      kubernetes-helm
-      kompose
-      terraform
-    ])
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
-      with pkgs;
-      [
-        colima
-        lima
-        mas
-      ]
-    );
-
-  mobilePkgs = lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
-    with pkgs;
-    [
-      ideviceinstaller
-      libimobiledevice
-      libimobiledevice-glue
-      libplist
-      libusbmuxd
-    ]
-  );
-
+  packageGroups = {
+    core = import ./core.nix {
+      inherit inputs lib pkgs system unstablePkgs;
+    };
+    dev = import ./dev.nix { inherit pkgs; };
+    network = import ./network.nix { inherit lib pkgs; };
+    ops = import ./ops.nix { inherit lib pkgs; };
+    mobile = import ./mobile.nix { inherit lib pkgs; };
+  };
 in
 {
   options.modules.packages = {
@@ -138,11 +39,11 @@ in
 
   config.home.packages = lib.unique (
     lib.concatLists [
-      (lib.optionals cfg.core.enable corePkgs)
-      (lib.optionals cfg.dev.enable devPkgs)
-      (lib.optionals cfg.network.enable networkPkgs)
-      (lib.optionals cfg.ops.enable opsPkgs)
-      (lib.optionals cfg.mobile.enable mobilePkgs)
+      (lib.optionals cfg.core.enable packageGroups.core)
+      (lib.optionals cfg.dev.enable packageGroups.dev)
+      (lib.optionals cfg.network.enable packageGroups.network)
+      (lib.optionals cfg.ops.enable packageGroups.ops)
+      (lib.optionals cfg.mobile.enable packageGroups.mobile)
     ]
   );
 }

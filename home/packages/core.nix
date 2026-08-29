@@ -1,0 +1,65 @@
+{
+  inputs,
+  lib,
+  pkgs,
+  system,
+  unstablePkgs,
+}:
+
+(with pkgs; [
+  age
+  atuin
+  bat
+  bottom
+  curl
+  delta
+  dust
+  fd
+  fnox
+  fx
+  fzf
+  gawk
+  grc
+  gh
+  git
+  git-lfs
+  gitui
+  glow
+  gnupg
+  inputs.herdr.packages.${system}.herdr
+  jq
+  lazygit
+  lsd
+  mise
+  minisign
+  mosh
+  navi
+  nushell
+  pipx
+  pinentry-curses
+  procs
+  ripgrep
+  sd
+  skim
+  sqlite
+  sops
+  tmux
+  tree-sitter
+  trash-cli
+  unzip
+  wget
+  xh
+  yq
+  yazi
+  zellij
+  zoxide
+])
+++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (
+  with pkgs;
+  [
+    mole
+  ]
+)
+++ (with unstablePkgs; [
+  fastfetch
+])
