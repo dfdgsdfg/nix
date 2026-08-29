@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, ... }:
 {
   imports = [
     ./headless.nix
@@ -9,8 +9,6 @@
   wsl.defaultUser = "dididi";
   wsl.startMenuLaunchers = false;
 
-  users.users.dididi.shell = pkgs.zsh;
-  programs.zsh.enable = true;
   services.tailscale.enable = false;
   systemd.services.cloudflared.enable = false;
 }

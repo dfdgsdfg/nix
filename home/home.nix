@@ -11,6 +11,13 @@ let
     else
       "${config.home.homeDirectory}/.local/share/pnpm";
 
+  ccacheWrappers = pkgs.runCommand "ccache-wrappers" { } ''
+    mkdir -p "$out/bin"
+    for compiler in cc c++ gcc g++ clang clang++; do
+      ln -s ${lib.getExe pkgs.ccache} "$out/bin/$compiler"
+    done
+  '';
+
   homeSecrets = ../secrets/home.yaml;
 
   commonShellAliases = {
@@ -222,26 +229,6 @@ in
   programs.zsh = {
     enable = true;
     shellAliases = commonShellAliases;
-    envExtra = ''
-      if [ -f "$HOME/.cargo/env" ]; then
-        . "$HOME/.cargo/env"
-      fi
-      if [ -x /opt/homebrew/bin/brew ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-      elif [ -x /usr/local/bin/brew ]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-      fi
-      if command -v mise >/dev/null 2>&1; then
-        eval "$(mise activate zsh --shims)"
-      fi
-      if command -v ccache >/dev/null 2>&1; then
-        export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
-        export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
-        export CCACHE_FILECLONE="true"
-        export CCACHE_DEPEND="true"
-        export CCACHE_INODECACHE="true"
-      fi
-    '';
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
@@ -265,27 +252,10 @@ in
       set -gx fisher_home ~/.local/share/fisherman
       set -gx fisher_config ~/.config/fisherman
 
-      if test -f "$HOME/.cargo/env.fish"
-        source "$HOME/.cargo/env.fish"
-      end
-
       test -e ~/.iterm2_shell_integration.fish; and source ~/.iterm2_shell_integration.fish
 
       if test -f "${config.xdg.configHome}/fish/credential.fish"
         source "${config.xdg.configHome}/fish/credential.fish"
-      end
-
-      if status is-interactive
-        if type -q navi
-          navi widget fish | source
-        end
-      end
-
-      if type -q ccache
-        set -gx CCACHE_SLOPPINESS clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros
-        set -gx CCACHE_FILECLONE true
-        set -gx CCACHE_DEPEND true
-        set -gx CCACHE_INODECACHE true
       end
     '';
   };
@@ -293,54 +263,6 @@ in
   programs.bash = {
     enable = true;
     shellAliases = commonShellAliases;
-    profileExtra = ''
-      if [ -n "''${_NIX_BASH_ENV_LOADED:-}" ]; then
-        return 0
-      fi
-      export _NIX_BASH_ENV_LOADED=1
-      if [ -f "$HOME/.cargo/env" ]; then
-        . "$HOME/.cargo/env"
-      fi
-      if [ -x /opt/homebrew/bin/brew ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-      elif [ -x /usr/local/bin/brew ]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-      fi
-      if command -v mise >/dev/null 2>&1; then
-        eval "$(mise activate bash --shims)"
-      fi
-      if command -v ccache >/dev/null 2>&1; then
-        export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
-        export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
-        export CCACHE_FILECLONE="true"
-        export CCACHE_DEPEND="true"
-        export CCACHE_INODECACHE="true"
-      fi
-    '';
-    initExtra = ''
-      if [ -n "''${_NIX_BASH_ENV_LOADED:-}" ]; then
-        return 0
-      fi
-      export _NIX_BASH_ENV_LOADED=1
-      if [ -f "$HOME/.cargo/env" ]; then
-        . "$HOME/.cargo/env"
-      fi
-      if [ -x /opt/homebrew/bin/brew ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-      elif [ -x /usr/local/bin/brew ]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-      fi
-      if command -v mise >/dev/null 2>&1; then
-        eval "$(mise activate bash --shims)"
-      fi
-      if command -v ccache >/dev/null 2>&1; then
-        export PATH="/opt/homebrew/opt/ccache/libexec:$PATH"
-        export CCACHE_SLOPPINESS="clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros"
-        export CCACHE_FILECLONE="true"
-        export CCACHE_DEPEND="true"
-        export CCACHE_INODECACHE="true"
-      fi
-    '';
   };
   programs.starship = {
     enable = true;
@@ -425,6 +347,10 @@ in
     COREPACK_HOME = "${config.home.homeDirectory}/.cache/corepack";
     PNPM_HOME = pnpmHome;
     SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    CCACHE_SLOPPINESS = "clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros";
+    CCACHE_FILECLONE = "true";
+    CCACHE_DEPEND = "true";
+    CCACHE_INODECACHE = "true";
   }
   // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
     ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
@@ -434,6 +360,9 @@ in
     [
       "${config.home.homeDirectory}/bin"
       "${config.home.homeDirectory}/.local/bin"
+      "${config.home.homeDirectory}/.local/share/mise/shims"
+      "${config.home.homeDirectory}/.cargo/bin"
+      "${ccacheWrappers}/bin"
       "${config.home.homeDirectory}/.pub-cache/bin"
       "${config.home.homeDirectory}/opt/bin"
       "${config.home.homeDirectory}/opt/bin/depot_tools"

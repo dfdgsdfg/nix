@@ -81,6 +81,7 @@ let
     b3sum
     bfg-repo-cleaner
     bitwarden-cli
+    ccache
     cmake
     chezmoi
     d2

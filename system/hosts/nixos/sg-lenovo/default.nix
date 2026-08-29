@@ -127,7 +127,6 @@ in
       "networkmanager"
       "wheel"
     ];
-    shell = pkgs.fish;
   };
   modules.runtime = {
     games.enable = true;
