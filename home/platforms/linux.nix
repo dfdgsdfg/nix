@@ -1,5 +1,8 @@
 { lib, pkgs, ... }:
 
+let
+  upstreamBinaries = import ../packages/upstream-binaries.nix { inherit lib pkgs; };
+in
 {
   home.packages = with pkgs; [
     aria2
@@ -18,7 +21,7 @@
     macchina
     mtr
     nmap
-    opencode
+    upstreamBinaries.opencode
     p7zip
     pciutils
     socat

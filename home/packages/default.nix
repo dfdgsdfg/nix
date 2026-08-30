@@ -17,14 +17,15 @@ let
         inherit system;
         config.allowUnfree = true;
       };
+  upstreamBinaries = import ./upstream-binaries.nix { inherit lib pkgs; };
 
   packageGroups = {
     core = import ./core.nix {
-      inherit inputs lib pkgs system unstablePkgs;
+      inherit lib pkgs unstablePkgs upstreamBinaries;
     };
     dev = import ./dev.nix { inherit pkgs; };
     network = import ./network.nix { inherit lib pkgs; };
-    ops = import ./ops.nix { inherit lib pkgs; };
+    ops = import ./ops.nix { inherit lib pkgs upstreamBinaries; };
     mobile = import ./mobile.nix { inherit lib pkgs; };
   };
 in

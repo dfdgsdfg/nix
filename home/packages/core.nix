@@ -1,9 +1,8 @@
 {
-  inputs,
   lib,
   pkgs,
-  system,
   unstablePkgs,
+  upstreamBinaries,
 }:
 
 (with pkgs; [
@@ -26,7 +25,7 @@
   gitui
   glow
   gnupg
-  inputs.herdr.packages.${system}.herdr
+  upstreamBinaries.herdr
   jq
   lazygit
   lsd

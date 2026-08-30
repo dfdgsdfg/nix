@@ -1,14 +1,15 @@
-{ config, inputs, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   cfg = config.modules.codex;
   codexHome = "${config.home.homeDirectory}/.codex";
+  upstreamBinaries = import ../../packages/upstream-binaries.nix { inherit lib pkgs; };
 in
 {
   options.modules.codex.enable = lib.mkEnableOption "Codex multi-model agent routing";
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.codex ];
+    home.packages = [ upstreamBinaries.codex ];
 
     home.file = {
       ".codex/AGENTS.md" = {

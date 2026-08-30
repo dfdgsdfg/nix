@@ -1,6 +1,8 @@
 { config, inputs, lib, pkgs, ... }:
 
 let
+  upstreamBinaries = import ../../packages/upstream-binaries.nix { inherit lib pkgs; };
+  localSend = upstreamBinaries.localsend;
   localSendPort = 53317;
   setLocalSendPort = pkgs.writeShellScript "set-localsend-port" ''
     prefs="''${XDG_DATA_HOME:-$HOME/.local/share}/org.localsend.localsend_app/shared_preferences.json"
@@ -18,11 +20,44 @@ let
   '';
   localSendWithPort = pkgs.writeShellScriptBin "localsend-fixed-port" ''
     ${setLocalSendPort}
-    exec ${pkgs.localsend}/bin/localsend_app "$@"
+    exec ${localSend}/bin/localsend "$@"
   '';
   zenPackages = import inputs.zen-browser {
     inherit pkgs;
   };
+  rustdesk =
+    let
+      pname = "rustdesk";
+      version = "1.4.9";
+      src = pkgs.fetchurl {
+        url = "https://github.com/rustdesk/rustdesk/releases/download/${version}/rustdesk-${version}-x86_64.AppImage";
+        hash = "sha256-eQLNYKTymBfuviZooVyaGVKsaQ6Pewe/52IP7dTighc=";
+      };
+      appimageContents = pkgs.appimageTools.extract {
+        inherit pname version src;
+      };
+    in
+    pkgs.appimageTools.wrapType2 {
+      inherit pname version src;
+
+      extraInstallCommands = ''
+        install -Dm444 ${appimageContents}/rustdesk.desktop \
+          $out/share/applications/rustdesk.desktop
+        substituteInPlace $out/share/applications/rustdesk.desktop \
+          --replace-fail 'Exec=usr/share/rustdesk/rustdesk' \
+          "Exec=$out/bin/rustdesk"
+        cp -R ${appimageContents}/usr/share/icons $out/share/
+      '';
+
+      meta = {
+        description = "Open source remote desktop client";
+        homepage = "https://rustdesk.com/";
+        license = lib.licenses.agpl3Only;
+        mainProgram = "rustdesk";
+        platforms = [ "x86_64-linux" ];
+        sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+      };
+    };
   orca =
     let
       pname = "orca";
@@ -74,12 +109,12 @@ in
    discord-ptb
    slack
    telegram-desktop
-   zed-editor
+   upstreamBinaries.zed
    bitwarden-desktop
    obsidian
    zoom-us
    rustdesk
-   localsend
+   localSend
    localSendWithPort
    orca
   ];

@@ -1,9 +1,9 @@
-{ lib, pkgs }:
+{ lib, pkgs, upstreamBinaries }:
 
 (with pkgs; [
   kubernetes-helm
   kompose
-  terraform
+  upstreamBinaries.terraform
 ])
 ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
   with pkgs;
