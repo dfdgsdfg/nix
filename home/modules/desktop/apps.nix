@@ -47,6 +47,8 @@ let
           --replace-fail 'Exec=usr/share/rustdesk/rustdesk' \
           "Exec=$out/bin/rustdesk"
         cp -R ${appimageContents}/usr/share/icons $out/share/
+        chmod u+w $out/share/icons/hicolor
+        rm -f $out/share/icons/hicolor/icon-theme.cache
       '';
 
       meta = {
@@ -80,6 +82,8 @@ let
         substituteInPlace $out/share/applications/orca-ide.desktop \
           --replace-fail 'Exec=AppRun' "Exec=$out/bin/orca-ui"
         cp -R ${appimageContents}/usr/share/icons $out/share/
+        chmod u+w $out/share/icons/hicolor
+        rm -f $out/share/icons/hicolor/icon-theme.cache
         makeWrapper $out/bin/orca $out/bin/orca-ui \
           --add-flags '--ozone-platform=x11' \
           --add-flags '--force-prefers-reduced-motion'

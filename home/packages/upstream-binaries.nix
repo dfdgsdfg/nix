@@ -187,6 +187,8 @@ let
         substituteInPlace $out/share/applications/org.localsend.localsend_app.desktop \
           --replace-fail 'Exec=localsend_app' "Exec=$out/bin/localsend"
         cp -R ${appimageContents}/usr/share/icons $out/share/
+        chmod u+w $out/share/icons/hicolor
+        rm -f $out/share/icons/hicolor/icon-theme.cache
       '';
 
       meta = {

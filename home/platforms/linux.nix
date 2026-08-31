@@ -32,5 +32,16 @@ in
     zip
   ];
 
+  # buildEnv merges application icons from many packages, but an individual
+  # package's cache can win the icon-theme.cache collision. Rebuild the cache
+  # after the complete Home Manager profile has been assembled.
+  home.extraProfileCommands = ''
+    iconThemeDir="$out/share/icons/hicolor"
+    if [ -d "$iconThemeDir" ]; then
+      rm -f "$iconThemeDir/icon-theme.cache"
+      ${pkgs.gtk3}/bin/gtk-update-icon-cache --force "$iconThemeDir"
+    fi
+  '';
+
   modules.omp.apiKeyCommand = lib.mkDefault "!secret-tool lookup service omniroute client $HOSTNAME-omp";
 }
