@@ -44,11 +44,10 @@
   sops
   tmux
   tree-sitter
-  trash-cli
   unzip
   wget
   xh
-  yq
+  yq-go
   yazi
   zellij
   zoxide
@@ -57,6 +56,7 @@
   with pkgs;
   [
     mole
+    trash-cli
   ]
 )
 ++ (with unstablePkgs; [
