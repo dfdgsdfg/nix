@@ -1,17 +1,19 @@
-{ pkgs }:
+{ lib, pkgs }:
 
-with pkgs;
-[
+(with pkgs; [
   b3sum
-  bfg-repo-cleaner
-  bitwarden-cli
   ccache
   cmake
   chezmoi
   d2
-  google-cloud-sdk
-  gradle
   grex
-  imagemagick
   lefthook
-]
+])
+++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (
+  with pkgs;
+  [
+    bfg-repo-cleaner
+    google-cloud-sdk
+    imagemagick
+  ]
+)

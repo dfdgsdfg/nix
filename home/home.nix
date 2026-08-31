@@ -89,7 +89,6 @@ in
     ./modules/pi
     ./modules/nvim
     ./modules/ssh
-    ./packages
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -162,14 +161,6 @@ in
         VisualHostKey = false;
       };
     };
-  };
-
-  modules.packages = {
-    core.enable = true;
-    dev.enable = true;
-    network.enable = true;
-    ops.enable = true;
-    mobile.enable = pkgs.stdenv.hostPlatform.isDarwin;
   };
 
   programs.home-manager.enable = true;

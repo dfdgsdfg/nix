@@ -1,9 +1,5 @@
 { inputs, pkgs, ... }:
 {
-  imports = [
-    ./homebrew
-  ];
-
   system.primaryUser = "dididi";
 
   nixpkgs = {

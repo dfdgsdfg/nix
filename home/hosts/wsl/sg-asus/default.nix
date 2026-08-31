@@ -1,9 +1,15 @@
-{ lib, ... }:
+{ ... }:
 
 {
-  imports = [ ./ssh.nix ];
+  imports = [
+    ../../../packages
+    ./ssh.nix
+  ];
 
   modules.packages = {
-    mobile.enable = lib.mkForce false;
+    core.enable = true;
+    dev.enable = true;
+    network.enable = true;
+    ops.enable = true;
   };
 }

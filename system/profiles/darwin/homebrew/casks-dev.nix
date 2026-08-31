@@ -2,6 +2,7 @@
   homebrew.casks = [
     "android-studio"
     "bit-slicer"
+    "gcloud-cli"
     "hex-fiend"
     "knuff"
     "orca"

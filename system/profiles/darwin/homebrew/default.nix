@@ -1,6 +1,7 @@
 {
   imports = [
     ./core.nix
+    ./brews-dev.nix
     ./casks-core.nix
     ./casks-dev.nix
     ./casks-general.nix

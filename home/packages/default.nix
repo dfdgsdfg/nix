@@ -23,10 +23,9 @@ let
     core = import ./core.nix {
       inherit lib pkgs unstablePkgs upstreamBinaries;
     };
-    dev = import ./dev.nix { inherit pkgs; };
-    network = import ./network.nix { inherit lib pkgs; };
-    ops = import ./ops.nix { inherit lib pkgs upstreamBinaries; };
-    mobile = import ./mobile.nix { inherit lib pkgs; };
+    dev = import ./dev.nix { inherit lib pkgs; };
+    network = import ./network.nix { inherit pkgs; };
+    ops = import ./ops.nix { inherit upstreamBinaries; };
   };
 in
 {
@@ -35,7 +34,6 @@ in
     dev.enable = lib.mkEnableOption "developer productivity tools";
     network.enable = lib.mkEnableOption "networking and debugging utilities";
     ops.enable = lib.mkEnableOption "DevOps and infrastructure tooling";
-    mobile.enable = lib.mkEnableOption "mobile and device tooling";
   };
 
   config.home.packages = lib.unique (
@@ -44,7 +42,6 @@ in
       (lib.optionals cfg.dev.enable packageGroups.dev)
       (lib.optionals cfg.network.enable packageGroups.network)
       (lib.optionals cfg.ops.enable packageGroups.ops)
-      (lib.optionals cfg.mobile.enable packageGroups.mobile)
     ]
   );
 }
