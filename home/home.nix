@@ -367,6 +367,8 @@ in
     ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
   };
 
+  # Command precedence starts with mise-managed tools. Platform modules extend
+  # this to mise -> Homebrew -> Nix on Darwin and mise -> Nix on Linux.
   home.sessionPath = lib.mkAfter (
     [
       "${config.home.homeDirectory}/bin"

@@ -4,6 +4,7 @@ let
   upstreamBinaries = import ../packages/upstream-binaries.nix { inherit lib pkgs; };
 in
 {
+  # Linux PATH policy: common mise paths -> inherited Nix profiles.
   home.packages = with pkgs; [
     aria2
     dnsutils

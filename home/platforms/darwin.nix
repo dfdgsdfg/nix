@@ -9,6 +9,7 @@ let
       "/usr/local";
 in
 {
+  # Darwin PATH policy: common mise paths -> Homebrew -> inherited Nix profiles.
   home.sessionPath = lib.mkAfter [
     "${brewPrefix}/bin"
     "${brewPrefix}/sbin"
