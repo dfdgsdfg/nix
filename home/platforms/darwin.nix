@@ -32,6 +32,7 @@ in
   '';
 
   programs.fish.shellInit = lib.mkAfter ''
+    fish_add_path /run/current-system/sw/bin
     test -r "$HOME/.orbstack/shell/init2.fish"; and source "$HOME/.orbstack/shell/init2.fish"
   '';
 

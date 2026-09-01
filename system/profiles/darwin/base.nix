@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ config, inputs, pkgs, ... }:
 {
   system.primaryUser = "dididi";
 
@@ -29,6 +29,18 @@
 
   programs.fish.enable = true;
   programs.zsh.enable = true;
+
+  system.activationScripts.postActivation.text = ''
+    primaryUser=${config.system.primaryUser}
+    desiredShell=/run/current-system/sw/bin/fish
+    currentShell="$(/usr/bin/dscl . -read "/Users/$primaryUser" UserShell 2> /dev/null || true)"
+    currentShell="''${currentShell#UserShell: }"
+
+    if [ "$currentShell" != "$desiredShell" ]; then
+      echo "setting $primaryUser login shell to $desiredShell..." >&2
+      /usr/bin/chsh -s "$desiredShell" "$primaryUser"
+    fi
+  '';
 
   system.stateVersion = 6;
 }
