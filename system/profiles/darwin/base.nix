@@ -38,7 +38,14 @@
 
     if [ "$currentShell" != "$desiredShell" ]; then
       echo "setting $primaryUser login shell to $desiredShell..." >&2
-      /usr/bin/chsh -s "$desiredShell" "$primaryUser"
+      /usr/bin/dscl . -create "/Users/$primaryUser" UserShell "$desiredShell"
+
+      updatedShell="$(/usr/bin/dscl . -read "/Users/$primaryUser" UserShell)"
+      updatedShell="''${updatedShell#UserShell: }"
+      if [ "$updatedShell" != "$desiredShell" ]; then
+        echo "failed to set $primaryUser login shell to $desiredShell" >&2
+        exit 1
+      fi
     fi
   '';
 
