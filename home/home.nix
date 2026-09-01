@@ -224,7 +224,9 @@ in
     enable = true;
     shellAliases = commonShellAliases;
     initContent = lib.mkIf isDarwin ''
-      eval "$(${brewMise} activate zsh)"
+      if [[ -x ${brewMise} ]]; then
+        eval "$(${brewMise} activate zsh)"
+      fi
     '';
     oh-my-zsh = {
       enable = true;
@@ -246,7 +248,9 @@ in
     ];
     shellAliases = fishShellAliases;
     interactiveShellInit = lib.mkIf isDarwin ''
-      ${brewMise} activate fish | source
+      if test -x ${brewMise}
+        ${brewMise} activate fish | source
+      end
     '';
     shellInit = ''
       set -gx fisher_home ~/.local/share/fisherman
@@ -264,7 +268,9 @@ in
     enable = true;
     shellAliases = commonShellAliases;
     initExtra = lib.mkIf isDarwin ''
-      eval "$(${brewMise} activate bash)"
+      if [[ -x ${brewMise} ]]; then
+        eval "$(${brewMise} activate bash)"
+      fi
     '';
   };
   programs.starship = {
