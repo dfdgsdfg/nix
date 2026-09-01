@@ -4,7 +4,8 @@ let
   upstreamBinaries = import ../packages/upstream-binaries.nix { inherit lib pkgs; };
 in
 {
-  # Linux PATH policy: common mise paths -> inherited Nix profiles.
+  # Linux uses the common ordered PATH, followed by inherited Nix profiles and
+  # OS fallback paths. Desktop SDK modules enter at the shared SDK tier.
   home.packages = with pkgs; [
     aria2
     dnsutils

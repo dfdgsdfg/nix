@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
+  pathOrder = import ../../path-order.nix;
   androidEnv = pkgs.androidenv.override {
     licenseAccepted = true;
   };
@@ -76,7 +77,7 @@ in
     ANDROID_SDK_ROOT = androidSdkRoot;
   };
 
-  home.sessionPath = [
+  home.sessionPath = lib.mkOrder pathOrder.sdk [
     "${androidSdkRoot}/platform-tools"
     "${androidSdkRoot}/cmdline-tools/latest/bin"
   ];
@@ -84,9 +85,6 @@ in
   programs.fish.shellInit = ''
     set -gx ANDROID_HOME "${androidSdkRoot}"
     set -gx ANDROID_SDK_ROOT "${androidSdkRoot}"
-
-    fish_add_path "${androidSdkRoot}/platform-tools"
-    fish_add_path "${androidSdkRoot}/cmdline-tools/latest/bin"
   '';
 
   programs.direnv = {

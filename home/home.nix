@@ -8,6 +8,7 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
   brewMise = "${brewPrefix}/bin/mise";
+  pathOrder = import ./path-order.nix;
   pnpmHome =
     if isDarwin then
       "${config.home.homeDirectory}/Library/pnpm"
@@ -367,32 +368,40 @@ in
     ANDROID_HOME = "${config.home.homeDirectory}/Library/Android/sdk";
   };
 
-  # Command precedence starts with mise-managed tools. Platform modules extend
-  # this to mise -> Homebrew -> Nix on Darwin and mise -> Nix on Linux.
-  home.sessionPath = lib.mkAfter (
-    [
+  # Command precedence: user bins -> mise -> user packages -> user opt/tools
+  # -> SDK/apps -> compiler wrappers -> Homebrew (Darwin) -> Nix -> OS.
+  home.sessionPath = lib.mkMerge [
+    (lib.mkOrder pathOrder.userBin [
       "${config.home.homeDirectory}/bin"
       "${config.home.homeDirectory}/.local/bin"
+    ])
+    (lib.mkOrder pathOrder.mise [
       "${config.home.homeDirectory}/.local/share/mise/shims"
+    ])
+    (lib.mkOrder pathOrder.userPackage [
+      "${pnpmHome}/bin"
+      pnpmHome
       "${config.home.homeDirectory}/.cargo/bin"
-      "${ccacheWrappers}/bin"
       "${config.home.homeDirectory}/.pub-cache/bin"
+    ])
+    (lib.mkOrder pathOrder.userOpt [
       "${config.home.homeDirectory}/opt/bin"
       "${config.home.homeDirectory}/opt/bin/depot_tools"
       "${config.home.homeDirectory}/.maestro/bin"
       "${config.home.homeDirectory}/.antigravity/antigravity/bin"
       "${config.home.homeDirectory}/.elan/bin"
       "${config.home.homeDirectory}/opt/tlpas/lib"
-      "${pnpmHome}/bin"
-      pnpmHome
-    ]
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+    ])
+    (lib.mkOrder pathOrder.sdk (lib.optionals isDarwin [
       "${config.home.homeDirectory}/Library/Android/sdk/tools"
       "${config.home.homeDirectory}/Library/Android/sdk/tools/bin"
       "${config.home.homeDirectory}/Library/Android/sdk/platform-tools"
       "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-    ]
-  );
+    ]))
+    (lib.mkOrder pathOrder.compilerWrapper [
+      "${ccacheWrappers}/bin"
+    ])
+  ];
 
   home.file.".default-python-packages".text = ''
     pynvim

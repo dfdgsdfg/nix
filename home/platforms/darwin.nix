@@ -2,6 +2,7 @@
 
 let
   home = config.home.homeDirectory;
+  pathOrder = import ../path-order.nix;
   brewPrefix =
     if pkgs.stdenv.hostPlatform.isAarch64 then
       "/opt/homebrew"
@@ -9,11 +10,16 @@ let
       "/usr/local";
 in
 {
-  # Darwin PATH policy: common mise paths -> Homebrew -> inherited Nix profiles.
-  home.sessionPath = lib.mkAfter [
-    "${brewPrefix}/bin"
-    "${brewPrefix}/sbin"
-    "${home}/.codeium/windsurf/bin"
+  # Darwin extends the common PATH with user tools, then Homebrew before the
+  # inherited Nix profiles and OS fallback paths.
+  home.sessionPath = lib.mkMerge [
+    (lib.mkOrder pathOrder.userExtra [
+      "${home}/.codeium/windsurf/bin"
+    ])
+    (lib.mkOrder pathOrder.homebrew [
+      "${brewPrefix}/bin"
+      "${brewPrefix}/sbin"
+    ])
   ];
 
   home.sessionVariables = {
@@ -33,7 +39,7 @@ in
   '';
 
   programs.fish.shellInit = lib.mkAfter ''
-    fish_add_path /run/current-system/sw/bin
+    fish_add_path --append --path /run/current-system/sw/bin
     test -r "$HOME/.orbstack/shell/init2.fish"; and source "$HOME/.orbstack/shell/init2.fish"
   '';
 
