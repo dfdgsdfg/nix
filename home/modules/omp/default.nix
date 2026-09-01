@@ -75,7 +75,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ omp ];
+    home.packages = lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [ omp ];
 
     home.file = {
       ".omp/agent/RULES.md" = {

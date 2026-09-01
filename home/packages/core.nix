@@ -14,7 +14,6 @@
   delta
   dust
   fd
-  fnox
   fx
   fzf
   gawk
@@ -25,11 +24,9 @@
   gitui
   glow
   gnupg
-  upstreamBinaries.herdr
   jq
   lazygit
   lsd
-  mise
   minisign
   mosh
   navi
@@ -55,6 +52,8 @@
 ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (
   with pkgs;
   [
+    fnox
+    upstreamBinaries.herdr
     mole
     trash-cli
   ]

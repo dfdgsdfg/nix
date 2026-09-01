@@ -1,5 +1,5 @@
 {
-  # Keep Homebrew for app delivery. Formulae stay here only when Nix is missing or broken.
+  # Keep Homebrew for app delivery and intentionally mutable command-line tools.
   homebrew = {
     enable = true;
     onActivation = {

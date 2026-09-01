@@ -3,6 +3,8 @@
 let
   cfg = config.modules.pi;
   piHome = "${config.home.homeDirectory}/.pi";
+  pnpmHome = "${config.home.homeDirectory}/Library/pnpm";
+  brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
   piVersion = "0.84.4";
   piSrc = pkgsUnstable.fetchFromGitHub {
     owner = "earendil-works";
@@ -27,7 +29,27 @@ in
   options.modules.pi.enable = lib.mkEnableOption "Pi multi-model agent routing and configuration";
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ piCodingAgent ];
+    home.packages = lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [ piCodingAgent ];
+
+    home.activation.piPackage = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (
+      lib.hm.dag.entryBetween [ "piConfig" ] [ "writeBoundary" ] ''
+        if [ -z "''${DRY_RUN:-}" ]; then
+          if [ ! -x "${pnpmHome}/bin/pi" ]; then
+            if [ ! -x "${brewPrefix}/bin/mise" ]; then
+              echo "mise must be installed by nix-darwin before installing Pi with pnpm" >&2
+              exit 1
+            fi
+
+            export PNPM_HOME="${pnpmHome}"
+            export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
+            ${brewPrefix}/bin/mise exec pnpm@latest -- \
+              pnpm add --global --ignore-scripts @earendil-works/pi-coding-agent
+          fi
+        else
+          echo "Would install Pi with pnpm when ${pnpmHome}/bin/pi is missing"
+        fi
+      ''
+    );
 
     # Keep settings.json and models.json mutable because Pi also records runtime
     # changelog versions, local model overrides, and dynamic provider state.

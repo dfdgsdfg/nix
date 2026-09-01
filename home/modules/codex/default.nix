@@ -9,7 +9,7 @@ in
   options.modules.codex.enable = lib.mkEnableOption "Codex multi-model agent routing";
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ upstreamBinaries.codex ];
+    home.packages = lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [ upstreamBinaries.codex ];
 
     home.file = {
       ".codex/AGENTS.md" = {

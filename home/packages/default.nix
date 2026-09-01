@@ -25,7 +25,7 @@ let
     };
     dev = import ./dev.nix { inherit lib pkgs; };
     network = import ./network.nix { inherit pkgs; };
-    ops = import ./ops.nix { inherit upstreamBinaries; };
+    ops = import ./ops.nix { inherit lib pkgs upstreamBinaries; };
   };
 in
 {

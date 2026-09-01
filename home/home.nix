@@ -5,8 +5,11 @@
   ...
 }:
 let
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
+  brewMise = "${brewPrefix}/bin/mise";
   pnpmHome =
-    if pkgs.stdenv.hostPlatform.isDarwin then
+    if isDarwin then
       "${config.home.homeDirectory}/Library/pnpm"
     else
       "${config.home.homeDirectory}/.local/share/pnpm";
@@ -220,6 +223,9 @@ in
   programs.zsh = {
     enable = true;
     shellAliases = commonShellAliases;
+    initContent = lib.mkIf isDarwin ''
+      eval "$(${brewMise} activate zsh)"
+    '';
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
@@ -239,6 +245,9 @@ in
       }
     ];
     shellAliases = fishShellAliases;
+    interactiveShellInit = lib.mkIf isDarwin ''
+      ${brewMise} activate fish | source
+    '';
     shellInit = ''
       set -gx fisher_home ~/.local/share/fisherman
       set -gx fisher_config ~/.config/fisherman
@@ -254,6 +263,9 @@ in
   programs.bash = {
     enable = true;
     shellAliases = commonShellAliases;
+    initExtra = lib.mkIf isDarwin ''
+      eval "$(${brewMise} activate bash)"
+    '';
   };
   programs.starship = {
     enable = true;
@@ -285,9 +297,11 @@ in
 
   programs.mise = {
     enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = true;
-    enableZshIntegration = true;
+    package = if isDarwin then null else pkgs.mise;
+    enableBashIntegration = !isDarwin;
+    enableFishIntegration = !isDarwin;
+    enableNushellIntegration = !isDarwin;
+    enableZshIntegration = !isDarwin;
     globalConfig = {
       settings.all_compile = false;
       tools = {
