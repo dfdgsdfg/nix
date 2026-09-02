@@ -1,13 +1,16 @@
 {
-  homebrew.casks = [
-    "android-studio"
-    "bit-slicer"
-    "gcloud-cli"
-    "hex-fiend"
-    "knuff"
-    "orca"
-    "orbstack"
-    "pusher"
-    "visual-studio-code"
-  ];
+  homebrew = {
+    taps = [ "stablyai/orca" ];
+    casks = [
+      "android-studio"
+      "bit-slicer"
+      "gcloud-cli"
+      "hex-fiend"
+      "knuff"
+      "stablyai/orca/orca"
+      "orbstack"
+      "pusher"
+      "visual-studio-code"
+    ];
+  };
 }
