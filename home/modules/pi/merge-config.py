@@ -14,7 +14,22 @@ from pathlib import Path
 SETTINGS_MANAGED = {
     "defaultProvider": "omniroute",
     "defaultModel": "agent/worker",
-    "defaultThinkingLevel": "medium",
+    "defaultThinkingLevel": "high",
+    "enabledModels": [
+        "omniroute/agent/orchestrator",
+        "omniroute/agent/worker",
+        "omniroute/agent/scout",
+        "omniroute/agent/document",
+        "omniroute/agent/designer",
+        "omniroute/agent/expert",
+        "omniroute/agent/multimodal",
+        "omniroute/model/gpt-5.6-luna",
+        "omniroute/model/gpt-5.6-sol",
+        "omniroute/model/gpt-5.3-codex-spark",
+        "omniroute/model/deepseek-v4-flash-0731",
+        "omniroute/model/gemini-3.7-flash",
+        "omniroute/model/gemini-3.5-flash-lite",
+    ],
     "theme": "dark",
 }
 

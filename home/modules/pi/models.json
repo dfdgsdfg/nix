@@ -7,23 +7,28 @@
       "models": [
         {
           "id": "agent/worker",
-          "name": "DeepSeek V4 Flash worker (Medium)",
+          "name": "Luna worker (High Fast)",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text"
           ],
-          "contextWindow": 1000000,
+          "contextWindow": 272000,
           "maxTokens": 32768,
           "samplingParams": {
-            "thinking": {
-              "type": "enabled"
-            },
-            "reasoning_effort": "medium"
+            "reasoning_effort": "high",
+            "service_tier": "priority"
           },
           "compat": {
             "supportsReasoningEffort": true,
-            "thinkingFormat": "deepseek",
-            "requiresReasoningContentOnAssistantMessages": true,
             "maxTokensField": "max_tokens"
           }
         },
@@ -44,6 +49,15 @@
           "id": "agent/document",
           "name": "Gemini 3.7 Flash document specialist (Medium)",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": "medium",
+            "high": null,
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text"
           ],
@@ -61,6 +75,15 @@
           "id": "agent/designer",
           "name": "Gemini 3.7 Flash designer (Medium)",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": "medium",
+            "high": null,
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text",
             "image"
@@ -76,9 +99,18 @@
           }
         },
         {
-          "id": "agent/reasoner",
-          "name": "Luna reasoning worker (High)",
+          "id": "agent/orchestrator",
+          "name": "Sol orchestrator (High)",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text"
           ],
@@ -93,26 +125,18 @@
           }
         },
         {
-          "id": "agent/orchestrator",
-          "name": "Sol orchestrator (Medium)",
-          "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 32768,
-          "samplingParams": {
-            "reasoning_effort": "medium"
-          },
-          "compat": {
-            "supportsReasoningEffort": true,
-            "maxTokensField": "max_tokens"
-          }
-        },
-        {
           "id": "agent/expert",
           "name": "Sol expert escalation (High)",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": null,
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text"
           ],
@@ -130,6 +154,15 @@
           "id": "agent/multimodal",
           "name": "Gemini Flash-Lite multimodal (Low)",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": null,
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text",
             "image"
@@ -148,6 +181,15 @@
           "id": "model/gpt-5.6-luna",
           "name": "GPT-5.6 Luna identity",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": "none",
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
           "input": [
             "text"
           ],
@@ -162,6 +204,15 @@
           "id": "model/gpt-5.6-sol",
           "name": "GPT-5.6 Sol identity",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": "none",
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
           "input": [
             "text"
           ],
@@ -189,6 +240,15 @@
           "id": "model/deepseek-v4-flash-0731",
           "name": "DeepSeek V4 Flash 0731 identity",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": "none",
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
           "input": [
             "text"
           ],
@@ -205,6 +265,15 @@
           "id": "model/gemini-3.7-flash",
           "name": "Gemini 3.7 Flash identity",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text",
             "image"
@@ -220,6 +289,15 @@
           "id": "model/gemini-3.5-flash-lite",
           "name": "Gemini 3.5 Flash-Lite identity",
           "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": "minimal",
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
           "input": [
             "text",
             "image"

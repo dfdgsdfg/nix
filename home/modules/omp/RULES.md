@@ -12,14 +12,20 @@ replaceable configuration.
 | `default` | `agent/orchestrator` | Main session, decomposition, integration, acceptance |
 | `plan` | `agent/orchestrator` | Planning and architecture decisions |
 | `task` | `agent/worker` | General delegated coding and research |
-| `smol` | `agent/cheap` | Bounded exploration and mechanical work |
-| `tiny` | `agent/cheap` | Lightweight background operations |
-| `commit` | `agent/bulk` | Commit generation and token-heavy repository work |
-| `advisor` | `agent/reasoner` | Independent advice and difficult verification |
+| `smol` | `agent/worker` | Bounded exploration and mechanical work |
+| `tiny` | `agent/worker` | Lightweight background operations |
+| `commit` | `agent/worker` | Commit generation and repository work |
+| `advisor` | `agent/worker` | Independent advice and difficult verification |
 | `vision` | `agent/multimodal` | Image and document understanding |
 | `slow` | `agent/expert` | Explicit operator-selected expert escalation |
 
 `~/.omp/agent/config.yml` is authoritative if this table drifts.
+
+Agent catalog entries expose one fixed thinking effort: orchestrator, worker,
+and expert use High; document and designer use Medium; multimodal uses Low;
+scout is non-reasoning. Model identity entries expose the underlying model's
+native effort list instead. OMP encodes this with each model's `thinking`
+metadata, not only the session-wide `defaultThinkingLevel`.
 
 ## Main session
 
@@ -38,7 +44,7 @@ bounded subagent can perform that work reliably.
 Prefer the most specific bundled agent. Respect the model selector in its definition;
 do not override it merely because a task is large.
 
-Use the cheap, non-reasoning path for bounded mechanical work:
+Use the bounded worker/scout paths for delegated work:
 
 - `scout` — read-only codebase exploration and compressed handoff.
 - `librarian` — external library and API research from primary sources.
@@ -60,7 +66,7 @@ For example, the homelab `operations` agent currently inherits
 ## Escalation
 
 There is no automatic capability ladder. Task size alone never justifies a stronger
-route. If a bounded cheap-model assignment fails, return the evidence to the main
+route. If a bounded assignment fails, return the evidence to the main
 session and re-scope it. Use `@advisor` for independent difficult verification and
 `@slow` only for explicit operator-selected expert escalation; never silently retry a
 failed task on either route.

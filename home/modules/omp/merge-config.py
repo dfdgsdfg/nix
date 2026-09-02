@@ -18,7 +18,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   plan: omniroute/agent/orchestrator
   task: omniroute/agent/worker
   designer: omniroute/agent/designer
-  advisor: omniroute/agent/reasoner
+  advisor: omniroute/agent/worker
   smol: omniroute/agent/worker
   tiny: omniroute/agent/worker
   commit: omniroute/agent/worker
@@ -30,7 +30,6 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/agent/scout
   - omniroute/agent/document
   - omniroute/agent/designer
-  - omniroute/agent/reasoner
   - omniroute/agent/expert
   - omniroute/agent/multimodal
   - omniroute/model/gpt-5.6-luna
@@ -39,7 +38,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/deepseek-v4-flash-0731
   - omniroute/model/gemini-3.7-flash
   - omniroute/model/gemini-3.5-flash-lite""",
-    "defaultThinkingLevel": "defaultThinkingLevel: medium",
+    "defaultThinkingLevel": "defaultThinkingLevel: high",
     "retry": """retry:
   enabled: true
   maxRetries: 1""",
@@ -59,32 +58,55 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     apiKey: {api_key}
     models:
     - id: agent/orchestrator
-      name: Sol Medium orchestrator
+      name: Sol orchestrator (High)
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: null
+        medium: null
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [high]
+        defaultLevel: high
+        requiresEffort: true
       input:
       - text
       contextWindow: 272000
       maxTokens: 32768
       samplingParams:
-        reasoning_effort: medium
+        reasoning_effort: high
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
     - id: agent/worker
-      name: DeepSeek V4 Flash worker (Medium)
+      name: Luna worker (High Fast)
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: null
+        medium: null
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [high]
+        defaultLevel: high
+        requiresEffort: true
       input:
       - text
-      contextWindow: 1000000
+      contextWindow: 272000
       maxTokens: 32768
       samplingParams:
-        thinking:
-          type: enabled
-        reasoning_effort: medium
+        reasoning_effort: high
+        service_tier: priority
       compat:
         supportsReasoningEffort: true
-        thinkingFormat: openai
-        requiresReasoningContentOnAssistantMessages: true
         maxTokensField: max_tokens
     - id: agent/scout
       name: GPT-5.3 Codex Spark scout
@@ -98,6 +120,19 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     - id: agent/document
       name: Gemini 3.7 Flash document specialist (Medium)
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: null
+        medium: medium
+        high: null
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [medium]
+        defaultLevel: medium
+        requiresEffort: true
       input:
       - text
       contextWindow: 1048576
@@ -110,6 +145,19 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     - id: agent/designer
       name: Gemini 3.7 Flash designer (Medium)
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: null
+        medium: medium
+        high: null
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [medium]
+        defaultLevel: medium
+        requiresEffort: true
       input:
       - text
       - image
@@ -120,21 +168,22 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
-    - id: agent/reasoner
-      name: Luna reasoning worker (High)
-      reasoning: true
-      input:
-      - text
-      contextWindow: 272000
-      maxTokens: 32768
-      samplingParams:
-        reasoning_effort: high
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
     - id: agent/expert
       name: Sol High expert reviewer
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: null
+        medium: null
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [high]
+        defaultLevel: high
+        requiresEffort: true
       input:
       - text
       contextWindow: 272000
@@ -145,8 +194,21 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
     - id: agent/multimodal
-      name: Gemini 3.7 Flash multimodal (Low)
+      name: Gemini Flash-Lite multimodal (Low)
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: low
+        medium: null
+        high: null
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [low]
+        defaultLevel: low
+        requiresEffort: true
       input:
       - text
       - image
@@ -160,6 +222,17 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     - id: model/gpt-5.6-luna
       name: GPT-5.6 Luna identity
       reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, medium, high, xhigh, max]
       input:
       - text
       contextWindow: 272000
@@ -170,6 +243,17 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     - id: model/gpt-5.6-sol
       name: GPT-5.6 Sol identity
       reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, medium, high, xhigh, max]
       input:
       - text
       contextWindow: 272000
@@ -189,6 +273,17 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     - id: model/deepseek-v4-flash-0731
       name: DeepSeek V4 Flash 0731 identity
       reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: null
+        high: high
+        xhigh: null
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, high, max]
       input:
       - text
       contextWindow: 1000000
@@ -201,6 +296,18 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     - id: model/gemini-3.7-flash
       name: Gemini 3.7 Flash identity
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [low, medium, high]
+        requiresEffort: true
       input:
       - text
       - image
@@ -212,6 +319,18 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     - id: model/gemini-3.5-flash-lite
       name: Gemini 3.5 Flash-Lite identity
       reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: minimal
+        low: low
+        medium: medium
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [minimal, low, medium, high]
+        requiresEffort: true
       input:
       - text
       - image
