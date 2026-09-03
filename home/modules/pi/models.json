@@ -47,7 +47,7 @@
         },
         {
           "id": "agent/document",
-          "name": "Gemini 3.7 Flash document specialist (Medium)",
+          "name": "Gemini 3.8 Flash document specialist (Medium)",
           "reasoning": true,
           "thinkingLevelMap": {
             "off": null,
@@ -73,7 +73,7 @@
         },
         {
           "id": "agent/designer",
-          "name": "Gemini 3.7 Flash designer (Medium)",
+          "name": "Gemini 3.8 Flash designer (Medium)",
           "reasoning": true,
           "thinkingLevelMap": {
             "off": null,
@@ -262,8 +262,8 @@
           }
         },
         {
-          "id": "model/gemini-3.7-flash",
-          "name": "Gemini 3.7 Flash identity",
+          "id": "model/gemini-3.8-flash",
+          "name": "Gemini 3.8 Flash identity",
           "reasoning": true,
           "thinkingLevelMap": {
             "off": null,

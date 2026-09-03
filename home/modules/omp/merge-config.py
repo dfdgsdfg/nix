@@ -36,7 +36,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/gpt-5.6-sol
   - omniroute/model/gpt-5.3-codex-spark
   - omniroute/model/deepseek-v4-flash-0731
-  - omniroute/model/gemini-3.7-flash
+  - omniroute/model/gemini-3.8-flash
   - omniroute/model/gemini-3.5-flash-lite""",
     "defaultThinkingLevel": "defaultThinkingLevel: high",
     "retry": """retry:
@@ -118,7 +118,7 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         maxTokensField: max_tokens
     - id: agent/document
-      name: Gemini 3.7 Flash document specialist (Medium)
+      name: Gemini 3.8 Flash document specialist (Medium)
       reasoning: true
       thinkingLevelMap:
         off: null
@@ -143,7 +143,7 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
     - id: agent/designer
-      name: Gemini 3.7 Flash designer (Medium)
+      name: Gemini 3.8 Flash designer (Medium)
       reasoning: true
       thinkingLevelMap:
         off: null
@@ -293,8 +293,8 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         thinkingFormat: openai
         requiresReasoningContentOnAssistantMessages: true
         maxTokensField: max_tokens
-    - id: model/gemini-3.7-flash
-      name: Gemini 3.7 Flash identity
+    - id: model/gemini-3.8-flash
+      name: Gemini 3.8 Flash identity
       reasoning: true
       thinkingLevelMap:
         off: null

@@ -27,7 +27,7 @@ SETTINGS_MANAGED = {
         "omniroute/model/gpt-5.6-sol",
         "omniroute/model/gpt-5.3-codex-spark",
         "omniroute/model/deepseek-v4-flash-0731",
-        "omniroute/model/gemini-3.7-flash",
+        "omniroute/model/gemini-3.8-flash",
         "omniroute/model/gemini-3.5-flash-lite",
     ],
     "theme": "dark",
