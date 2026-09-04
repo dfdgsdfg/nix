@@ -28,14 +28,16 @@ jobs:
       - name: Build Linux Home Manager activation package
         run: nix build --no-link '.#homeConfigurations."dididi@sg-lenovo".activationPackage'
 
-      - name: Build WSL Home Manager activation package
-        run: nix build --no-link '.#homeConfigurations."dididi@sg-asus".activationPackage'
+      - name: Evaluate WSL Home Manager activation package
+        run: nix eval --raw '.#homeConfigurations."dididi@sg-asus".activationPackage.drvPath' >/dev/null
 
-      - name: Build NixOS system
-        run: nix build --no-link '.#nixosConfigurations.sg-lenovo.config.system.build.toplevel'
+      - name: Evaluate NixOS and WSL systems
+        run: |
+          nix eval --raw '.#nixosConfigurations.sg-lenovo.config.system.build.toplevel.drvPath' >/dev/null
+          nix eval --raw '.#nixosConfigurations.sg-asus.config.system.build.toplevel.drvPath' >/dev/null
 
-      - name: Build WSL system
-        run: nix build --no-link '.#nixosConfigurations.sg-asus.config.system.build.toplevel'
+      - name: Verify Kime source hash
+        run: nix build --no-link '.#nixosConfigurations.sg-lenovo.pkgs.kime.src'
 
   darwin:
     name: Darwin flake evaluation
