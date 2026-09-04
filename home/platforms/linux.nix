@@ -39,7 +39,7 @@ in
   # after the complete Home Manager profile has been assembled.
   home.extraProfileCommands = ''
     iconThemeDir="$out/share/icons/hicolor"
-    if [ -d "$iconThemeDir" ]; then
+    if [ -f "$iconThemeDir/index.theme" ]; then
       rm -f "$iconThemeDir/icon-theme.cache"
       ${pkgs.gtk3}/bin/gtk-update-icon-cache --force "$iconThemeDir"
     fi
