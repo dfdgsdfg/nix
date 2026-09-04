@@ -1,0 +1,132 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard"
+  ],
+  "timezone": "Asia/Seoul",
+  "schedule": [
+    "after 9pm on thursday"
+  ],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 4,
+  "minimumReleaseAge": "3 days",
+  "automerge": false,
+  "nix": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "addLabels": [
+        "needs-hash"
+      ],
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "GitHub release versions used by fetchurl packages",
+      "managerFilePatterns": [
+        "/^home\\/(modules\\/(omp\\/default|desktop\\/(apps|dev|games))|packages\\/upstream-binaries)\\.nix$/"
+      ],
+      "matchStrings": [
+        "version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";\\s*src = pkgs\\.fetchurl \\{\\s*url = \"https://github\\.com/(?<depName>[^\"/]+/[^\"/]+)/releases/download/(?:v|rust-v)?\\$\\{version\\}/"
+      ],
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^(?:rust-)?v?(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Herdr release shared across Linux and Darwin source URLs",
+      "managerFilePatterns": [
+        "/^home\\/packages\\/upstream-binaries\\.nix$/"
+      ],
+      "matchStrings": [
+        "pname = \"herdr\";\\s*version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";"
+      ],
+      "depNameTemplate": "herdrdev/herdr",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v?(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "OpenEmux release used by the source package",
+      "managerFilePatterns": [
+        "/^home\\/modules\\/desktop\\/games\\.nix$/"
+      ],
+      "matchStrings": [
+        "pname = \"openemux\";\\s*version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";"
+      ],
+      "depNameTemplate": "guilhermefeitosa66/OpenEmux",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v?(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Terraform release used by the upstream binary package",
+      "managerFilePatterns": [
+        "/^home\\/packages\\/upstream-binaries\\.nix$/"
+      ],
+      "matchStrings": [
+        "pname = \"terraform\";\\s*version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";"
+      ],
+      "depNameTemplate": "hashicorp/terraform",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "OpenHV calendar-style GitHub release version",
+      "managerFilePatterns": [
+        "/^home\\/modules\\/desktop\\/games\\.nix$/"
+      ],
+      "matchStrings": [
+        "version = \"(?<currentValue>\\d{8})\";\\s*src = pkgs\\.fetchurl \\{\\s*url = \"https://github\\.com/(?<depName>OpenHV/OpenHV)/releases/download/\\$\\{version\\}/"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "loose"
+    },
+    {
+      "customType": "regex",
+      "description": "Kime GitHub tag used by the Nix overlay",
+      "managerFilePatterns": [
+        "/^system\\/overlays\\/kime\\.nix$/"
+      ],
+      "matchStrings": [
+        "version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";\\s*src = final\\.fetchFromGitHub \\{\\s*owner = \"(?<owner>Riey)\";\\s*repo = \"(?<repo>kime)\";\\s*rev = \"v\\$\\{version\\}\";"
+      ],
+      "depNameTemplate": "{{owner}}/{{repo}}",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Pi GitHub tag used by the Home Manager module",
+      "managerFilePatterns": [
+        "/^home\\/modules\\/pi\\/default\\.nix$/"
+      ],
+      "matchStrings": [
+        "piVersion = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";\\s*piSrc = pkgsUnstable\\.fetchFromGitHub \\{\\s*owner = \"(?<owner>earendil-works)\";\\s*repo = \"(?<repo>pi)\";\\s*tag = \"v\\$\\{piVersion\\}\";"
+      ],
+      "depNameTemplate": "{{owner}}/{{repo}}",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioningTemplate": "semver"
+    }
+  ]
+}

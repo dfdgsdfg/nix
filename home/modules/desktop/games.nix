@@ -90,14 +90,14 @@ let
         pkgs.gobject-introspection
       ];
     in
-    pkgs.stdenvNoCC.mkDerivation {
+    pkgs.stdenvNoCC.mkDerivation rec {
       pname = "openemux";
       version = "1.9.2";
 
       src = pkgs.fetchFromGitHub {
         owner = "guilhermefeitosa66";
         repo = "OpenEmux";
-        rev = "v1.9.2";
+        rev = "v${version}";
         hash = "sha256-Ikj+KMOibtmPdekggwewcixWMbAL8snxJPHONtPD8jU=";
       };
 

@@ -41,16 +41,16 @@ let
       };
     };
 
-  herdr = mkRawBinary {
+  herdr = mkRawBinary rec {
     pname = "herdr";
     version = "0.8.2";
     releases = {
       x86_64-linux = {
-        url = "https://github.com/herdrdev/herdr/releases/download/v0.8.2/herdr-linux-x86_64";
+        url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-linux-x86_64";
         hash = "sha256-l2FQoU1JDJSyQ+ouGn6y37Z/EuNrGC25CTb2co5q7PQ=";
       };
       aarch64-darwin = {
-        url = "https://github.com/herdrdev/herdr/releases/download/v0.8.2/herdr-macos-aarch64";
+        url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-macos-aarch64";
         hash = "sha256-pdT01QTYswnJH4EQUFWTAPq6MSWEJfU8UIUvyW9q5XQ=";
       };
     };

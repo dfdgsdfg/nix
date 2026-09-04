@@ -1,0 +1,63 @@
+name: Nix validation
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nix-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux:
+    name: Linux flake checks and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Evaluate all flake outputs
+        run: nix flake check --no-build --all-systems
+
+      - name: Build Linux Home Manager activation package
+        run: nix build --no-link '.#homeConfigurations."dididi@sg-lenovo".activationPackage'
+
+      - name: Build WSL Home Manager activation package
+        run: nix build --no-link '.#homeConfigurations."dididi@sg-asus".activationPackage'
+
+      - name: Build NixOS system
+        run: nix build --no-link '.#nixosConfigurations.sg-lenovo.config.system.build.toplevel'
+
+      - name: Build WSL system
+        run: nix build --no-link '.#nixosConfigurations.sg-asus.config.system.build.toplevel'
+
+  darwin:
+    name: Darwin flake evaluation
+    runs-on: macos-14
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Evaluate Darwin system outputs
+        run: |
+          nix eval --raw '.#darwinConfigurations.sg-macbook.config.system.build.toplevel' >/dev/null
+          nix eval --raw '.#darwinConfigurations.us-mbpro2311-sg.config.system.build.toplevel' >/dev/null
+
+      - name: Evaluate Darwin Home Manager outputs
+        run: |
+          nix eval --raw '.#homeConfigurations."dididi@sg-macbook".activationPackage.drvPath' >/dev/null
+          nix eval --raw '.#homeConfigurations."dididi@us-mbpro2311-sg".activationPackage.drvPath' >/dev/null
+
+      - name: Build Darwin Home Manager activation package
+        run: |
+          nix build --no-link '.#homeConfigurations."dididi@sg-macbook".activationPackage'
+          nix build --no-link '.#homeConfigurations."dididi@us-mbpro2311-sg".activationPackage'
