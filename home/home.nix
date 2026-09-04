@@ -320,7 +320,6 @@ in
         ruby = "latest";
         go = "latest";
         bun = "latest";
-        erlang = "latest";
         zig = "latest";
         uv = "latest";
       };
