@@ -23,7 +23,6 @@ in
     macchina
     mtr
     nmap
-    upstreamBinaries.opencode
     p7zip
     pciutils
     socat

@@ -138,34 +138,6 @@ let
     };
   };
 
-  opencode = pkgs.stdenvNoCC.mkDerivation rec {
-    pname = "opencode";
-    version = "1.18.21";
-
-    src = pkgs.fetchurl {
-      url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-linux-x64.tar.gz";
-      hash = "sha256-2RDD7XYTu1eRoyiQRhXUHMJbfTprRw4xmasEJqmVs4o=";
-    };
-
-    dontUnpack = true;
-
-    installPhase = ''
-      runHook preInstall
-      tar -xzf "$src"
-      install -Dm755 opencode "$out/bin/opencode"
-      runHook postInstall
-    '';
-
-    meta = {
-      description = "Open source coding agent";
-      homepage = "https://opencode.ai/";
-      license = lib.licenses.mit;
-      mainProgram = "opencode";
-      platforms = [ "x86_64-linux" ];
-      sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
-    };
-  };
-
   localsend =
     let
       pname = "localsend";
@@ -254,7 +226,6 @@ in
     codex
     herdr
     localsend
-    opencode
     terraform
     zed
     ;
