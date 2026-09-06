@@ -68,6 +68,7 @@ let
         pycairo
         pygobject3
         pyyaml
+        python-xlib
       ]);
       gsettingsDataDirs = lib.concatStringsSep ":" [
         "${pkgs.gtk4}/share/gsettings-schemas/${pkgs.gtk4.name}"
@@ -92,13 +93,13 @@ let
     in
     pkgs.stdenvNoCC.mkDerivation rec {
       pname = "openemux";
-      version = "1.9.2";
+      version = "1.13.0";
 
       src = pkgs.fetchFromGitHub {
         owner = "guilhermefeitosa66";
         repo = "OpenEmux";
         rev = "v${version}";
-        hash = "sha256-Ikj+KMOibtmPdekggwewcixWMbAL8snxJPHONtPD8jU=";
+        hash = "sha256-6iM6cP8ptY2tanTlm1Vdt6OMOa+RV2B0+WjGKeYtfwE=";
       };
 
       nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -110,8 +111,6 @@ let
         mkdir -p $out/bin $out/share/applications $out/share/openemux $out/share/pixmaps
         cp -R . $out/share/openemux
 
-        substituteInPlace $out/share/openemux/src/openemux/core/config.py \
-          --replace-fail 'vendors/RetroArch-Linux-x86_64.AppImage' 'retroarch'
         substituteInPlace $out/share/openemux/src/openemux/main.py \
           --replace-fail '        _ensure_desktop_integration()' '        pass  # Desktop integration is managed by Home Manager.'
 
@@ -129,7 +128,6 @@ let
         install -Dm444 packaging/common/openemux.desktop \
           $out/share/applications/io.github.guilhermefeitosa66.OpenEmux.desktop
         substituteInPlace $out/share/applications/io.github.guilhermefeitosa66.OpenEmux.desktop \
-          --replace-fail 'TryExec=openemux' "TryExec=$out/bin/openemux" \
           --replace-fail 'Exec=openemux' "Exec=$out/bin/openemux"
 
         runHook postInstall

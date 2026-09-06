@@ -62,16 +62,16 @@ let
   terraformRelease = selectRelease "terraform" {
     x86_64-linux = {
       asset = "linux_amd64";
-      hash = "sha256-du3Qsi0vJ9PS4JfNeTIJZG9xnPYPAv869iawc2ETfaE=";
+      hash = "sha256-dF0ztLAreYDGKjjsG+6iTuCE6oyvP1A8IAVUvZoMvkk=";
     };
     aarch64-darwin = {
       asset = "darwin_arm64";
-      hash = "sha256-BbJ1hqXX2EEFaQ7MzH7bv0i8PW1Xd0XLYfFjupkK308=";
+      hash = "sha256-4iy6dh3b1NIYk5socVqzrzeq+KQu+kH311ssPXNjYGA=";
     };
   };
   terraform = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "terraform";
-    version = "1.15.9";
+    version = "1.16.1";
 
     src = pkgs.fetchurl {
       url = "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_${terraformRelease.asset}.zip";
@@ -141,10 +141,10 @@ let
   localsend =
     let
       pname = "localsend";
-      version = "1.18.0";
+      version = "1.18.2";
       src = pkgs.fetchurl {
         url = "https://github.com/localsend/localsend/releases/download/v${version}/LocalSend-${version}-linux-x86-64.AppImage";
-        hash = "sha256-yHO9FID5dW4RfMymaKaYvtnlBkR4hAWafTfV1k+2X+I=";
+        hash = "sha256-GfIWE9GDT2yqaVFxE2cEYaPxC4CioxX4ZUjAZj2cCq8=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
