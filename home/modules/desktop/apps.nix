@@ -129,6 +129,7 @@ in
    zoom-us
    rustdesk
    localSendWithPort
+   upstreamBinaries.tether
    orca
   ];
 

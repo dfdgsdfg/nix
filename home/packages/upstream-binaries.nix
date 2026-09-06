@@ -173,6 +173,41 @@ let
       };
     };
 
+  tether =
+    let
+      pname = "tether";
+      version = "0.2.25";
+      src = pkgs.fetchurl {
+        url = "https://github.com/zackb/tether/releases/download/v${version}/tether-${version}-x86_64.AppImage";
+        hash = "sha256-jIeZbTcAZN0Gu4DI1ykgqrFovTmyP6IiVHF4I3TlABg=";
+      };
+      appimageContents = pkgs.appimageTools.extract {
+        inherit pname version src;
+      };
+    in
+    pkgs.appimageTools.wrapType2 {
+      inherit pname version src;
+
+      extraInstallCommands = ''
+        install -Dm444 ${appimageContents}/tether-gtk.desktop \
+          $out/share/applications/tether-gtk.desktop
+        substituteInPlace $out/share/applications/tether-gtk.desktop \
+          --replace-fail 'Exec=tether-gtk' "Exec=$out/bin/tether"
+        cp -R ${appimageContents}/usr/share/icons $out/share/
+        chmod u+w $out/share/icons/hicolor
+        rm -f $out/share/icons/hicolor/icon-theme.cache
+      '';
+
+      meta = {
+        description = "Bridge an iPhone to the Linux desktop";
+        homepage = "https://github.com/zackb/tether";
+        license = lib.licenses.mit;
+        mainProgram = "tether";
+        platforms = [ "x86_64-linux" ];
+        sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+      };
+    };
+
   zed = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "zed-editor";
     version = "1.18.1";
@@ -226,6 +261,7 @@ in
     codex
     herdr
     localsend
+    tether
     terraform
     zed
     ;

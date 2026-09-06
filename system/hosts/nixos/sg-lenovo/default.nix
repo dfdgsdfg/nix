@@ -24,6 +24,7 @@ in
   nixpkgs.overlays = [ (import ../../../overlays/kime.nix) ];
   networking.firewall.allowedTCPPorts = [
     3389 # GNOME Remote Desktop (RDP)
+    5134 # Tether
     53317
   ];
   networking.firewall.allowedUDPPorts = [
