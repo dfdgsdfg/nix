@@ -13,6 +13,7 @@ in
     ../../../profiles/nixos/desktop.nix
     ./hardware-configuration.nix
     ./ssh.nix
+    ./tether.nix
   ];
 
   boot.loader.systemd-boot = {
