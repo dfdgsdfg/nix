@@ -5,24 +5,32 @@ let
   piHome = "${config.home.homeDirectory}/.pi";
   pnpmHome = "${config.home.homeDirectory}/Library/pnpm";
   brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
-  piVersion = "0.84.4";
+  piVersion = "0.85.1";
   piSrc = pkgsUnstable.fetchFromGitHub {
     owner = "earendil-works";
     repo = "pi";
     tag = "v${piVersion}";
-    hash = "sha256-7z8OXao1PzmBEepDkIqVqyfQBPHulBlKcGymDYsnMvc=";
+    hash = "sha256-gU8BSiqqOYt2RRuQONHHGvZeSM5KFQVrwif9bmuUXUc=";
   };
-  piCodingAgent = pkgsUnstable.pi-coding-agent.overrideAttrs (_finalAttrs: _oldAttrs: {
+  piCodingAgent = pkgsUnstable.pi-coding-agent.overrideAttrs (_finalAttrs: oldAttrs: {
     version = piVersion;
     src = piSrc;
     npmDeps = pkgsUnstable.fetchNpmDeps {
       src = piSrc;
-      hash = "sha256-35GC3Q4Jf4URvqoEYHeM63x49tTmrth62//PvKm4I7Q=";
+      hash = "sha256-jzlsZIQzfl1FCZZ5//dHFWwMfBZQ4nRD6KB4HHifPqE=";
     };
     modelData = pkgsUnstable.fetchurl {
       url = "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-${piVersion}.tgz";
-      hash = "sha256-39PJKc7lpzhxmaCiTfwb4glvHqj1n/uChRmKDtAev5M=";
+      hash = "sha256-r30RmGF5RFzm/oizfVfeIvgjwP/TplyuMcVVt/XpklM=";
     };
+    preBuild = (oldAttrs.preBuild or "") + ''
+      npx tsgo -p packages/chord/tsconfig.build.json
+    '';
+    postInstall = (oldAttrs.postInstall or "") + ''
+      nm="$out/lib/node_modules/pi-monorepo/node_modules"
+      mkdir -p "$nm/@earendil-works"
+      cp -r packages/chord "$nm/@earendil-works/chord"
+    '';
   });
 in
 {

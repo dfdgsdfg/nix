@@ -102,16 +102,16 @@ let
   codexRelease = selectRelease "codex" {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-J7DXp1OsGQw0ORhUGkIGe+MHzIijKxqf6vb5Nkig6eo=";
+      hash = "sha256-qCIYfhokIMYcWSZyG/vYeHAe2VVHybsNTeRJiha6GCE=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-E23LZA58zbAYo1S5we8mn4izE3pchLFBajt9PWuQQpk=";
+      hash = "sha256-NUONofv3ptt92zvOyERI+mAVuhiEYUcql9nR2n2cQ1M=";
     };
   };
   codex = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "codex";
-    version = "0.153.0";
+    version = "0.153.4";
 
     src = pkgs.fetchurl {
       url = "https://github.com/openai/codex/releases/download/rust-v${version}/codex-package-${codexRelease.target}.tar.gz";
@@ -203,11 +203,11 @@ let
 
   zed = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "zed-editor";
-    version = "1.16.1";
+    version = "1.18.1";
 
     src = pkgs.fetchurl {
       url = "https://github.com/zed-industries/zed/releases/download/v${version}/zed-linux-x86_64.tar.gz";
-      hash = "sha256-nmEa3QxA6GsVA3JFii17eNEBxUkk3HvKjbJ84g2XxmE=";
+      hash = "sha256-7qYiaNjsX9NYffBvp24HLBBMyl4LCwq+y8KK5bh8C60=";
     };
 
     installPhase = ''
