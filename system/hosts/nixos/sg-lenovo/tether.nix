@@ -1,8 +1,17 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # Tether needs BlueZ's experimental LE bearer API before the iPhone is paired.
   hardware.bluetooth.settings.General.Experimental = true;
+  systemd.services.bluetooth.serviceConfig.ExecStart = lib.mkForce [
+    ""
+    "${config.hardware.bluetooth.package}/libexec/bluetooth/bluetoothd -f /etc/bluetooth/main.conf --experimental"
+  ];
 
   # bluetoothd resets the adapter class whenever it starts. Keep hci0 advertised
   # as A/V Hands-Free so iOS exposes MAP/PBAP permissions for Tether.
