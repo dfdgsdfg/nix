@@ -2,14 +2,22 @@
 
 let
   autoMoveWindowsUuid = "auto-move-windows@gnome-shell-extensions.gcampax.github.com";
+  autoMoveWindows = pkgs.gnomeExtensions.auto-move-windows.overrideAttrs (_: rec {
+    version = "75";
+    src = pkgs.fetchzip {
+      url = "https://extensions.gnome.org/extension-data/auto-move-windowsgnome-shell-extensions.gcampax.github.com.v${version}.shell-extension.zip";
+      hash = "sha256-DmoGh9ypAO5x46YsnJg4fngKawuIto6mtVMnUJNXQlY=";
+      stripRoot = false;
+    };
+  });
 in
 {
-  home.packages = with pkgs; [
-    gnomeExtensions.auto-move-windows
+  home.packages = [
+    autoMoveWindows
   ];
 
   home.file.".local/share/gnome-shell/extensions/${autoMoveWindowsUuid}".source =
-    "${pkgs.gnomeExtensions.auto-move-windows}/share/gnome-shell/extensions/${autoMoveWindowsUuid}";
+    "${autoMoveWindows}/share/gnome-shell/extensions/${autoMoveWindowsUuid}";
 
   dconf.settings = {
     "org/gnome/desktop/session" = {

@@ -15,6 +15,12 @@
   "nix": {
     "enabled": true
   },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "after 9pm on thursday"
+    ]
+  },
   "packageRules": [
     {
       "matchUpdateTypes": [
@@ -32,6 +38,15 @@
       "automerge": false
     }
   ],
+  "customDatasources": {
+    "gnome-auto-move-windows": {
+      "defaultRegistryUrlTemplate": "https://extensions.gnome.org/extension-info/?pk=16",
+      "format": "json",
+      "transformTemplates": [
+        "{\"releases\":[{\"version\": $string($lookup(shell_version_map, \"50\").version)}], \"homepage\": \"https://extensions.gnome.org/extension/16/auto-move-windows/\"}"
+      ]
+    }
+  },
   "customManagers": [
     {
       "customType": "regex",
@@ -116,17 +131,30 @@
     },
     {
       "customType": "regex",
-      "description": "Pi GitHub tag used by the Home Manager module",
+      "description": "Zed GitHub release used by the upstream binary package",
       "managerFilePatterns": [
-        "/^home\\/modules\\/pi\\/default\\.nix$/"
+        "/^home\\/packages\\/upstream-binaries\\.nix$/"
       ],
       "matchStrings": [
-        "piVersion = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";\\s*piSrc = pkgsUnstable\\.fetchFromGitHub \\{\\s*owner = \"(?<owner>earendil-works)\";\\s*repo = \"(?<repo>pi)\";\\s*tag = \"v\\$\\{piVersion\\}\";"
+        "pname = \"zed-editor\";\\s*version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";"
       ],
-      "depNameTemplate": "{{owner}}/{{repo}}",
+      "depNameTemplate": "zed-industries/zed",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Auto Move Windows release compatible with GNOME Shell 50",
+      "managerFilePatterns": [
+        "/^home\\/modules\\/desktop\\/gnome\\.nix$/"
+      ],
+      "matchStrings": [
+        "version = \"(?<currentValue>\\d+)\";\\s*src = pkgs\\.fetchzip"
+      ],
+      "depNameTemplate": "Auto Move Windows for GNOME 50",
+      "datasourceTemplate": "custom.gnome-auto-move-windows",
+      "versioningTemplate": "loose"
     }
   ]
 }
