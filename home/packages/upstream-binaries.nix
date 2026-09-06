@@ -205,6 +205,26 @@ let
     pname = "zed-editor";
     version = "1.18.1";
 
+    nativeBuildInputs = [
+      pkgs.autoPatchelfHook
+      pkgs.makeWrapper
+    ];
+    buildInputs = [
+      pkgs.alsa-lib
+      pkgs.glib
+    ];
+    runtimeDependencies = map lib.getLib [
+      pkgs.libGL
+      pkgs.vulkan-loader
+      pkgs.wayland
+    ];
+
+    postFixup = ''
+      wrapProgram "$out/libexec/zed-editor" \
+        --set XKB_CONFIG_ROOT "${pkgs.xkeyboard_config}/share/X11/xkb" \
+        --set XLOCALEDIR "${pkgs.libx11}/share/X11/locale"
+    '';
+
     src = pkgs.fetchurl {
       url = "https://github.com/zed-industries/zed/releases/download/v${version}/zed-linux-x86_64.tar.gz";
       hash = "sha256-7qYiaNjsX9NYffBvp24HLBBMyl4LCwq+y8KK5bh8C60=";
