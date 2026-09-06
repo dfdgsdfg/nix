@@ -18,10 +18,20 @@ let
     ${pkgs.coreutils}/bin/chmod 600 "$tmp"
     ${pkgs.coreutils}/bin/mv "$tmp" "$prefs"
   '';
-  localSendWithPort = pkgs.writeShellScriptBin "localsend-fixed-port" ''
+  localSendLauncher = pkgs.writeShellScriptBin "localsend-fixed-port" ''
     ${setLocalSendPort}
     exec ${localSend}/bin/localsend "$@"
   '';
+  localSendWithPort = pkgs.symlinkJoin {
+    name = "localsend-with-fixed-port-${localSend.version}";
+    paths = [
+      localSend
+      localSendLauncher
+    ];
+    postBuild = ''
+      rm -f "$out/share/applications/org.localsend.localsend_app.desktop"
+    '';
+  };
   zenPackages = import inputs.zen-browser {
     inherit pkgs;
   };
@@ -118,7 +128,6 @@ in
    obsidian
    zoom-us
    rustdesk
-   localSend
    localSendWithPort
    orca
   ];
