@@ -6,8 +6,8 @@ Model portfolio:
   debugging, architectural decisions, and consequential reviews.
 - `scout`: Spark/high for narrow read-only lookups.
 - `explorer`: Terra/medium for broader codebase relationships and execution flows.
-- `worker`: Luna/high by default. Use max selectively when the plan is settled
-  but implementation is difficult; return design ambiguity to Main.
+- `worker`: Luna/high for implementation and focused tests; return design
+  ambiguity to Main. Keep reasoning effort at high.
 - `powerhouse`: Astra/xhigh for independent, clean-context re-examination.
 
 For substantial tasks that can be split into independent, bounded work:
