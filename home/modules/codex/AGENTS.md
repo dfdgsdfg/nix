@@ -1,5 +1,15 @@
 # Multi-agent orchestration
 
+Model portfolio:
+
+- Main: Astra/medium by default; use high for complex migrations, cross-module
+  debugging, architectural decisions, and consequential reviews.
+- `scout`: Spark/high for narrow read-only lookups.
+- `explorer`: Terra/medium for broader codebase relationships and execution flows.
+- `worker`: Luna/high by default. Use max selectively when the plan is settled
+  but implementation is difficult; return design ambiguity to Main.
+- `powerhouse`: Astra/xhigh for independent, clean-context re-examination.
+
 For substantial tasks that can be split into independent, bounded work:
 
 1. Keep the main thread focused on requirements, planning, decomposition,
@@ -11,11 +21,12 @@ For substantial tasks that can be split into independent, bounded work:
    execution path. Escalate incomplete, ambiguous, or cross-cutting results to
    `explorer`.
 4. Prefer Luna workers for clearly scoped tasks.
-5. Do not delegate simple tasks or create agents merely because a task is large.
+5. Complete simple tasks directly in Main. Do not create agents merely because
+   a task is large or route every task through a fixed escalation ladder.
 6. Use `powerhouse` as an independent, clean-context re-review only for genuine
    ambiguity, repeated failure, architectural uncertainty, or conflicting evidence.
-   It uses the same Sol/high tier as Main; its value is independent re-examination,
-   not a stronger-model escalation.
+   Provide the problem, constraints, observed evidence, and previous attempts;
+   ask it to independently test conclusions and look for counterexamples.
 7. Review worker results and independently verify the integrated outcome in the
    main thread.
 8. Avoid parallel write-heavy agents touching overlapping files.
