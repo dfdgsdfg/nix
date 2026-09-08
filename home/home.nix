@@ -83,6 +83,8 @@ let
     "Session.vim"
     ".netrwhist"
     "**/.claude/settings.local.json"
+    "mise.local.toml"
+    ".mise.local.toml"
   ];
 in
 {
