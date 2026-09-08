@@ -34,6 +34,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/agent/multimodal
   - omniroute/model/gpt-5.6-luna
   - omniroute/model/gpt-5.6-sol
+  - omniroute/model/gpt-6-astra
   - omniroute/model/gpt-5.3-codex-spark
   - omniroute/model/deepseek-v4-flash-0731
   - omniroute/model/gemini-3.8-flash
@@ -245,6 +246,27 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       reasoning: true
       thinkingLevelMap:
         off: none
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, medium, high, xhigh, max]
+      input:
+      - text
+      contextWindow: 272000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gpt-6-astra
+      name: GPT-6 Astra identity
+      reasoning: true
+      thinkingLevelMap:
+        off: null
         minimal: null
         low: low
         medium: medium

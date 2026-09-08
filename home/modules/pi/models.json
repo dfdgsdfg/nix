@@ -224,6 +224,29 @@
           }
         },
         {
+          "id": "model/gpt-6-astra",
+          "name": "GPT-6 Astra identity",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "input": [
+            "text"
+          ],
+          "contextWindow": 272000,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
           "id": "model/gpt-5.3-codex-spark",
           "name": "GPT-5.3 Codex Spark identity",
           "reasoning": false,

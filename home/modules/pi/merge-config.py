@@ -25,6 +25,7 @@ SETTINGS_MANAGED = {
         "omniroute/agent/multimodal",
         "omniroute/model/gpt-5.6-luna",
         "omniroute/model/gpt-5.6-sol",
+        "omniroute/model/gpt-6-astra",
         "omniroute/model/gpt-5.3-codex-spark",
         "omniroute/model/deepseek-v4-flash-0731",
         "omniroute/model/gemini-3.8-flash",
