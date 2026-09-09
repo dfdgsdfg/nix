@@ -4,6 +4,7 @@
   imports = [
     ../../../packages
     ../../../profiles/personal.nix
+    ../../../profiles/work-us.nix
   ];
 
   modules.packages = {

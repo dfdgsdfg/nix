@@ -57,7 +57,7 @@ app-managed state mutable.
 
 Existing hosts opt into `home/profiles/personal.nix`. It composes the personal
 SSH profile, SOPS secrets, Git identity include, fish credential loading, age
-key environment variable, and Darwin jj identity. Common tooling remains in
+key environment variable, and encrypted jj identity on Darwin and Linux. Common tooling remains in
 `home/home.nix`.
 
 For a machine that only needs shared tooling, import `home/home.nix` and the
@@ -65,8 +65,16 @@ desired package groups from its target/host configuration, but omit the
 `personal` profile. Supply its own Git identity separately; the personal age
 key and SSH credentials are not required by the common configuration.
 
+`home/profiles/work-us.nix` independently opts into the US work SSH identity
+`~/.ssh/us_sg_ed25519` and its public key, encrypted in `secrets/work-us.yaml`.
+Import it from the hosts that need this key; it does not require the `personal`
+profile or change which identity SSH selects for a host. Set `IdentityFile` in
+the relevant SSH host rule to use it. Currently only `us-mbpro2311-sg` imports
+this profile. Before the first activation, back up any
+existing files at these paths and move them aside for SOPS-managed links.
+
 Secrets are encrypted for the age recipient listed in `.sops.yaml`. A fresh
-machine using the personal profile needs the matching age identity before
+machine using either secret-bearing profile needs the matching age identity before
 Home Manager can decrypt secrets.
 
 ```bash

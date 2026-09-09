@@ -65,14 +65,15 @@ in
 
   home.sessionVariables.SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
 
-  home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-    "Library/Application Support/jj/config.toml".text = ''
-      [ui]
-      default-command = "log"
-
-      [user]
-      name = "dididi"
-      email = "dfdgsdfg@gmail.com"
-    '';
+  sops.secrets."jj/config" = {
+    format = "yaml";
+    sopsFile = homeSecrets;
+    key = "jj/config";
+    path =
+      if pkgs.stdenv.hostPlatform.isDarwin then
+        "${config.home.homeDirectory}/Library/Application Support/jj/config.toml"
+      else
+        "${config.xdg.configHome}/jj/config.toml";
+    mode = "0600";
   };
 }
