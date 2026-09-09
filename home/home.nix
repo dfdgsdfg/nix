@@ -22,8 +22,6 @@ let
     done
   '';
 
-  homeSecrets = ../secrets/home.yaml;
-
   commonShellAliases = {
     ls = "lsd";
     l = "ls -l";
@@ -102,48 +100,6 @@ in
 
   nixpkgs.config.allowUnfree = true;
 
-  sops = {
-    age.keyFile = lib.mkDefault "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    secrets."ssh/github/id_ed25519" = {
-      format = "yaml";
-      sopsFile = ../secrets/ssh.yaml;
-      key = "ssh/github/id_ed25519";
-    };
-    secrets."ssh/github/id_ed25519.pub" = {
-      format = "yaml";
-      sopsFile = ../secrets/ssh.yaml;
-      key = "ssh/github/id_ed25519_pub";
-    };
-    secrets."git/config-user" = {
-      format = "yaml";
-      sopsFile = homeSecrets;
-      key = "git/config_user";
-      path = "${config.xdg.configHome}/git/config-user";
-      mode = "0600";
-    };
-    secrets."git/config-user-work" = {
-      format = "yaml";
-      sopsFile = homeSecrets;
-      key = "git/config_user_work";
-      path = "${config.xdg.configHome}/git/config-user-work";
-      mode = "0600";
-    };
-    secrets."git/config-user-work-us" = {
-      format = "yaml";
-      sopsFile = homeSecrets;
-      key = "git/config_user_work_us";
-      path = "${config.xdg.configHome}/git/config-user-work-us";
-      mode = "0600";
-    };
-    secrets."fish/credential" = {
-      format = "yaml";
-      sopsFile = homeSecrets;
-      key = "fish/credential";
-      path = "${config.xdg.configHome}/fish/credential.fish";
-      mode = "0600";
-    };
-  };
-
   modules.nvim.enable = true;
   modules.claude.enable = true;
   modules.codex.enable = true;
@@ -151,19 +107,7 @@ in
   modules.pi.enable = true;
   modules.ssh = {
     enable = true;
-    identities.github = {
-      secret = "ssh/github/id_ed25519";
-      target = ".ssh/github_ed25519";
-      publicKeySecret = "ssh/github/id_ed25519.pub";
-    };
     settings = {
-      "github.com" = {
-        User = "git";
-        HostName = "github.com";
-        IdentityFile = "~/.ssh/github_ed25519";
-        IdentitiesOnly = true;
-        Compression = true;
-      };
       "*" = {
         AddKeysToAgent = "yes";
         Compression = true;
@@ -187,7 +131,6 @@ in
     enable = true;
     ignores = globalGitIgnores;
     settings = {
-      include.path = "${config.xdg.configHome}/git/config-user";
       pager = {
         diff = "delta";
         log = "delta";
@@ -263,10 +206,6 @@ in
       set -gx fisher_config ~/.config/fisherman
 
       test -e ~/.iterm2_shell_integration.fish; and source ~/.iterm2_shell_integration.fish
-
-      if test -f "${config.xdg.configHome}/fish/credential.fish"
-        source "${config.xdg.configHome}/fish/credential.fish"
-      end
     '';
   };
 
@@ -362,7 +301,6 @@ in
     NODE_OPTIONS = "--max-old-space-size=8192";
     COREPACK_HOME = "${config.home.homeDirectory}/.cache/corepack";
     PNPM_HOME = pnpmHome;
-    SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     CCACHE_SLOPPINESS = "clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros";
     CCACHE_FILECLONE = "true";
     CCACHE_DEPEND = "true";

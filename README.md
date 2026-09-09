@@ -9,7 +9,7 @@ NixOS, and WSL hosts.
 - `system/targets.nix` and `home/targets.nix` independently declare system and Home Manager targets.
 - `system/hosts/{darwin,nixos,wsl}/` contains host-specific system modules.
 - `system/profiles/` contains reusable system roles: `nixos/base`, `nixos/headless` → `nixos/wsl`, `nixos/desktop`, and `darwin/base`.
-- `home/profiles/` composes reusable Home Manager roles such as `nixos/desktop`.
+- `home/profiles/` composes reusable Home Manager roles such as `personal` and `nixos/desktop`.
 - `home/hosts/` contains machine-specific Home Manager settings and imports profiles inward.
 - `home/modules/` contains leaf Home Manager modules; modules do not import profiles or hosts.
 - `secrets/` contains SOPS-encrypted data consumed by `sops-nix`.
@@ -55,8 +55,19 @@ app-managed state mutable.
 
 ## SOPS Bootstrap
 
+Existing hosts opt into `home/profiles/personal.nix`. It composes the personal
+SSH profile, SOPS secrets, Git identity include, fish credential loading, age
+key environment variable, and Darwin jj identity. Common tooling remains in
+`home/home.nix`.
+
+For a machine that only needs shared tooling, import `home/home.nix` and the
+desired package groups from its target/host configuration, but omit the
+`personal` profile. Supply its own Git identity separately; the personal age
+key and SSH credentials are not required by the common configuration.
+
 Secrets are encrypted for the age recipient listed in `.sops.yaml`. A fresh
-machine needs the matching age identity before Home Manager can decrypt secrets.
+machine using the personal profile needs the matching age identity before
+Home Manager can decrypt secrets.
 
 ```bash
 ./scripts/bootstrap-sops-age.sh

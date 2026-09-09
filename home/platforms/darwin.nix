@@ -29,15 +29,6 @@ in
     INFOPATH = "${brewPrefix}/share/info:";
   };
 
-  home.file."Library/Application Support/jj/config.toml".text = ''
-    [ui]
-    default-command = "log"
-
-    [user]
-    name = "dididi"
-    email = "dfdgsdfg@gmail.com"
-  '';
-
   programs.fish.shellInit = lib.mkAfter ''
     fish_add_path --append --path /run/current-system/sw/bin
     test -r "$HOME/.orbstack/shell/init2.fish"; and source "$HOME/.orbstack/shell/init2.fish"

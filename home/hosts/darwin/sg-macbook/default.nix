@@ -3,7 +3,7 @@
 {
   imports = [
     ../../../packages
-    ./ssh.nix
+    ../../../profiles/personal.nix
   ];
 
   modules.packages = {

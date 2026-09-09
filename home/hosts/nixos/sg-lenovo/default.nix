@@ -4,7 +4,7 @@
   imports = [
     ../../../packages
     ../../../profiles/nixos/desktop.nix
-    ./ssh.nix
+    ../../../profiles/personal.nix
   ];
 
   modules.packages = {
