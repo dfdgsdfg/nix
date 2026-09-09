@@ -10,8 +10,10 @@
   atuin
   bat
   bottom
+  broot
   curl
   delta
+  duf
   dust
   fd
   fx

@@ -34,6 +34,9 @@ let
     rm = "trash";
     ps = "procs";
     du = "dust";
+    dig = "doggo";
+    df = "duf";
+    tree = "broot";
     top = "btm";
     diff = "delta";
     network = "bandwhich";
