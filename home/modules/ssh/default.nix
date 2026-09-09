@@ -13,7 +13,7 @@ let
       secret = lib.mkOption {
         type = lib.types.str;
         description = "Attribute path (slash-separated) pointing to the SOPS secret that stores the private key.";
-        example = "ssh/github/id_ed25519";
+        example = "ssh/id_ed25519";
       };
 
       target = lib.mkOption {
@@ -153,7 +153,7 @@ in
         "github.com" = {
           User = "git";
           HostName = "github.com";
-          IdentityFile = "~/.ssh/github_ed25519";
+          IdentityFile = "~/.ssh/id_ed25519";
         };
       };
       description = "OpenSSH client settings forwarded to programs.ssh.settings.";

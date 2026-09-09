@@ -13,16 +13,6 @@ in
 
   sops = {
     age.keyFile = lib.mkDefault "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    secrets."ssh/github/id_ed25519" = {
-      format = "yaml";
-      sopsFile = ../../secrets/ssh.yaml;
-      key = "ssh/github/id_ed25519";
-    };
-    secrets."ssh/github/id_ed25519.pub" = {
-      format = "yaml";
-      sopsFile = ../../secrets/ssh.yaml;
-      key = "ssh/github/id_ed25519_pub";
-    };
     secrets."git/config-user" = {
       format = "yaml";
       sopsFile = homeSecrets;
@@ -54,16 +44,11 @@ in
   };
 
   modules.ssh = {
-    identities.github = {
-      secret = "ssh/github/id_ed25519";
-      target = ".ssh/github_ed25519";
-      publicKeySecret = "ssh/github/id_ed25519.pub";
-    };
     settings = {
       "github.com" = {
         User = "git";
         HostName = "github.com";
-        IdentityFile = "~/.ssh/github_ed25519";
+        IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
         Compression = true;
       };
