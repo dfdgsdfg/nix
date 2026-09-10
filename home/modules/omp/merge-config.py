@@ -34,11 +34,13 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/agent/multimodal
   - omniroute/model/gpt-5.6-luna
   - omniroute/model/gpt-5.6-sol
+  - omniroute/model/gpt-5.6-terra
   - omniroute/model/gpt-6-astra
   - omniroute/model/gpt-5.3-codex-spark
-  - omniroute/model/deepseek-v4-flash-0731
-  - omniroute/model/gemini-3.8-flash
-  - omniroute/model/gemini-3.5-flash-lite""",
+  - omniroute/model/payg-fb/gpt-5.6-luna
+  - omniroute/model/payg/deepseek-v4-flash-0731
+  - omniroute/model/payg/gemini-3.8-flash
+  - omniroute/model/payg/gemini-3.5-flash-lite""",
     "defaultThinkingLevel": "defaultThinkingLevel: high",
     "retry": """retry:
   enabled: true
@@ -262,6 +264,27 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
+    - id: model/gpt-5.6-terra
+      name: GPT-5.6 Terra identity
+      reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, medium, high, xhigh, max]
+      input:
+      - text
+      contextWindow: 272000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
     - id: model/gpt-6-astra
       name: GPT-6 Astra identity
       reasoning: true
@@ -292,7 +315,28 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       maxTokens: 32768
       compat:
         maxTokensField: max_tokens
-    - id: model/deepseek-v4-flash-0731
+    - id: model/payg-fb/gpt-5.6-luna
+      name: GPT-5.6 Luna PAYG fallback identity
+      reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, medium, high, xhigh, max]
+      input:
+      - text
+      contextWindow: 272000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/payg/deepseek-v4-flash-0731
       name: DeepSeek V4 Flash 0731 identity
       reasoning: true
       thinkingLevelMap:
@@ -315,7 +359,7 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         thinkingFormat: openai
         requiresReasoningContentOnAssistantMessages: true
         maxTokensField: max_tokens
-    - id: model/gemini-3.8-flash
+    - id: model/payg/gemini-3.8-flash
       name: Gemini 3.8 Flash identity
       reasoning: true
       thinkingLevelMap:
@@ -338,7 +382,7 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
-    - id: model/gemini-3.5-flash-lite
+    - id: model/payg/gemini-3.5-flash-lite
       name: Gemini 3.5 Flash-Lite identity
       reasoning: true
       thinkingLevelMap:
@@ -427,7 +471,7 @@ def resolve_api_key(existing_text: str, provider: str = "omniroute") -> str:
     del existing_text, provider
     command = os.environ.get(
         "OMP_API_KEY_COMMAND",
-        '!security find-generic-password -a "$USER" -s "omniroute-us-mbp-omp" -w',
+        '!security find-generic-password -a "$USER" -s "omniroute-personal-omp" -w',
     )
     return json.dumps(command)
 

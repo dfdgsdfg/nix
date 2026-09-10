@@ -34,13 +34,30 @@ home-manager build --flake .#dididi@sg-lenovo
 
 ## Codex agent routing
 
-`home/modules/codex` keeps the Codex main agent on GPT-5.6 Sol with high reasoning,
+`home/modules/codex` keeps the Codex main agent on GPT-6 Astra with medium reasoning,
 defaults unspecified subagents to GPT-5.6 Luna with high reasoning, and defines
 the `scout`, `explorer`, `worker`, and `powerhouse` roles. The module merges only
 these owned keys into `~/.codex/config.toml`, leaving app-managed MCP, plugin,
 notice, and project settings mutable.
 
-Spark High `scout`, Terra Medium `explorer`, the Sol High parent, and Sol High
+OmniRoute API routing is opt-in with the native profile selector:
+
+```bash
+codex -p omni-api
+codex -p omni-api -m model/gpt-6-astra
+```
+
+The managed `~/.codex/omni-api.config.toml` uses command-backed authentication.
+Activation also merges the profile into existing Orca account homes, preserving
+profile-local UI state. Run Home Manager again after adding a new Orca account.
+An API-specific catalog maps installed Codex metadata to the five `model/*`
+route names so model selection and subagent validation use the same IDs.
+The SOPS-encrypted `secrets/codex.yaml` seeds the native keychain on first use
+and refreshes it after rotation. Darwin uses login Keychain; Linux requires an
+unlocked Secret Service accessible through `secret-tool`.
+Credentials are never written to the Nix store or the profile TOML.
+
+Spark High `scout`, Terra Medium `explorer`, the Astra Medium parent, and Astra XHigh
 `powerhouse` use the Standard service tier. Luna High `worker` uses Fast mode.
 
 ## Claude agent routing
@@ -59,6 +76,20 @@ Existing hosts opt into `home/profiles/personal.nix`. It composes the personal
 SSH profile, SOPS secrets, Git identity include, fish credential loading, age
 key environment variable, and encrypted jj identity on Darwin and Linux. Common tooling remains in
 `home/home.nix`.
+
+Personal credentials use machine-independent names: `personal-codex`,
+`personal-pi`, and `personal-omp`. Codex reads `secrets/codex.yaml`; Pi and OMP
+read separate entries in `secrets/personal-agents.yaml`. Each client shares its
+own credential across personal machines and has a distinct runtime file and
+OS keychain entry (`omniroute-personal-<client>`). The helpers seed Darwin
+Keychain or Linux Secret Service from the private SOPS paths.
+
+OmniRoute uses the same `personal-codex`, `personal-pi`, and `personal-omp`
+key names. Codex is restricted to the five subscription-only model routes;
+Pi and OMP have separate operator route grants and usage attribution. The old
+`api` Codex profile is retained locally for compatibility; activation seeds
+`omni-api` from its managed OmniRoute settings without changing default login
+configuration.
 
 For a machine that only needs shared tooling, import `home/home.nix` and the
 desired package groups from its target/host configuration, but omit the

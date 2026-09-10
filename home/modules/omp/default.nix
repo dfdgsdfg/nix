@@ -69,7 +69,7 @@ in
 
     apiKeyCommand = lib.mkOption {
       type = lib.types.str;
-      default = ''!security find-generic-password -a "$USER" -s "omniroute-us-mbp-omp" -w'';
+      default = ''!security find-generic-password -a "$USER" -s "omniroute-personal-omp" -w'';
       description = "Command OMP executes to read its OmniRoute client key from the platform secret store.";
     };
   };

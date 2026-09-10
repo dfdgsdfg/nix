@@ -13,6 +13,4 @@
     network.enable = true;
     ops.enable = true;
   };
-
-  modules.omp.apiKeyCommand = "!secret-tool lookup service omniroute client sg-lenovo-omp";
 }
