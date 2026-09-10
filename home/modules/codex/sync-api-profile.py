@@ -3,6 +3,7 @@
 import importlib.util
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import sys
@@ -26,6 +27,20 @@ def sections(table, prefix=''):
             yield from sections(value, prefix+'.'+key if prefix else key)
 
 
+def remove_legacy_api_roles(text):
+    """Remove only old role registrations owned by this API profile."""
+    parsed = tomllib.loads(text)
+    for name in ('scout', 'explorer', 'worker', 'powerhouse'):
+        role = parsed.get('agents', {}).get(name, {})
+        path = role.get('config_file', '')
+        if not path.endswith(f'/api-agents/{name}.toml'):
+            continue
+        # Preserve user-defined roles and all unrelated profile sections.
+        pattern = rf'(?ms)^\[agents\.{name}\][ \t]*\n.*?(?=^\[|\Z)'
+        text = re.sub(pattern, '', text)
+    return text
+
+
 roots = [Path.home()/'.codex']
 for parent in [Path.home()/'Library/Application Support/orca/codex-accounts', Path.home()/'.config/orca/codex-accounts', Path.home()/'.config/Orca/codex-accounts']:
     roots.extend(parent.glob('*/home'))
@@ -40,7 +55,7 @@ for root in roots:
             origin = legacy
     original = origin.read_text() if origin else ''
     merge.validate(original)
-    updated = original
+    updated = remove_legacy_api_roles(original)
     for section, values in sections(managed):
         updated = merge.set_section(updated, section, values) if section else merge.set_top_level(updated, values)
     merge.validate(updated)

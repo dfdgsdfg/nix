@@ -91,6 +91,12 @@ Pi and OMP have separate operator route grants and usage attribution. The old
 `omni-api` from its managed OmniRoute settings without changing default login
 configuration.
 
+The `omni-api` profile has separate `omni-scout`, `omni-explorer`,
+`omni-worker`, and `omni-powerhouse` roles. Its developer instructions map
+the usual role names to these OmniRoute roles, avoiding collisions with
+automatically discovered subscription roles in `~/.codex/agents/`.
+Edit `home/modules/codex/omni-api-agents.md` for API-specific delegation rules.
+
 For a machine that only needs shared tooling, import `home/home.nix` and the
 desired package groups from its target/host configuration, but omit the
 `personal` profile. Supply its own Git identity separately; the personal age

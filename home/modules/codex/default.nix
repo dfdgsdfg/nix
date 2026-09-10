@@ -15,9 +15,10 @@ let
     name: builtins.fromTOML (builtins.readFile (./agents + "/${name}.toml"))
   );
   apiRoleConfigs = lib.mapAttrs (
-    _name: role:
+    name: role:
     role
     // {
+      name = "omni-${name}";
       model = "model/${role.model}";
       model_provider = "omniroute";
     }
@@ -55,15 +56,16 @@ let
     model_provider = "omniroute";
     model_catalog_json = "${codexHome}/api-models.json";
     model_reasoning_effort = "medium";
+    developer_instructions = builtins.readFile ./omni-api-agents.md;
     agents = {
       default_subagent_model = "model/gpt-5.6-luna";
     }
-    // lib.genAttrs roleNames (
-      name: {
+    // lib.listToAttrs (map
+      (name: lib.nameValuePair "omni-${name}" {
         description = roleConfigs.${name}.description;
         config_file = "${codexHome}/api-agents/${name}.toml";
-      }
-    );
+      })
+      roleNames);
     model_providers.omniroute = {
       name = "OmniRoute";
       base_url = "https://omni.tail484abe.ts.net/v1";
