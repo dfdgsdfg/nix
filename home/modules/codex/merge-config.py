@@ -40,7 +40,7 @@ def set_keys(block: str, values: dict[str, str]) -> str:
         pattern = re.compile(rf"(?m)^[ \t]*{re.escape(key)}[ \t]*=.*$")
         replacement = f"{key} = {value}"
         if pattern.search(block):
-            block = pattern.sub(replacement, block, count=1)
+            block = pattern.sub(lambda _: replacement, block, count=1)
         else:
             if block and not block.endswith("\n"):
                 block += "\n"

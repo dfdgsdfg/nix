@@ -1,6 +1,7 @@
 """Regression check for migrating API roles without altering user settings."""
 
 import runpy
+import json
 import sys
 import tempfile
 import tomllib
@@ -25,7 +26,8 @@ config_file = "/custom/worker.toml"
 custom_feature = true
 ''')
     template = root / 'template.toml'
-    template.write_text('''model = "model/gpt-6-astra"
+    instructions = 'First line\nSecond line with "quotes" and C:\\tools\\new'
+    template.write_text('developer_instructions = ' + json.dumps(instructions) + '\n' + '''model = "model/gpt-6-astra"
 [agents.omni-worker]
 config_file = "/Users/test/.codex/api-agents/worker.toml"
 ''')
@@ -34,6 +36,7 @@ config_file = "/Users/test/.codex/api-agents/worker.toml"
         runpy.run_path(str(repo / 'sync-api-profile.py'))
         first = target.read_text()
         parsed = tomllib.loads(first)
+        assert parsed['developer_instructions'] == instructions
         assert 'worker' not in parsed['agents']
         assert 'omni-worker' in parsed['agents']
         assert parsed['agents']['scout']['config_file'] == '/custom/scout.toml'
