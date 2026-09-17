@@ -7,12 +7,14 @@
     ../../modules/desktop/games.nix
     ../../modules/desktop/music.nix
     ../../modules/desktop/dev.nix
+    ../../modules/desktop/connections
   ];
 
   home.stateVersion = "26.05";
   home.sessionVariables.EDITOR = lib.mkForce "hx";
 
   fonts.fontconfig.enable = true;
+  modules.desktop.connections.enable = true;
 
   nixpkgs.config = {
     android_sdk.accept_license = true;

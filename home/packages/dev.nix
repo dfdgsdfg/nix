@@ -5,10 +5,10 @@
   ccache
   cmake
   chezmoi
-  d2
   grex
   lefthook
 ])
+++ [ (import ./d2.nix { inherit lib pkgs; }) ]
 ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) (
   with pkgs;
   [

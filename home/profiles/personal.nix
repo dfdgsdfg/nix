@@ -47,7 +47,18 @@ let
     "!${keychainAuth}/bin/omniroute-personal-auth ${lib.concatStringsSep " " (map lib.escapeShellArg keychainArgs)}";
 in
 {
-  imports = [ ./ssh.nix ];
+  imports = [ ./ssh.nix ../modules/desktop/connections ];
+
+  modules.desktop.connections.targets = {
+    sg-asus = {
+      protocol = "rdp";
+      host = "100.122.221.66";
+    };
+    sg-macbook = {
+      protocol = "vnc";
+      host = "100.85.51.54";
+    };
+  };
 
   sops = {
     age.keyFile = lib.mkDefault "${config.home.homeDirectory}/.config/sops/age/keys.txt";
