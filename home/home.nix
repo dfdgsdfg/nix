@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   pkgs,
   lib,
   ...
@@ -99,6 +100,15 @@ in
   ];
 
   nixpkgs.config.allowUnfree = true;
+
+  # sops-nix still requests Go 1.25, which nixpkgs-unstable has removed.
+  sops.package =
+    let
+      sopsPkgs = pkgs.extend (_: prev: {
+        buildGo125Module = prev.buildGoModule;
+      });
+    in
+    (sopsPkgs.callPackage inputs.sops-nix { }).sops-install-secrets;
 
   modules.nvim.enable = true;
   modules.claude.enable = true;

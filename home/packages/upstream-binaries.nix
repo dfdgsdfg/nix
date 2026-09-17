@@ -43,15 +43,15 @@ let
 
   herdr = mkRawBinary rec {
     pname = "herdr";
-    version = "0.8.2";
+    version = "0.9.1";
     releases = {
       x86_64-linux = {
         url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-linux-x86_64";
-        hash = "sha256-l2FQoU1JDJSyQ+ouGn6y37Z/EuNrGC25CTb2co5q7PQ=";
+        hash = "sha256-KgL+0WvrZR7wBuHUPwSPZSyk3FitBTzS1ERQVj1cVLc=";
       };
       aarch64-darwin = {
         url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-macos-aarch64";
-        hash = "sha256-pdT01QTYswnJH4EQUFWTAPq6MSWEJfU8UIUvyW9q5XQ=";
+        hash = "sha256-X8en5636ylb6gKqJ3LAlaTNXJo2rgoW5zi0IojE8id4=";
       };
     };
     description = "Terminal UI for managing coding agents";
@@ -62,16 +62,16 @@ let
   terraformRelease = selectRelease "terraform" {
     x86_64-linux = {
       asset = "linux_amd64";
-      hash = "sha256-dF0ztLAreYDGKjjsG+6iTuCE6oyvP1A8IAVUvZoMvkk=";
+      hash = "sha256-CTtq6aIiivUCnEFga8lutYNVNSiq0b/n4LTWL8keJdg=";
     };
     aarch64-darwin = {
       asset = "darwin_arm64";
-      hash = "sha256-4iy6dh3b1NIYk5socVqzrzeq+KQu+kH311ssPXNjYGA=";
+      hash = "sha256-wsRUJepFaNqYA+En5YkYbLN5illE2a/1pbwV3RgmdWA=";
     };
   };
   terraform = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "terraform";
-    version = "1.16.1";
+    version = "1.16.3";
 
     src = pkgs.fetchurl {
       url = "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_${terraformRelease.asset}.zip";
@@ -176,10 +176,10 @@ let
   tether =
     let
       pname = "tether";
-      version = "0.2.25";
+      version = "0.2.33";
       src = pkgs.fetchurl {
         url = "https://github.com/zackb/tether/releases/download/v${version}/tether-${version}-x86_64.AppImage";
-        hash = "sha256-jIeZbTcAZN0Gu4DI1ykgqrFovTmyP6IiVHF4I3TlABg=";
+        hash = "sha256-Se4oeHL+epCgXiDCjKpcQ4eThqNn3o4K+9JXjg3dGmo=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
@@ -210,7 +210,7 @@ let
 
   zed = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "zed-editor";
-    version = "1.18.1";
+    version = "1.20.2";
 
     nativeBuildInputs = [
       pkgs.autoPatchelfHook
@@ -234,7 +234,7 @@ let
 
     src = pkgs.fetchurl {
       url = "https://github.com/zed-industries/zed/releases/download/v${version}/zed-linux-x86_64.tar.gz";
-      hash = "sha256-7qYiaNjsX9NYffBvp24HLBBMyl4LCwq+y8KK5bh8C60=";
+      hash = "sha256-ZH3IXgn82ZzRdTZaibe3DM+WRpxIROuK5uuD36gvdgA=";
     };
 
     installPhase = ''

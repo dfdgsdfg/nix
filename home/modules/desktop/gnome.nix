@@ -3,10 +3,10 @@
 let
   autoMoveWindowsUuid = "auto-move-windows@gnome-shell-extensions.gcampax.github.com";
   autoMoveWindows = pkgs.gnomeExtensions.auto-move-windows.overrideAttrs (_: rec {
-    version = "75";
+    version = "78";
     src = pkgs.fetchzip {
       url = "https://extensions.gnome.org/extension-data/auto-move-windowsgnome-shell-extensions.gcampax.github.com.v${version}.shell-extension.zip";
-      hash = "sha256-DmoGh9ypAO5x46YsnJg4fngKawuIto6mtVMnUJNXQlY=";
+      hash = "sha256-2rqCLCmr6sToULeDxIq0+nOtnNgULsq/rOlMuUvfeEc=";
       stripRoot = false;
     };
   });

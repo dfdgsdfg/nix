@@ -93,13 +93,13 @@ let
     in
     pkgs.stdenvNoCC.mkDerivation rec {
       pname = "openemux";
-      version = "1.13.0";
+      version = "1.13.1";
 
       src = pkgs.fetchFromGitHub {
         owner = "guilhermefeitosa66";
         repo = "OpenEmux";
         rev = "v${version}";
-        hash = "sha256-6iM6cP8ptY2tanTlm1Vdt6OMOa+RV2B0+WjGKeYtfwE=";
+        hash = "sha256-QwG3yFmhcQ4VUr6Se5XhjrbYL84TqmINg62BtGhBj4M=";
       };
 
       nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -171,11 +171,11 @@ let
 
   cheatEngineFiles = pkgs.stdenvNoCC.mkDerivation {
     pname = "cheat-engine";
-    version = "7.7";
+    version = "7.7.1";
 
     src = pkgs.fetchurl {
-      url = "https://cheatengine.org/download/CheatEngineLinux77.zip";
-      hash = "sha256-HjwxIGGicOZ8Z88hXMFkACcnC96mb9J5PdFWQUmS9tQ=";
+      url = "https://cheatengine.org/download/CheatEngineLinux771.zip";
+      hash = "sha256-D7DZBDroVqzeA7W4caLzYn689nSurNBF+G1W2RoH8Xc=";
     };
 
     nativeBuildInputs = [ pkgs.unzip ];
