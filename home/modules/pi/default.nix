@@ -66,5 +66,19 @@ in
         echo "Would merge Pi settings into ${piHome}/agent/settings.json and models into ${piHome}/agent/models.json"
       fi
     '';
+
+    # The OmniRoute extension reads models.json directly and uses the raw
+    # apiKey as a bearer token, so our command-backed `!<command>` value arrives
+    # at the gateway unresolved. Its status probe then reports OmniRoute down
+    # while inference works. Rewrite that one function; see the script for why
+    # this is a patch instead of a fork.
+    home.activation.piOmnirouteExtension = lib.hm.dag.entryAfter [ "piConfig" ] ''
+      if [ -z "''${DRY_RUN:-}" ]; then
+        ${pkgs.python3}/bin/python ${./patch-omniroute-extension.py} \
+          --extension "${piHome}/agent/npm/node_modules/omniroute-pi-ext-integration/index.ts"
+      else
+        echo "Would patch the installed OmniRoute Pi extension to resolve command-backed API keys"
+      fi
+    '';
   };
 }
