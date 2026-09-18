@@ -306,8 +306,8 @@
           }
         },
         {
-          "id": "model/payg/deepseek-v4-flash-0731",
-          "name": "DeepSeek V4 Flash 0731 identity",
+          "id": "model/payg/deepseek-v4.1-flash",
+          "name": "DeepSeek V4.1 Flash identity",
           "reasoning": true,
           "thinkingLevelMap": {
             "off": "none",

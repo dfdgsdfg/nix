@@ -38,7 +38,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/gpt-6-astra
   - omniroute/model/gpt-5.3-codex-spark
   - omniroute/model/payg-fb/gpt-5.6-luna
-  - omniroute/model/payg/deepseek-v4-flash-0731
+  - omniroute/model/payg/deepseek-v4.1-flash
   - omniroute/model/payg/gemini-3.8-flash
   - omniroute/model/payg/gemini-3.5-flash-lite""",
     "defaultThinkingLevel": "defaultThinkingLevel: high",
@@ -336,8 +336,8 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
-    - id: model/payg/deepseek-v4-flash-0731
-      name: DeepSeek V4 Flash 0731 identity
+    - id: model/payg/deepseek-v4.1-flash
+      name: DeepSeek V4.1 Flash identity
       reasoning: true
       thinkingLevelMap:
         off: none
