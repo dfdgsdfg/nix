@@ -39,6 +39,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/gpt-5.3-codex-spark
   - omniroute/model/payg-fb/gpt-5.6-luna
   - omniroute/model/payg/deepseek-v4.1-flash
+  - omniroute/model/payg/glm-5.3-flash
   - omniroute/model/payg/gemini-3.8-flash
   - omniroute/model/payg/gemini-3.5-flash-lite""",
     "defaultThinkingLevel": "defaultThinkingLevel: high",
@@ -358,6 +359,29 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         supportsReasoningEffort: true
         thinkingFormat: openai
         requiresReasoningContentOnAssistantMessages: true
+        maxTokensField: max_tokens
+    - id: model/payg/glm-5.3-flash
+      name: GLM 5.3 Flash identity
+      reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [low, medium, high]
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        thinkingFormat: openai
         maxTokensField: max_tokens
     - id: model/payg/gemini-3.8-flash
       name: Gemini 3.8 Flash identity

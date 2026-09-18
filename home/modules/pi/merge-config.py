@@ -30,6 +30,7 @@ SETTINGS_MANAGED = {
         "omni/model/gpt-5.3-codex-spark",
         "omni/model/payg-fb/gpt-5.6-luna",
         "omni/model/payg/deepseek-v4.1-flash",
+        "omni/model/payg/glm-5.3-flash",
         "omni/model/payg/gemini-3.8-flash",
         "omni/model/payg/gemini-3.5-flash-lite",
     ],

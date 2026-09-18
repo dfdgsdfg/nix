@@ -331,6 +331,30 @@
           }
         },
         {
+          "id": "model/payg/glm-5.3-flash",
+          "name": "GLM 5.3 Flash identity",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
           "id": "model/payg/gemini-3.8-flash",
           "name": "Gemini 3.8 Flash identity",
           "reasoning": true,
