@@ -16,7 +16,7 @@ let
     managedModels
     // {
       providers = managedModels.providers // {
-        omniroute = managedModels.providers.omniroute // {
+        omni = managedModels.providers.omni // {
           apiKey = cfg.apiKeyCommand;
         };
       };
