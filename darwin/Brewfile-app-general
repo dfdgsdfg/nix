@@ -1,0 +1,6 @@
+# Package group: system/profiles/darwin/homebrew/mas-general.nix
+# Install: brew bundle --file=darwin/Brewfile-app-general
+
+mas "PDF Expert", id: 1055273043
+mas "Slack", id: 803453959
+mas "TrashMe 3", id: 1490879410

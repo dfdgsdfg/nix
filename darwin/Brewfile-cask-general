@@ -1,0 +1,18 @@
+# Package group: system/profiles/darwin/homebrew/casks-general.nix
+# Install: brew bundle --file=darwin/Brewfile-cask-general
+
+cask "discord"
+cask "google-chrome"
+cask "handbrake-app"
+cask "imageoptim"
+cask "iina"
+cask "input-source-pro"
+cask "keyboard-cleaner"
+cask "notion"
+cask "obsidian"
+cask "tailscale-app"
+cask "telegram"
+cask "vlc"
+cask "vysor"
+cask "zoom"
+cask "zotero"

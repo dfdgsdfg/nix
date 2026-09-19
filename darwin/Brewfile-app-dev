@@ -1,0 +1,7 @@
+# Package group: system/profiles/darwin/homebrew/mas-dev.nix
+# Install: brew bundle --file=darwin/Brewfile-app-dev
+
+mas "Color Picker", id: 1545870783
+mas "Kaleidoscope", id: 1575557335
+mas "TestFlight", id: 899247664
+mas "Transporter", id: 1450874784

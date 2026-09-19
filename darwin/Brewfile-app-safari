@@ -1,0 +1,11 @@
+# Package group: system/profiles/darwin/homebrew/mas-safari-extensions.nix
+# Install: brew bundle --file=darwin/Brewfile-app-safari
+
+mas "Dark Reader for Safari", id: 1438243180
+mas "DeArrow", id: 6451469297
+mas "SocialFocus", id: 1661093205
+mas "SponsorBlock", id: 1573461917
+mas "UnTrap", id: 1637438059
+mas "Unicorn", id: 1231935892
+mas "Userscripts", id: 1463298887
+mas "Turn Off the Lights for Safari", id: 1273998507

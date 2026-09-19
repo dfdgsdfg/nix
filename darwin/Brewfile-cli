@@ -1,0 +1,10 @@
+# Package group: system/profiles/darwin/homebrew/brews-cli.nix
+# Install: brew bundle --file=darwin/Brewfile-cli
+
+tap "can1357/tap"
+tap "hashicorp/tap"
+brew "can1357/tap/omp"
+brew "fnox"
+brew "hashicorp/tap/terraform"
+brew "herdr"
+brew "mise"

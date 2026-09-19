@@ -1,0 +1,9 @@
+# Package group: system/profiles/darwin/homebrew/mas-core.nix
+# Install: brew bundle --file=darwin/Brewfile-app
+
+mas "Amphetamine", id: 937984704
+mas "Bitwarden", id: 1352778147
+mas "Keka", id: 470158793
+mas "Microsoft Remote Desktop", id: 1295203466
+mas "Remote Desktop", id: 409907375
+mas "Speedtest", id: 1153157709

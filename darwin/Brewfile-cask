@@ -1,0 +1,9 @@
+# Package group: system/profiles/darwin/homebrew/casks-core.nix
+# Install: brew bundle --file=darwin/Brewfile-cask
+
+cask "cmux"
+cask "ghostty"
+cask "gitup-app"
+cask "localsend"
+cask "rustdesk"
+cask "zed"

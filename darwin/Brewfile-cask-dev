@@ -1,0 +1,11 @@
+# Package group: system/profiles/darwin/homebrew/casks-dev.nix
+# Install: brew bundle --file=darwin/Brewfile-cask-dev
+
+tap "stablyai/orca"
+cask "android-studio"
+cask "bit-slicer"
+cask "gcloud-cli"
+cask "hex-fiend"
+cask "stablyai/orca/orca"
+cask "orbstack"
+cask "visual-studio-code"

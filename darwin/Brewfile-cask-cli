@@ -1,0 +1,5 @@
+# Package group: system/profiles/darwin/homebrew/casks-cli.nix
+# Install: brew bundle --file=darwin/Brewfile-cask-cli
+
+cask "claude-code"
+cask "codex"
