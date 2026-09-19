@@ -77,7 +77,12 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        cached = lookup(args)
+        try:
+            cached = lookup(args)
+        except (RuntimeError, OSError):
+            # An unusable keychain is only fatal if the SOPS seed below cannot
+            # supply the key, so record a miss and let that decide.
+            cached = ""
         if args.sops_file.exists():
             info = args.sops_file.stat()
             if info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
@@ -86,7 +91,15 @@ def main() -> None:
             if not token or any(c.isspace() or ord(c) < 32 for c in token):
                 raise RuntimeError("SOPS runtime key is empty or malformed")
             if cached != token:
-                store(args, token)
+                try:
+                    store(args, token)
+                except (RuntimeError, OSError):
+                    # The keychain only caches the key for when the SOPS runtime
+                    # secret is absent. A headless host has no Secret Service to
+                    # cache into (WSL reports "The name is not activatable"), but
+                    # the seed just read is authoritative, so serve it rather
+                    # than failing with a key in hand.
+                    pass
             cached = token
         if not cached:
             raise RuntimeError(
@@ -94,10 +107,12 @@ def main() -> None:
                 "then unlock the OS keychain/Secret Service"
             )
         print(cached)
-    except (RuntimeError, OSError):
+    except (RuntimeError, OSError) as error:
+        # Name the underlying cause; the generic advice alone sent debugging
+        # toward SOPS when the real fault was a missing Secret Service.
         print(
             "OmniRoute personal API authentication failed; activate SOPS secrets and unlock "
-            "your OS keychain/Secret Service.",
+            f"your OS keychain/Secret Service. Cause: {error}",
             file=sys.stderr,
         )
         raise SystemExit(1)
