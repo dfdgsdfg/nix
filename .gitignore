@@ -1,1 +1,5 @@
 /result
+
+# The Windows chezmoi adapters import home/modules/*/merge-*.py by path, so
+# CPython writes bytecode caches next to those sources.
+__pycache__/

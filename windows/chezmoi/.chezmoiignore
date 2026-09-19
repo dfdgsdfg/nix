@@ -1,0 +1,9 @@
+{{/*
+  This source tree only ever targets Windows. Nix owns macOS and NixOS/WSL, so
+  on any other OS every entry is ignored and `chezmoi apply` becomes a no-op.
+  That is what keeps chezmoi and home-manager from being two systems managing
+  one machine: they never touch the same host.
+*/}}
+{{ if ne .chezmoi.os "windows" }}
+**
+{{ end }}

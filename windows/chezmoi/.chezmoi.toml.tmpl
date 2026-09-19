@@ -1,0 +1,17 @@
+{{/*
+  Rendered into ~/.config/chezmoi/chezmoi.toml by `chezmoi init`.
+
+  No [age] block here on purpose. The legacy chezmoi tree kept its own
+  encrypted_*.age copies of the SSH keys, which meant the same secret existed in
+  two formats and could drift. This tree reads the repo's SOPS files instead, so
+  secrets/*.yaml stays the single source and Windows is a consumer of it.
+*/}}
+
+# The modify_ scripts are the repo's own Python merge helpers, so the same code
+# that home-manager runs on macOS and NixOS decides what "managed" means here.
+[interpreters.py]
+    command = "python"
+
+[data]
+    # Repo root, derived from this source tree at windows/chezmoi.
+    repoRoot = {{ (joinPath .chezmoi.sourceDir ".." "..") | quote }}
