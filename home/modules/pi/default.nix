@@ -37,7 +37,16 @@ in
   config = lib.mkIf cfg.enable {
     home.activation.piPackage = lib.hm.dag.entryBetween [ "piConfig" ] [ "writeBoundary" ] ''
       if [ -z "''${DRY_RUN:-}" ]; then
-        if [ ! -x "${pnpmHome}/bin/pi" ]; then
+        piBin="${pnpmHome}/bin/pi"
+        # A pruned pnpm store leaves the shim in place but its entry point
+        # dangling, so testing for the shim alone lets a broken Pi survive
+        # every activation. The shim records its target; check that too.
+        piTarget=""
+        if [ -f "$piBin" ]; then
+          piTarget=$(${pkgs.gnused}/bin/sed -n 's/^# cmd-shim-target=//p' "$piBin" | ${pkgs.coreutils}/bin/tail -n 1)
+        fi
+
+        if [ ! -x "$piBin" ] || [ -z "$piTarget" ] || [ ! -f "$piTarget" ]; then
           if [ ! -x "${mise}" ]; then
             echo "mise must be installed before installing Pi with pnpm" >&2
             exit 1
@@ -49,7 +58,7 @@ in
             pnpm add --global --ignore-scripts @earendil-works/pi-coding-agent
         fi
       else
-        echo "Would install Pi with pnpm when ${pnpmHome}/bin/pi is missing"
+        echo "Would install Pi with pnpm when ${pnpmHome}/bin/pi is missing or its entry point is dangling"
       fi
     '';
 
