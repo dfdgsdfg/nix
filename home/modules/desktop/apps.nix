@@ -1,6 +1,7 @@
 { config, inputs, lib, pkgs, ... }:
 
 let
+  discord = import ../../packages/discord.nix { inherit pkgs; };
   upstreamBinaries = import ../../packages/upstream-binaries.nix { inherit lib pkgs; };
   localSend = upstreamBinaries.localsend;
   localSendPort = 53317;
@@ -120,7 +121,7 @@ in
    #vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by>
    #wget
    vscode
-   discord-ptb
+   discord
    slack
    telegram-desktop
    upstreamBinaries.zed
