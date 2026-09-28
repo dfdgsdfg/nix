@@ -25,6 +25,8 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   vision: omniroute/model/payg/gemini-3.5-flash-lite
   slow: omniroute/model/gpt-6-astra""",
     "enabledModels": """enabledModels:
+  - omniroute/model/gpt-6-sol
+  - omniroute/model/gpt-6-luna
   - omniroute/model/gpt-5.6-luna
   - omniroute/model/gpt-5.6-sol
   - omniroute/model/gpt-5.6-terra
@@ -54,6 +56,28 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     authHeader: true
     apiKey: {api_key}
     models:
+    - id: model/gpt-6-luna
+      name: GPT-6 Luna identity
+      reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, medium, high, xhigh, max]
+      input:
+      - text
+      - image
+      contextWindow: 272000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
     - id: model/gpt-5.6-luna
       name: GPT-5.6 Luna identity
       reasoning: true
@@ -70,6 +94,28 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         efforts: [low, medium, high, xhigh, max]
       input:
       - text
+      contextWindow: 272000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gpt-6-sol
+      name: GPT-6 Sol identity
+      reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, medium, high, xhigh, max]
+      input:
+      - text
+      - image
       contextWindow: 272000
       maxTokens: 32768
       compat:

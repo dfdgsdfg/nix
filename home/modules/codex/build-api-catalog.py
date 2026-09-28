@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Adapt installed Codex model metadata to OmniRoute's five public model IDs."""
+"""Adapt installed Codex model metadata to OmniRoute's subscription model IDs."""
 import json
 import os
 from pathlib import Path
 import subprocess
 import sys
 
-MODELS = ['gpt-6-astra', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.3-codex-spark']
+MODELS = ['gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.3-codex-spark']
 
 
 def build(codex):

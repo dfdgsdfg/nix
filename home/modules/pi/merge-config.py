@@ -16,6 +16,8 @@ SETTINGS_MANAGED = {
     "defaultModel": "model/payg-fb/gpt-5.6-luna",
     "defaultThinkingLevel": "high",
     "enabledModels": [
+        "omni/model/gpt-6-sol",
+        "omni/model/gpt-6-luna",
         "omni/model/gpt-5.6-luna",
         "omni/model/gpt-5.6-sol",
         "omni/model/gpt-5.6-terra",
