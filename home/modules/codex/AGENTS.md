@@ -5,8 +5,8 @@ Model portfolio:
 - Main: Astra/medium by default; use high for complex migrations, cross-module
   debugging, architectural decisions, and consequential reviews.
 - `scout`: Spark/high for narrow read-only lookups.
-- `explorer`: Terra/medium for broader codebase relationships and execution flows.
-- `worker`: Luna/high for implementation and focused tests; return design
+- `explorer`: Sol/medium for broader codebase relationships and execution flows.
+- `worker`: GPT-6 Luna/high for implementation and focused tests; return design
   ambiguity to Main. Keep reasoning effort at high.
 - `powerhouse`: Astra/xhigh for independent, clean-context re-examination.
 

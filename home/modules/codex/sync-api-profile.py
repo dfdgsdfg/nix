@@ -45,6 +45,27 @@ roots = [Path.home()/'.codex']
 for parent in [Path.home()/'Library/Application Support/orca/codex-accounts', Path.home()/'.config/orca/codex-accounts', Path.home()/'.config/Orca/codex-accounts']:
     roots.extend(parent.glob('*/home'))
 for root in roots:
+    # Orca retains independent native and legacy API profiles. Upgrade only
+    # model-valued keys; preserve each profile's login and other preferences.
+    for name in ('config.toml', 'api.config.toml'):
+        path = root/name
+        if not path.exists():
+            continue
+        before = path.read_text()
+        after = merge.migrate_model_selections(before)
+        if before == after:
+            continue
+        backup = path.with_suffix('.toml.before-gpt6')
+        if not backup.exists():
+            shutil.copyfile(path, backup)
+            backup.chmod(0o600)
+        fd, temporary = tempfile.mkstemp(prefix='.gpt6-profile.', dir=root)
+        try:
+            with os.fdopen(fd, 'w') as output:
+                output.write(after)
+            os.replace(temporary, path)
+        finally:
+            if os.path.exists(temporary): os.unlink(temporary)
     target = root/'omni-api.config.toml'
     legacy = root/'api.config.toml'
     # Seed renamed profiles from the previous managed OmniRoute profile only.
@@ -55,7 +76,7 @@ for root in roots:
             origin = legacy
     original = origin.read_text() if origin else ''
     merge.validate(original)
-    updated = remove_legacy_api_roles(original)
+    updated = merge.migrate_model_selections(remove_legacy_api_roles(original))
     for section, values in sections(managed):
         updated = merge.set_section(updated, section, values) if section else merge.set_top_level(updated, values)
     merge.validate(updated)
@@ -73,4 +94,4 @@ for root in roots:
         os.replace(tmp, target)
     finally:
         if os.path.exists(tmp): os.unlink(tmp)
-print('API profiles synchronized without changing default config or login')
+print('API profiles synchronized; GPT-5.6 selections migrated; login preserved')

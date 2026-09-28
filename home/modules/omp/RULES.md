@@ -11,11 +11,11 @@ replaceable configuration.
 |---|---|---|
 | `default` | `model/gpt-6-astra` | Main session, decomposition, integration, acceptance |
 | `plan` | `model/gpt-6-astra` | Planning and architecture decisions |
-| `task` | `model/payg-fb/gpt-5.6-luna` | General delegated coding and research |
-| `smol` | `model/payg-fb/gpt-5.6-luna` | Bounded exploration and mechanical work |
-| `tiny` | `model/payg-fb/gpt-5.6-luna` | Lightweight background operations |
-| `commit` | `model/payg-fb/gpt-5.6-luna` | Commit generation and repository work |
-| `advisor` | `model/payg-fb/gpt-5.6-luna` | Independent advice and difficult verification |
+| `task` | `model/gpt-6-luna` | General delegated coding and research |
+| `smol` | `model/gpt-6-luna` | Bounded exploration and mechanical work |
+| `tiny` | `model/gpt-6-luna` | Lightweight background operations |
+| `commit` | `model/gpt-6-luna` | Commit generation and repository work |
+| `advisor` | `model/gpt-6-luna` | Independent advice and difficult verification |
 | `designer` | `model/payg/gemini-3.8-flash` | UI/UX implementation and review |
 | `vision` | `model/payg/gemini-3.5-flash-lite` | Image and document understanding |
 | `slow` | `model/gpt-6-astra` | Explicit operator-selected expert escalation |
@@ -27,8 +27,8 @@ reasoning effort and service tier belong to the task/session. Model catalogs
 expose native effort controls through `thinking` metadata. The default session
 uses High. Select Medium or XHigh explicitly for Astra tasks that need it;
 `@slow` selects Astra but does not itself change effort. Gemini tasks must also
-select their required effort explicitly. The Luna PAYG-fallback identity keeps
-Fast service; choose the subscription-only Luna identity to disallow paid fallback.
+select their required effort explicitly. GPT-6 Luna keeps Fast service and uses subscription accounts only.
+Exhaustion fails visibly; these defaults do not fall back to paid Luna 5.6.
 
 ## Main session
 

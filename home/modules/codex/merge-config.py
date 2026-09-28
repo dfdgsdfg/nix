@@ -25,7 +25,7 @@ SECTIONS = {
     "agents": {
         "enabled": "true",
         "max_concurrent_threads_per_session": "6",
-        "default_subagent_model": '"gpt-5.6-luna"',
+        "default_subagent_model": '"gpt-6-luna"',
         "default_subagent_reasoning_effort": '"high"',
     },
     "features": {
@@ -86,8 +86,32 @@ def validate(text: str) -> None:
         raise SystemExit("config.toml is not a TOML table; refusing to overwrite")
 
 
+def migrate_model_selections(text: str) -> str:
+    """Upgrade model-valued TOML keys without rewriting prompts or credentials."""
+    validate(text)
+    replacements = {'gpt-5.6-luna': 'gpt-6-luna',
+                    'gpt-5.6-sol': 'gpt-6-sol',
+                    'gpt-5.6-terra': 'gpt-6-sol'}
+    pattern = re.compile(
+        r'(?m)^(?P<prefix>[ \t]*(?:model|default_subagent_model)[ \t]*=[ \t]*)'
+        r'(?P<quote>["\'])(?P<model>(?:model/)?gpt-5\.6-(?:luna|sol|terra))(?P=quote)')
+
+    def replace(match):
+        # A key-looking line inside a multiline prompt is not a TOML key.
+        try:
+            tomllib.loads(text[:match.start()])
+        except tomllib.TOMLDecodeError:
+            return match.group(0)
+        value = match['model']
+        prefix = 'model/' if value.startswith('model/') else ''
+        return match['prefix'] + match['quote'] + prefix + replacements[value[len(prefix):]] + match['quote']
+
+    return pattern.sub(replace, text)
+
+
 def merge(text: str) -> str:
     validate(text)
+    text = migrate_model_selections(text)
     text = remove_top_level(text, REMOVE_TOP_LEVEL)
     text = set_top_level(text, TOP_LEVEL)
     for section, values in SECTIONS.items():

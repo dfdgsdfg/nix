@@ -16,23 +16,19 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
     "modelRoles": """modelRoles:
   default: omniroute/model/gpt-6-astra
   plan: omniroute/model/gpt-6-astra
-  task: omniroute/model/payg-fb/gpt-5.6-luna
+  task: omniroute/model/gpt-6-luna
   designer: omniroute/model/payg/gemini-3.8-flash
-  advisor: omniroute/model/payg-fb/gpt-5.6-luna
-  smol: omniroute/model/payg-fb/gpt-5.6-luna
-  tiny: omniroute/model/payg-fb/gpt-5.6-luna
-  commit: omniroute/model/payg-fb/gpt-5.6-luna
+  advisor: omniroute/model/gpt-6-luna
+  smol: omniroute/model/gpt-6-luna
+  tiny: omniroute/model/gpt-6-luna
+  commit: omniroute/model/gpt-6-luna
   vision: omniroute/model/payg/gemini-3.5-flash-lite
   slow: omniroute/model/gpt-6-astra""",
     "enabledModels": """enabledModels:
   - omniroute/model/gpt-6-sol
   - omniroute/model/gpt-6-luna
-  - omniroute/model/gpt-5.6-luna
-  - omniroute/model/gpt-5.6-sol
-  - omniroute/model/gpt-5.6-terra
   - omniroute/model/gpt-6-astra
   - omniroute/model/gpt-5.3-codex-spark
-  - omniroute/model/payg-fb/gpt-5.6-luna
   - omniroute/model/payg/deepseek-v4.1-flash
   - omniroute/model/payg/glm-5.3-flash
   - omniroute/model/payg/gemini-3.8-flash
@@ -75,27 +71,8 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       - image
       contextWindow: 272000
       maxTokens: 32768
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: model/gpt-5.6-luna
-      name: GPT-5.6 Luna identity
-      reasoning: true
-      thinkingLevelMap:
-        off: none
-        minimal: null
-        low: low
-        medium: medium
-        high: high
-        xhigh: xhigh
-        max: max
-      thinking:
-        mode: effort
-        efforts: [low, medium, high, xhigh, max]
-      input:
-      - text
-      contextWindow: 272000
-      maxTokens: 32768
+      samplingParams:
+        service_tier: priority
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
@@ -116,48 +93,6 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       input:
       - text
       - image
-      contextWindow: 272000
-      maxTokens: 32768
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: model/gpt-5.6-sol
-      name: GPT-5.6 Sol identity
-      reasoning: true
-      thinkingLevelMap:
-        off: none
-        minimal: null
-        low: low
-        medium: medium
-        high: high
-        xhigh: xhigh
-        max: max
-      thinking:
-        mode: effort
-        efforts: [low, medium, high, xhigh, max]
-      input:
-      - text
-      contextWindow: 272000
-      maxTokens: 32768
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: model/gpt-5.6-terra
-      name: GPT-5.6 Terra identity
-      reasoning: true
-      thinkingLevelMap:
-        off: none
-        minimal: null
-        low: low
-        medium: medium
-        high: high
-        xhigh: xhigh
-        max: max
-      thinking:
-        mode: effort
-        efforts: [low, medium, high, xhigh, max]
-      input:
-      - text
       contextWindow: 272000
       maxTokens: 32768
       compat:
@@ -192,29 +127,6 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       contextWindow: 128000
       maxTokens: 32768
       compat:
-        maxTokensField: max_tokens
-    - id: model/payg-fb/gpt-5.6-luna
-      name: GPT-5.6 Luna PAYG fallback identity
-      reasoning: true
-      thinkingLevelMap:
-        off: none
-        minimal: null
-        low: low
-        medium: medium
-        high: high
-        xhigh: xhigh
-        max: max
-      thinking:
-        mode: effort
-        efforts: [low, medium, high, xhigh, max]
-      input:
-      - text
-      contextWindow: 272000
-      maxTokens: 32768
-      samplingParams:
-        service_tier: priority
-      compat:
-        supportsReasoningEffort: true
         maxTokensField: max_tokens
     - id: model/payg/deepseek-v4.1-flash
       name: DeepSeek V4.1 Flash identity
@@ -335,6 +247,20 @@ def split_yaml_top_level_blocks(text: str) -> list[tuple[str | None, str]]:
     return blocks
 
 
+def migrate_saved_model(value):
+    if not isinstance(value, str):
+        return value
+    routes = {
+        'model/gpt-5.6-sol': 'model/gpt-6-sol',
+        'model/gpt-5.6-terra': 'model/gpt-6-sol',
+        'model/gpt-5.6-luna': 'model/gpt-6-luna',
+        'model/payg-fb/gpt-5.6-luna': 'model/gpt-6-luna',
+    }
+    prefix = 'omniroute/' if value.startswith('omniroute/') else ''
+    model = value[len(prefix):]
+    return prefix + routes.get(model, model)
+
+
 def merge_config(original: str) -> str:
     blocks = split_yaml_top_level_blocks(original)
     existing_keys: set[str] = set()
@@ -343,6 +269,10 @@ def merge_config(original: str) -> str:
     for key, block in blocks:
         if key is None:
             result_blocks.append(block)
+        elif key == "model":
+            value = yaml.safe_load(block)["model"]
+            updated = migrate_saved_model(value)
+            result_blocks.append(block if updated == value else "model: " + json.dumps(updated))
         elif key in MANAGED_CONFIG_BLOCKS:
             existing_keys.add(key)
             result_blocks.append(MANAGED_CONFIG_BLOCKS[key])

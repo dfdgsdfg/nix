@@ -58,7 +58,7 @@ let
     model_reasoning_effort = "medium";
     developer_instructions = builtins.readFile ./omni-api-agents.md;
     agents = {
-      default_subagent_model = "model/gpt-5.6-luna";
+      default_subagent_model = "model/gpt-6-luna";
     }
     // lib.listToAttrs (map
       (name: lib.nameValuePair "omni-${name}" {

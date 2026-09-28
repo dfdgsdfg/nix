@@ -6,75 +6,6 @@
       "apiKey": "!security find-generic-password -a \"$USER\" -s \"omniroute-personal-pi\" -w",
       "models": [
         {
-          "id": "model/gpt-5.6-luna",
-          "name": "GPT-5.6 Luna identity",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": "none",
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          },
-          "input": [
-            "text"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 32768,
-          "compat": {
-            "supportsReasoningEffort": true,
-            "maxTokensField": "max_tokens"
-          }
-        },
-        {
-          "id": "model/gpt-5.6-sol",
-          "name": "GPT-5.6 Sol identity",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": "none",
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          },
-          "input": [
-            "text"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 32768,
-          "compat": {
-            "supportsReasoningEffort": true,
-            "maxTokensField": "max_tokens"
-          }
-        },
-        {
-          "id": "model/gpt-5.6-terra",
-          "name": "GPT-5.6 Terra identity",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": "none",
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          },
-          "input": [
-            "text"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 32768,
-          "compat": {
-            "supportsReasoningEffort": true,
-            "maxTokensField": "max_tokens"
-          }
-        },
-        {
           "id": "model/gpt-6-astra",
           "name": "GPT-6 Astra identity",
           "reasoning": true,
@@ -108,32 +39,6 @@
           "maxTokens": 32768,
           "compat": {
             "maxTokensField": "max_tokens"
-          }
-        },
-        {
-          "id": "model/payg-fb/gpt-5.6-luna",
-          "name": "GPT-5.6 Luna PAYG fallback identity",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": "none",
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          },
-          "input": [
-            "text"
-          ],
-          "contextWindow": 272000,
-          "maxTokens": 32768,
-          "compat": {
-            "supportsReasoningEffort": true,
-            "maxTokensField": "max_tokens"
-          },
-          "samplingParams": {
-            "service_tier": "priority"
           }
         },
         {
@@ -279,6 +184,9 @@
           "compat": {
             "supportsReasoningEffort": true,
             "maxTokensField": "max_tokens"
+          },
+          "samplingParams": {
+            "service_tier": "priority"
           }
         }
       ]

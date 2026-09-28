@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-MODELS = ['gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.3-codex-spark']
+MODELS = ['gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna', 'gpt-5.3-codex-spark']
 
 
 def build(codex):
@@ -27,7 +27,7 @@ def build(codex):
     if MODELS[-1] not in models:
         # Spark may be absent from the bundled API catalog. Keep conservative
         # text-only metadata until a subscription catalog supplies its entry.
-        spark = dict(models['gpt-5.6-luna'])
+        spark = dict(models['gpt-6-luna'])
         spark.update(slug=MODELS[-1], display_name='GPT-5.3 Codex Spark', context_window=128000, description='Codex Spark subscription model')
         models[MODELS[-1]] = spark
     result = []
