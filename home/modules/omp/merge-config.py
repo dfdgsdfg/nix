@@ -14,24 +14,17 @@ from pathlib import Path
 
 MANAGED_CONFIG_BLOCKS: dict[str, str] = {
     "modelRoles": """modelRoles:
-  default: omniroute/agent/orchestrator
-  plan: omniroute/agent/orchestrator
-  task: omniroute/agent/worker
-  designer: omniroute/agent/designer
-  advisor: omniroute/agent/worker
-  smol: omniroute/agent/worker
-  tiny: omniroute/agent/worker
-  commit: omniroute/agent/worker
-  vision: omniroute/agent/multimodal
-  slow: omniroute/agent/expert""",
+  default: omniroute/model/gpt-6-astra
+  plan: omniroute/model/gpt-6-astra
+  task: omniroute/model/payg-fb/gpt-5.6-luna
+  designer: omniroute/model/payg/gemini-3.8-flash
+  advisor: omniroute/model/payg-fb/gpt-5.6-luna
+  smol: omniroute/model/payg-fb/gpt-5.6-luna
+  tiny: omniroute/model/payg-fb/gpt-5.6-luna
+  commit: omniroute/model/payg-fb/gpt-5.6-luna
+  vision: omniroute/model/payg/gemini-3.5-flash-lite
+  slow: omniroute/model/gpt-6-astra""",
     "enabledModels": """enabledModels:
-  - omniroute/agent/orchestrator
-  - omniroute/agent/worker
-  - omniroute/agent/scout
-  - omniroute/agent/document
-  - omniroute/agent/designer
-  - omniroute/agent/expert
-  - omniroute/agent/multimodal
   - omniroute/model/gpt-5.6-luna
   - omniroute/model/gpt-5.6-sol
   - omniroute/model/gpt-5.6-terra
@@ -61,168 +54,6 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
     authHeader: true
     apiKey: {api_key}
     models:
-    - id: agent/orchestrator
-      name: Sol orchestrator (High)
-      reasoning: true
-      thinkingLevelMap:
-        off: null
-        minimal: null
-        low: null
-        medium: null
-        high: high
-        xhigh: null
-        max: null
-      thinking:
-        mode: effort
-        efforts: [high]
-        defaultLevel: high
-        requiresEffort: true
-      input:
-      - text
-      contextWindow: 272000
-      maxTokens: 32768
-      samplingParams:
-        reasoning_effort: high
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: agent/worker
-      name: Luna worker (High Fast)
-      reasoning: true
-      thinkingLevelMap:
-        off: null
-        minimal: null
-        low: null
-        medium: null
-        high: high
-        xhigh: null
-        max: null
-      thinking:
-        mode: effort
-        efforts: [high]
-        defaultLevel: high
-        requiresEffort: true
-      input:
-      - text
-      contextWindow: 272000
-      maxTokens: 32768
-      samplingParams:
-        reasoning_effort: high
-        service_tier: priority
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: agent/scout
-      name: GPT-5.3 Codex Spark scout
-      reasoning: false
-      input:
-      - text
-      contextWindow: 128000
-      maxTokens: 32768
-      compat:
-        maxTokensField: max_tokens
-    - id: agent/document
-      name: Gemini 3.8 Flash document specialist (Medium)
-      reasoning: true
-      thinkingLevelMap:
-        off: null
-        minimal: null
-        low: null
-        medium: medium
-        high: null
-        xhigh: null
-        max: null
-      thinking:
-        mode: effort
-        efforts: [medium]
-        defaultLevel: medium
-        requiresEffort: true
-      input:
-      - text
-      contextWindow: 1048576
-      maxTokens: 32768
-      samplingParams:
-        reasoning_effort: medium
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: agent/designer
-      name: Gemini 3.8 Flash designer (Medium)
-      reasoning: true
-      thinkingLevelMap:
-        off: null
-        minimal: null
-        low: null
-        medium: medium
-        high: null
-        xhigh: null
-        max: null
-      thinking:
-        mode: effort
-        efforts: [medium]
-        defaultLevel: medium
-        requiresEffort: true
-      input:
-      - text
-      - image
-      contextWindow: 1048576
-      maxTokens: 32768
-      samplingParams:
-        reasoning_effort: medium
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: agent/expert
-      name: Sol High expert reviewer
-      reasoning: true
-      thinkingLevelMap:
-        off: null
-        minimal: null
-        low: null
-        medium: null
-        high: high
-        xhigh: null
-        max: null
-      thinking:
-        mode: effort
-        efforts: [high]
-        defaultLevel: high
-        requiresEffort: true
-      input:
-      - text
-      contextWindow: 272000
-      maxTokens: 32768
-      samplingParams:
-        reasoning_effort: high
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
-    - id: agent/multimodal
-      name: Gemini Flash-Lite multimodal (Low)
-      reasoning: true
-      thinkingLevelMap:
-        off: null
-        minimal: null
-        low: low
-        medium: null
-        high: null
-        xhigh: null
-        max: null
-      thinking:
-        mode: effort
-        efforts: [low]
-        defaultLevel: low
-        requiresEffort: true
-      input:
-      - text
-      - image
-      contextWindow: 1048576
-      maxTokens: 32768
-      samplingParams:
-        reasoning_effort: low
-      compat:
-        supportsReasoningEffort: true
-        maxTokensField: max_tokens
     - id: model/gpt-5.6-luna
       name: GPT-5.6 Luna identity
       reasoning: true
@@ -334,6 +165,8 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       - text
       contextWindow: 272000
       maxTokens: 32768
+      samplingParams:
+        service_tier: priority
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens

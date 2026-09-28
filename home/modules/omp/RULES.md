@@ -9,27 +9,30 @@ replaceable configuration.
 
 | OMP role | OmniRoute route | Intended use |
 |---|---|---|
-| `default` | `agent/orchestrator` | Main session, decomposition, integration, acceptance |
-| `plan` | `agent/orchestrator` | Planning and architecture decisions |
-| `task` | `agent/worker` | General delegated coding and research |
-| `smol` | `agent/worker` | Bounded exploration and mechanical work |
-| `tiny` | `agent/worker` | Lightweight background operations |
-| `commit` | `agent/worker` | Commit generation and repository work |
-| `advisor` | `agent/worker` | Independent advice and difficult verification |
-| `vision` | `agent/multimodal` | Image and document understanding |
-| `slow` | `agent/expert` | Explicit operator-selected expert escalation |
+| `default` | `model/gpt-6-astra` | Main session, decomposition, integration, acceptance |
+| `plan` | `model/gpt-6-astra` | Planning and architecture decisions |
+| `task` | `model/payg-fb/gpt-5.6-luna` | General delegated coding and research |
+| `smol` | `model/payg-fb/gpt-5.6-luna` | Bounded exploration and mechanical work |
+| `tiny` | `model/payg-fb/gpt-5.6-luna` | Lightweight background operations |
+| `commit` | `model/payg-fb/gpt-5.6-luna` | Commit generation and repository work |
+| `advisor` | `model/payg-fb/gpt-5.6-luna` | Independent advice and difficult verification |
+| `designer` | `model/payg/gemini-3.8-flash` | UI/UX implementation and review |
+| `vision` | `model/payg/gemini-3.5-flash-lite` | Image and document understanding |
+| `slow` | `model/gpt-6-astra` | Explicit operator-selected expert escalation |
 
 `~/.omp/agent/config.yml` is authoritative if this table drifts.
 
-Agent catalog entries expose one fixed thinking effort: orchestrator, worker,
-and expert use High; document and designer use Medium; multimodal uses Low;
-scout is non-reasoning. Model identity entries expose the underlying model's
-native effort list instead. OMP encodes this with each model's `thinking`
-metadata, not only the session-wide `defaultThinkingLevel`.
+The gateway exposes model identities only. OMP roles are client selections;
+reasoning effort and service tier belong to the task/session. Model catalogs
+expose native effort controls through `thinking` metadata. The default session
+uses High. Select Medium or XHigh explicitly for Astra tasks that need it;
+`@slow` selects Astra but does not itself change effort. Gemini tasks must also
+select their required effort explicitly. The Luna PAYG-fallback identity keeps
+Fast service; choose the subscription-only Luna identity to disallow paid fallback.
 
 ## Main session
 
-The main session runs on `@default` (`agent/orchestrator`). Keep it on judgment work:
+The main session runs on `@default` (`model/gpt-6-astra`). Keep it on judgment work:
 
 - Understand requirements and own the top-level decomposition.
 - Make architecture and design decisions.
@@ -61,7 +64,7 @@ Use reasoning-capable specialist agents where a wrong judgment is expensive:
 
 Repository-defined agents without an explicit model selector inherit `@default`.
 For example, the homelab `operations` agent currently inherits
-`agent/orchestrator`; this is not the normal route for routine delegated edits.
+`model/gpt-6-astra`; this is not the normal route for routine delegated edits.
 
 ## Escalation
 

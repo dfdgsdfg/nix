@@ -13,16 +13,9 @@ from pathlib import Path
 
 SETTINGS_MANAGED = {
     "defaultProvider": "omni",
-    "defaultModel": "agent/worker",
+    "defaultModel": "model/payg-fb/gpt-5.6-luna",
     "defaultThinkingLevel": "high",
     "enabledModels": [
-        "omni/agent/orchestrator",
-        "omni/agent/worker",
-        "omni/agent/scout",
-        "omni/agent/document",
-        "omni/agent/designer",
-        "omni/agent/expert",
-        "omni/agent/multimodal",
         "omni/model/gpt-5.6-luna",
         "omni/model/gpt-5.6-sol",
         "omni/model/gpt-5.6-terra",
