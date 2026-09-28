@@ -1,85 +1,79 @@
 # Model routing and delegation policy
 
-OMP resolves model roles through `~/.omp/agent/config.yml`. Agent definitions may
-select one of those roles explicitly; definitions without a model selector inherit
-`@default`. Treat the role names as the stable interface and the underlying model as
-replaceable configuration.
+OMP resolves model roles through `~/.omp/agent/config.yml`. Roles select models;
+agent definitions supply task instructions and tools. A role alone does not
+create an agent. Definitions without a model selector inherit the parent's
+active model before falling back to its configured/default model.
 
 ## Effective role routes
 
-| OMP role | OmniRoute route | Intended use |
-|---|---|---|
-| `default` | `model/gpt-6-astra` | Main session, decomposition, integration, acceptance |
-| `plan` | `model/gpt-6-astra` | Planning and architecture decisions |
-| `task` | `model/gpt-6-luna` | General delegated coding and research |
-| `smol` | `model/gpt-6-luna` | Bounded exploration and mechanical work |
-| `tiny` | `model/gpt-6-luna` | Lightweight background operations |
-| `commit` | `model/gpt-6-luna` | Commit generation and repository work |
-| `advisor` | `model/gpt-6-luna` | Independent advice and difficult verification |
-| `designer` | `model/payg/gemini-3.8-flash` | UI/UX implementation and review |
-| `vision` | `model/payg/gemini-3.5-flash-lite` | Image and document understanding |
-| `slow` | `model/gpt-6-astra` | Explicit operator-selected expert escalation |
+| OMP role | OmniRoute route | Effort | Intended use |
+|---|---|---|---|
+| `default` | `model/gpt-6-astra` | medium | Main session, decomposition, integration, acceptance |
+| `plan` | `model/gpt-6-astra` | high | Planning and architecture decisions |
+| `task` | `model/gpt-6-luna` | high | Bounded implementation and focused tests |
+| `explore` | `model/gpt-6-sol` | medium | Relationships across modules and failure analysis |
+| `smol` | `model/gpt-6-luna` | medium | Narrow exploration and mechanical work |
+| `tiny` | `model/gpt-6-luna` | session/default | Lightweight background operations |
+| `commit` | `model/gpt-6-luna` | session/default | Commit generation and repository work |
+| `advisor` | `model/gpt-6-luna` | session/default | Optional ongoing assistance, not final acceptance |
+| `designer` | `model/payg/gemini-3.8-flash` | explicit selection | UI/UX model role; no dedicated agent installed |
+| `vision` | `model/payg/gemini-3.5-flash-lite` | explicit selection | Image and document understanding |
+| `slow` | `model/gpt-6-astra` | high | Independent correctness and security review |
 
-`~/.omp/agent/config.yml` is authoritative if this table drifts.
+`~/.omp/agent/config.yml` is authoritative if this table drifts. Role selectors
+include effort suffixes where listed; the default thinking level is medium.
+Explicit session or task effort settings may override these defaults. Use xhigh
+for a consequential, unresolved question when the evidence warrants it, not
+merely because the assignment is large.
 
-The gateway exposes model identities only. OMP roles are client selections;
-reasoning effort and service tier belong to the task/session. Model catalogs
-expose native effort controls through `thinking` metadata. The default session
-uses High. Select Medium or XHigh explicitly for Astra tasks that need it;
-`@slow` selects Astra but does not itself change effort. Gemini tasks must also
-select their required effort explicitly. GPT-6 Luna keeps Fast service and uses subscription accounts only.
-Exhaustion fails visibly; these defaults do not fall back to paid Luna 5.6.
+The gateway exposes model identities. Role selection and reasoning effort are
+client settings. GPT-6 Luna keeps Fast service and uses subscription accounts
+only. Exhaustion fails visibly; these defaults do not fall back to paid Luna 5.6.
 
 ## Main session
 
-The main session runs on `@default` (`model/gpt-6-astra`). Keep it on judgment work:
+Keep the main session on judgment work: understand requirements, define bounded
+assignments and acceptance criteria, make architectural decisions, integrate
+changes, and independently verify the result. Complete small tasks directly.
+Delegate substantial work when a bounded assignment can reduce search or
+implementation effort without losing necessary context.
 
-- Understand requirements and own the top-level decomposition.
-- Make architecture and design decisions.
-- Define bounded subagent contracts and review their results.
-- Integrate changes, verify the outcome, and replan when evidence changes.
+## Available agents
 
-Do not use the main session for broad searches or repetitive implementation when a
-bounded subagent can perform that work reliably.
+The managed user definitions are `scout` and `explorer`. The remaining agents
+below are bundled with OMP 18.3.1.
 
-## Subagents
+- `scout` — Luna/medium via `@smol`. Locate files, symbols, ownership, or one
+  bounded execution path. Read-only; return uncertainty to the parent.
+- `explorer` — Sol/medium via `@explore`. Trace relationships across modules,
+  compare plausible causes, and produce an implementation handoff. Read-only;
+  return architectural decisions to the parent.
+- `task` — Luna/high via `@task`. Implement clearly specified changes and run
+  focused tests. Return design ambiguity to the parent.
+- `sonic` — Luna/medium via `@smol`. Small mechanical edits and data collection.
+- `reviewer` — Astra/high via the managed `@slow` override. Independently review
+  correctness and regressions using the bundled review instructions.
+- `security-reviewer` — Astra/high via the managed `@slow` override. Perform
+  evidence-backed security review without inheriting a worker's model.
 
-Prefer the most specific bundled agent. Respect the model selector in its definition;
-do not override it merely because a task is large.
+Do not dispatch `librarian`, `conversation-analyzer`, or `designer` merely
+because a policy or model role mentions them: they are not installed by this
+configuration. Project or extension agents may provide additional names; check
+actual discovery before using them. Project definitions can override user and
+bundled definitions.
 
-Use the bounded worker/scout paths for delegated work:
+## Escalation and delegation hygiene
 
-- `scout` — read-only codebase exploration and compressed handoff.
-- `librarian` — external library and API research from primary sources.
-- `sonic` — small mechanical edits.
-- `conversation-analyzer` — read-only transcript analysis.
-- Generic `task` work only when no more specific agent fits and the assignment is
-  narrow and concrete.
-
-Use reasoning-capable specialist agents where a wrong judgment is expensive:
-
-- `reviewer` — independent correctness and regression review.
-- `security-reviewer` — evidence-backed security review.
-- `designer` — UI/UX implementation and review.
-
-Repository-defined agents without an explicit model selector inherit `@default`.
-For example, the homelab `operations` agent currently inherits
-`model/gpt-6-astra`; this is not the normal route for routine delegated edits.
-
-## Escalation
-
-There is no automatic capability ladder. Task size alone never justifies a stronger
-route. If a bounded assignment fails, return the evidence to the main
-session and re-scope it. Use `@advisor` for independent difficult verification and
-`@slow` only for explicit operator-selected expert escalation; never silently retry a
-failed task on either route.
-
-## Delegation hygiene
-
-- Give each subagent a self-contained brief with goal, constraints, interfaces, and
-  exact acceptance criteria; subagents do not inherit the conversation.
-- Parallelize genuinely independent read-heavy work.
-- Do not run write-heavy subagents concurrently on overlapping files.
-- Run review independently of the agent that implemented the change.
-- Keep reasoning-heavy decomposition in the main session; cheap agents receive
-  narrow tasks whose decisions are already bounded.
+- Give each subagent a self-contained brief with the goal, constraints,
+  interfaces, evidence, and exact acceptance criteria.
+- Use `explorer` when a scout's evidence exposes relationships beyond its scope;
+  there is no mandatory sequence for every task.
+- If a worker fails or finds ambiguity, return evidence to the main session and
+  re-scope the assignment. Do not silently retry on a stronger model.
+- Use `reviewer` or `security-reviewer` for independent verification when a wrong
+  judgment is expensive. The optional Luna advisor is not a substitute.
+- Parallelize independent read-heavy work. Avoid concurrent edits to overlapping
+  files. Keep review independent of implementation.
+- Keep architectural decisions in the main session; workers receive assignments
+  whose decisions are already bounded.

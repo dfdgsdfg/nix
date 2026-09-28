@@ -14,16 +14,17 @@ from pathlib import Path
 
 MANAGED_CONFIG_BLOCKS: dict[str, str] = {
     "modelRoles": """modelRoles:
-  default: omniroute/model/gpt-6-astra
-  plan: omniroute/model/gpt-6-astra
-  task: omniroute/model/gpt-6-luna
+  default: omniroute/model/gpt-6-astra:medium
+  plan: omniroute/model/gpt-6-astra:high
+  task: omniroute/model/gpt-6-luna:high
+  explore: omniroute/model/gpt-6-sol:medium
   designer: omniroute/model/payg/gemini-3.8-flash
   advisor: omniroute/model/gpt-6-luna
-  smol: omniroute/model/gpt-6-luna
+  smol: omniroute/model/gpt-6-luna:medium
   tiny: omniroute/model/gpt-6-luna
   commit: omniroute/model/gpt-6-luna
   vision: omniroute/model/payg/gemini-3.5-flash-lite
-  slow: omniroute/model/gpt-6-astra""",
+  slow: omniroute/model/gpt-6-astra:high""",
     "enabledModels": """enabledModels:
   - omniroute/model/gpt-6-sol
   - omniroute/model/gpt-6-luna
@@ -33,12 +34,16 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/payg/glm-5.3-flash
   - omniroute/model/payg/gemini-3.8-flash
   - omniroute/model/payg/gemini-3.5-flash-lite""",
-    "defaultThinkingLevel": "defaultThinkingLevel: high",
+    "defaultThinkingLevel": "defaultThinkingLevel: medium",
     "retry": """retry:
   enabled: true
   maxRetries: 1""",
     "task": """task:
-  showResolvedModelBadge: true""",
+  showResolvedModelBadge: true
+  agentModelOverrides:
+    reviewer: "@slow"
+    security-reviewer: "@slow"
+""",
     "setupVersion": "setupVersion: 2",
     "composer": """composer:
   shape: box""",

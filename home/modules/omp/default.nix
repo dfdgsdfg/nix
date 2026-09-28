@@ -86,6 +86,10 @@ in
         source = ./scout.md;
         force = true;
       };
+      ".omp/agent/agents/explorer.md" = {
+        source = ./explorer.md;
+        force = true;
+      };
     };
 
     # Keep config.yml and models.yml mutable because OMP updates them at runtime.
