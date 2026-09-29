@@ -42,7 +42,7 @@ implementation effort without losing necessary context.
 ## Available agents
 
 The managed user definitions are `scout` and `explorer`. The remaining agents
-below are bundled with OMP 18.3.1.
+below are bundled with OMP 18.4.2.
 
 - `scout` — Luna/medium via `@smol`. Locate files, symbols, ownership, or one
   bounded execution path. Read-only; return uncertainty to the parent.
