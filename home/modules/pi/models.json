@@ -139,11 +139,11 @@
           }
         },
         {
-          "id": "model/gpt-6-sol",
-          "name": "GPT-6 Sol identity",
+          "id": "model/gpt-6.1-sol",
+          "name": "GPT-6.1 Sol identity",
           "reasoning": true,
           "thinkingLevelMap": {
-            "off": "none",
+            "off": null,
             "minimal": null,
             "low": "low",
             "medium": "medium",

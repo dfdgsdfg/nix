@@ -12,7 +12,7 @@ active model before falling back to its configured/default model.
 | `default` | `model/gpt-6-astra` | medium | Main session, decomposition, integration, acceptance |
 | `plan` | `model/gpt-6-astra` | high | Planning and architecture decisions |
 | `task` | `model/gpt-6-luna` | high | Bounded implementation and focused tests |
-| `explore` | `model/gpt-6-sol` | medium | Relationships across modules and failure analysis |
+| `explore` | `model/gpt-6.1-sol` | medium | Relationships across modules and failure analysis |
 | `smol` | `model/gpt-6-luna` | medium | Narrow exploration and mechanical work |
 | `tiny` | `model/gpt-6-luna` | session/default | Lightweight background operations |
 | `commit` | `model/gpt-6-luna` | session/default | Commit generation and repository work |

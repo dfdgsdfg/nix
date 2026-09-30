@@ -89,12 +89,12 @@ def validate(text: str) -> None:
 def migrate_model_selections(text: str) -> str:
     """Upgrade model-valued TOML keys without rewriting prompts or credentials."""
     validate(text)
-    replacements = {'gpt-5.6-luna': 'gpt-6-luna',
-                    'gpt-5.6-sol': 'gpt-6-sol',
-                    'gpt-5.6-terra': 'gpt-6-sol'}
+    replacements = {'gpt-6-sol': 'gpt-6.1-sol', 'gpt-5.6-luna': 'gpt-6-luna',
+                    'gpt-5.6-sol': 'gpt-6.1-sol',
+                    'gpt-5.6-terra': 'gpt-6.1-sol'}
     pattern = re.compile(
         r'(?m)^(?P<prefix>[ \t]*(?:model|default_subagent_model)[ \t]*=[ \t]*)'
-        r'(?P<quote>["\'])(?P<model>(?:model/)?gpt-5\.6-(?:luna|sol|terra))(?P=quote)')
+        r'(?P<quote>["\'])(?P<model>(?:model/)?(?:gpt-5\.6-(?:luna|sol|terra)|gpt-6-sol))(?P=quote)')
 
     def replace(match):
         # A key-looking line inside a multiline prompt is not a TOML key.

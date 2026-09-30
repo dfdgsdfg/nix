@@ -30,15 +30,15 @@ api_key = "gpt-5.6-luna"
 '''
 updated = codex.migrate_model_selections(source)
 parsed = tomllib.loads(updated)
-assert parsed['model'] == 'gpt-6-sol'
+assert parsed['model'] == 'gpt-6.1-sol'
 assert 'model = "gpt-5.6-luna"' in parsed['prompt']
 assert parsed['agents']['default_subagent_model'] == 'model/gpt-6-luna'
-assert parsed['profiles']['custom']['model'] == 'gpt-6-sol'
+assert parsed['profiles']['custom']['model'] == 'gpt-6.1-sol'
 assert parsed['profiles']['custom']['api_key'] == 'gpt-5.6-luna'
 assert '# keep comment' in updated
 assert codex.migrate_model_selections(updated) == updated
-for old, new in [('model/gpt-5.6-sol', 'model/gpt-6-sol'),
-                 ('model/gpt-5.6-terra', 'model/gpt-6-sol'),
+for old, new in [('model/gpt-5.6-sol', 'model/gpt-6.1-sol'),
+                 ('model/gpt-5.6-terra', 'model/gpt-6.1-sol'),
                  ('model/gpt-5.6-luna', 'model/gpt-6-luna'),
                  ('model/payg-fb/gpt-5.6-luna', 'model/gpt-6-luna')]:
     result = omp.merge_config('model: omniroute/' + old + '\ncustom: keep\n')
@@ -56,3 +56,14 @@ for models in catalogs:
 assert pi.SETTINGS_MANAGED['defaultModel'] == 'model/gpt-6-luna'
 assert pi.SETTINGS_MANAGED['defaultThinkingLevel'] == 'high'
 print('PASS: GPT-6 selections, saved models, prompts/credentials, tier, and idempotence')
+
+for old in ('gpt-6-sol', 'model/gpt-6-sol'):
+    text = 'model = "' + old + '"\n'
+    migrated = codex.migrate_model_selections(text)
+    assert tomllib.loads(migrated)['model'] == old.replace('gpt-6-sol', 'gpt-6.1-sol')
+    assert codex.migrate_model_selections(migrated) == migrated
+assert omp.migrate_saved_model('omniroute/model/gpt-6-sol') == 'omniroute/model/gpt-6.1-sol'
+for models in catalogs:
+    sol = next(m for m in models if m['id'] == 'model/gpt-6.1-sol')
+    assert sol['thinkingLevelMap'].get('off', sol['thinkingLevelMap'].get(False)) is None
+print('PASS: Sol 6 to 6.1 migration and reasoning controls')

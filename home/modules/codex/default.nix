@@ -26,9 +26,9 @@ let
   apiRoleFiles = lib.mapAttrs (
     name: role: toml.generate "codex-api-agent-${name}.toml" role
   ) apiRoleConfigs;
-  codexBin = if pkgs.stdenv.hostPlatform.isDarwin then
-    (if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew/bin/codex" else "/usr/local/bin/codex")
-    else "${upstreamBinaries.codex}/bin/codex";
+  # Generate API metadata from the reviewed release on every platform, even
+  # when the interactive macOS CLI is installed separately by Homebrew.
+  codexBin = "${upstreamBinaries.codex}/bin/codex";
   platform = if pkgs.stdenv.hostPlatform.isDarwin then "darwin" else "linux";
   keychainAuth = pkgs.writeShellScriptBin "codex-omniroute-auth" ''
     exec ${pkgs.python3}/bin/python ${./keychain-auth.py} "$@"

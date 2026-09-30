@@ -17,7 +17,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   default: omniroute/model/gpt-6-astra:medium
   plan: omniroute/model/gpt-6-astra:high
   task: omniroute/model/gpt-6-luna:high
-  explore: omniroute/model/gpt-6-sol:medium
+  explore: omniroute/model/gpt-6.1-sol:medium
   designer: omniroute/model/payg/gemini-3.8-flash
   advisor: omniroute/model/gpt-6-luna
   smol: omniroute/model/gpt-6-luna:medium
@@ -26,7 +26,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   vision: omniroute/model/payg/gemini-3.5-flash-lite
   slow: omniroute/model/gpt-6-astra:high""",
     "enabledModels": """enabledModels:
-  - omniroute/model/gpt-6-sol
+  - omniroute/model/gpt-6.1-sol
   - omniroute/model/gpt-6-luna
   - omniroute/model/gpt-6-astra
   - omniroute/model/gpt-5.3-codex-spark
@@ -81,11 +81,11 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
-    - id: model/gpt-6-sol
-      name: GPT-6 Sol identity
+    - id: model/gpt-6.1-sol
+      name: GPT-6.1 Sol identity
       reasoning: true
       thinkingLevelMap:
-        off: none
+        off: null
         minimal: null
         low: low
         medium: medium
@@ -256,8 +256,9 @@ def migrate_saved_model(value):
     if not isinstance(value, str):
         return value
     routes = {
-        'model/gpt-5.6-sol': 'model/gpt-6-sol',
-        'model/gpt-5.6-terra': 'model/gpt-6-sol',
+        'model/gpt-6-sol': 'model/gpt-6.1-sol',
+        'model/gpt-5.6-sol': 'model/gpt-6.1-sol',
+        'model/gpt-5.6-terra': 'model/gpt-6.1-sol',
         'model/gpt-5.6-luna': 'model/gpt-6-luna',
         'model/payg-fb/gpt-5.6-luna': 'model/gpt-6-luna',
     }

@@ -16,7 +16,7 @@ SETTINGS_MANAGED = {
     "defaultModel": "model/gpt-6-luna",
     "defaultThinkingLevel": "high",
     "enabledModels": [
-        "omni/model/gpt-6-sol",
+        "omni/model/gpt-6.1-sol",
         "omni/model/gpt-6-luna",
         "omni/model/gpt-6-astra",
         "omni/model/gpt-5.3-codex-spark",

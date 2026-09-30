@@ -102,16 +102,16 @@ let
   codexRelease = selectRelease "codex" {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-szzUJsmsq5s0xakyALpP6DyOYUwYzl71KyvzZAi44Yw=";
+      hash = "sha256-ni0ppxO5RHiyQN7C8Q4RMkzQX6123EPnxjm9+KEzems=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-CfKp/eMY+804TxW0hQwbkJMGePSAVke2ve0ZbM8y9ZA=";
+      hash = "sha256-OKr23OYwmf0QmIlI0Du8bAR0JTrvaWH8vmD40VSzkQE=";
     };
   };
   codex = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "codex";
-    version = "0.158.0";
+    version = "0.159.2";
 
     src = pkgs.fetchurl {
       url = "https://github.com/openai/codex/releases/download/rust-v${version}/codex-package-${codexRelease.target}.tar.gz";
