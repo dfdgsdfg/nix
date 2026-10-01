@@ -1,6 +1,7 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, inputs, ... }:
 
 let
+  stablePkgs = import inputs.nixpkgs { system = pkgs.stdenv.hostPlatform.system; };
   upstreamBinaries = import ../packages/upstream-binaries.nix { inherit lib pkgs; };
 in
 {
@@ -19,7 +20,8 @@ in
     libsecret
     lm_sensors
     lsof
-    ltrace
+    # Unstable ltrace fails its demangling tests with the new toolchain.
+    stablePkgs.ltrace
     macchina
     mtr
     nmap

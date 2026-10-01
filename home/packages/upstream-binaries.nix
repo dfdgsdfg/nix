@@ -43,15 +43,15 @@ let
 
   herdr = mkRawBinary rec {
     pname = "herdr";
-    version = "0.9.1";
+    version = "0.9.3";
     releases = {
       x86_64-linux = {
         url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-linux-x86_64";
-        hash = "sha256-KgL+0WvrZR7wBuHUPwSPZSyk3FitBTzS1ERQVj1cVLc=";
+        hash = "sha256-GKjcZfHC+khYhDRDVt6hz9kRxvBs9G+njhk/QIf026c=";
       };
       aarch64-darwin = {
         url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-macos-aarch64";
-        hash = "sha256-X8en5636ylb6gKqJ3LAlaTNXJo2rgoW5zi0IojE8id4=";
+        hash = "sha256-UXOj4K5C1dGrfr+l1eYyn3w9I/jho2d8fOMjHaKIQVc=";
       };
     };
     description = "Terminal UI for managing coding agents";
@@ -102,16 +102,16 @@ let
   codexRelease = selectRelease "codex" {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-ni0ppxO5RHiyQN7C8Q4RMkzQX6123EPnxjm9+KEzems=";
+      hash = "sha256-OTDzGsX8qGHqPkROJoPyYRkNlrY/uljgpAqHkXQ2nN8=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-OKr23OYwmf0QmIlI0Du8bAR0JTrvaWH8vmD40VSzkQE=";
+      hash = "sha256-+tV6VoHKvO8h0yKvWuyTiXXPtxG18l1M5JB+ZWFhbQc=";
     };
   };
   codex = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "codex";
-    version = "0.159.2";
+    version = "0.159.3";
 
     src = pkgs.fetchurl {
       url = "https://github.com/openai/codex/releases/download/rust-v${version}/codex-package-${codexRelease.target}.tar.gz";
@@ -137,6 +137,41 @@ let
       sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     };
   };
+
+  buzz =
+    let
+      pname = "buzz";
+      version = "0.5.26";
+      src = pkgs.fetchurl {
+        url = "https://github.com/block/buzz/releases/download/desktop-v${version}/Buzz_${version}_amd64.AppImage";
+        hash = "sha256-67HFouhjceRMawqqdO9X6AwphliNnxftpSTcQ4iTz0M=";
+      };
+      appimageContents = pkgs.appimageTools.extract {
+        inherit pname version src;
+      };
+    in
+    pkgs.appimageTools.wrapType2 {
+      inherit pname version src;
+      extraPkgs = pkgs: [ pkgs.elfutils pkgs.zstd ];
+
+      extraInstallCommands = ''
+        install -Dm444 ${appimageContents}/Buzz.desktop \
+          $out/share/applications/Buzz.desktop
+        substituteInPlace $out/share/applications/Buzz.desktop \
+          --replace-fail 'Exec=buzz-desktop' "Exec=$out/bin/buzz %U" \
+          --replace-fail 'Categories=' 'Categories=Network;Chat;'
+        cp -R ${appimageContents}/usr/share/icons $out/share/
+      '';
+
+      meta = {
+        description = "Community chat for people and AI agents";
+        homepage = "https://buzz.xyz/";
+        license = lib.licenses.asl20;
+        mainProgram = "buzz";
+        platforms = [ "x86_64-linux" ];
+        sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+      };
+    };
 
   localsend =
     let
@@ -176,10 +211,10 @@ let
   tether =
     let
       pname = "tether";
-      version = "0.2.34";
+      version = "0.2.35";
       src = pkgs.fetchurl {
         url = "https://github.com/zackb/tether/releases/download/v${version}/tether-${version}-x86_64.AppImage";
-        hash = "sha256-72ahXcbkoVrkuV0JInbHsDFL5ECacDrH8YBZqmj6LJY=";
+        hash = "sha256-T3vAZaouasv/kiuCWXWVFCDOpKu3HM8y8oqSXJj+kMk=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
@@ -210,7 +245,7 @@ let
 
   zed = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "zed-editor";
-    version = "1.21.0";
+    version = "1.22.0";
 
     nativeBuildInputs = [
       pkgs.autoPatchelfHook
@@ -234,7 +269,7 @@ let
 
     src = pkgs.fetchurl {
       url = "https://github.com/zed-industries/zed/releases/download/v${version}/zed-linux-x86_64.tar.gz";
-      hash = "sha256-t5qZLpYO1AZ8srUNZnie2GGO6xeA7WoPjx5x3YD3QgA=";
+      hash = "sha256-XOOZGzSo+tCiNiX1ghzaYBxxUKbMaWg8CXuNGwg6vFA=";
     };
 
     installPhase = ''
@@ -258,6 +293,7 @@ let
 in
 {
   inherit
+    buzz
     codex
     herdr
     localsend

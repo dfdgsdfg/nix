@@ -9,6 +9,7 @@
 let
   cfg = config.modules.packages;
   system = pkgs.stdenv.hostPlatform.system;
+  stablePkgs = import inputs.nixpkgs { inherit system; };
   unstablePkgs =
     if pkgsUnstable != null then
       pkgsUnstable
@@ -21,7 +22,7 @@ let
 
   packageGroups = {
     core = import ./core.nix {
-      inherit lib pkgs unstablePkgs upstreamBinaries;
+      inherit lib pkgs stablePkgs unstablePkgs upstreamBinaries;
     };
     dev = import ./dev.nix { inherit lib pkgs; };
     network = import ./network.nix { inherit pkgs; };

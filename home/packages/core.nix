@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  stablePkgs,
   unstablePkgs,
   upstreamBinaries,
 }:
@@ -30,7 +31,8 @@
   lazygit
   lsd
   minisign
-  mosh
+  # Unstable mosh cannot compile against its new protobuf/Abseil dependencies.
+  (if stdenv.hostPlatform.isLinux then stablePkgs.mosh else mosh)
   navi
   nushell
   pipx

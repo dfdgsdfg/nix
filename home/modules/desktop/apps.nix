@@ -74,10 +74,10 @@ let
   orca =
     let
       pname = "orca";
-      version = "1.4.216";
+      version = "1.4.218";
       src = pkgs.fetchurl {
         url = "https://github.com/stablyai/orca/releases/download/v${version}/orca-linux.AppImage";
-        hash = "sha256-tPdQ90/BW3BqtessFoEqmguiwGSBg/HWxOVNysG3rVM=";
+        hash = "sha256-fDFjzzJXXJD+Ngu+zekB+y3MI0lAlhvRXiLBH95QcEQ=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
@@ -123,6 +123,7 @@ in
    vscode
    discord
    slack
+   upstreamBinaries.buzz
    telegram-desktop
    upstreamBinaries.zed
    bitwarden-desktop
@@ -137,6 +138,8 @@ in
   home.activation.setLocalSendPort = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${setLocalSendPort}
   '';
+
+  xdg.mimeApps.defaultApplications."x-scheme-handler/buzz" = [ "Buzz.desktop" ];
 
   xdg.desktopEntries.LocalSend = {
     name = "LocalSend";
