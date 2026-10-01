@@ -47,6 +47,8 @@ let
         { import = "lazyvim.plugins.extras.editor.telescope" },
         { import = "lazyvim.plugins.extras.lang.typescript" },
         { import = "lazyvim.plugins.extras.util.project" },
+        -- Keep search in Lua instead of compiling a native extension.
+        { "nvim-telescope/telescope-fzf-native.nvim", enabled = false },
         ${flutterSpec}
       },
       defaults = {
@@ -101,12 +103,8 @@ let
   );
   commonRuntimePackages = with pkgs; [
     fd
-    cmake
-    gcc
     lua5_1
     lua51Packages.luarocks
-    gnumake
-    lazygit
     lua-language-server
     nil
     ripgrep
@@ -114,9 +112,11 @@ let
     tree-sitter
   ];
   linuxRuntimePackages = with pkgs; [
+    # Tree-sitter still needs a C compiler to install parsers on Linux.
+    gcc
     wl-clipboard
   ];
-  # Neovim uses the macOS-provided pbcopy and pbpaste commands.
+  # macOS supplies clipboard tools; parser builds use Xcode Command Line Tools.
   darwinRuntimePackages = [ ];
 in
 {
