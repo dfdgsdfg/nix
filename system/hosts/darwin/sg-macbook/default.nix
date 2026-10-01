@@ -1,9 +1,6 @@
 { ... }:
 
 {
-  imports = [
-    ../../../profiles/darwin/base.nix
-    ./ssh.nix
-  ];
+  imports = [ ../../../profiles/darwin/base.nix ];
   networking.hostName = "sg-macbook";
 }

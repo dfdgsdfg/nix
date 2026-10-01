@@ -1,6 +1,9 @@
-{ config, inputs, pkgs, ... }:
+{ config, inputs, lib, pkgs, ... }:
 {
   system.primaryUser = "dididi";
+
+  # Enable Remote Login on Darwin unless a host explicitly opts out.
+  services.openssh.enable = lib.mkDefault true;
 
   nixpkgs = {
     hostPlatform = "aarch64-darwin";
