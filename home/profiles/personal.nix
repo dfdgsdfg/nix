@@ -47,7 +47,9 @@ let
     "!${keychainAuth}/bin/omniroute-personal-auth ${lib.concatStringsSep " " (map lib.escapeShellArg keychainArgs)}";
 in
 {
-  imports = [ ./ssh.nix ../modules/desktop/connections ];
+  imports = [ ./ssh.nix ../modules/desktop/connections ../modules/rustdesk ];
+
+  modules.rustdesk.enable = true;
 
   modules.desktop.connections.targets = {
     sg-asus = {

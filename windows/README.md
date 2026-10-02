@@ -145,3 +145,40 @@ What a first real run still has to confirm:
 - `chezmoi init --source` against a tree that is not its own git clone
 - that `sops` on Windows picks up the identity from `SOPS_AGE_KEY_FILE`
 - `winget import` exit behaviour when every package is already current
+
+## RustDesk
+
+`rustdesk.ps1` supports Windows PowerShell 5.1 and PowerShell 7 without Python.
+It reads the same public server profile and client registry as Home Manager.
+From this checkout:
+
+```powershell
+.\windows\rustdesk.ps1 Config
+.\windows\rustdesk.ps1 List
+.\windows\rustdesk.ps1 Address 123456789
+.\windows\rustdesk.ps1 Connect us-mbpro2311-sg
+```
+
+Join Tailscale and export the previous RustDesk server configuration for rollback.
+To enroll, open PowerShell **as Administrator**, with the RustDesk Windows service
+installed and running, and execute:
+
+```powershell
+.\windows\rustdesk.ps1 Apply
+.\windows\rustdesk.ps1 Id
+```
+
+`Apply` invokes the supported `--config` command; it does not edit TOML, install
+services, or set passwords. RustDesk can exit successfully without applying a
+configuration, so verify the server/key under Network settings and the Ready
+status in the UI. For portable clients, import the output of `Config` in the UI.
+To roll back, import the previously exported server configuration.
+
+`Id` prints the local Windows client's `ID@server?key=...` address. Record its
+bare ID under `sg-asus` in `home/modules/rustdesk/clients.json` after enrollment.
+Unknown IDs remain pending and cannot be used for named connections. Configure
+unattended access separately. WSL does not register another client.
+
+The script finds the Program Files installation first, then `rustdesk.exe` on
+PATH (including Scoop). Override discovery with `-RustDeskPath 'C:\path\rustdesk.exe'`.
+Configuration import is explicit, separate from the general bootstrap script.

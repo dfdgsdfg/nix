@@ -137,3 +137,47 @@ home-manager switch --flake .#dididi@sg-lenovo
 
 The adoption script moves existing SSH files into a timestamped backup directory
 under `~/.ssh`. It does not delete keys.
+
+## RustDesk clients
+
+The personal Home Manager profile installs `rustdesk-homelab` and a public server
+profile at `~/.config/rustdesk-homelab/`. Native clients still come from Homebrew
+(macOS), the desktop AppImage (NixOS), and Scoop (Windows). WSL is not a separate
+remote desktop: enroll the Windows host instead.
+
+After applying Home Manager, join Tailscale, export the client's previous server
+configuration for rollback, then copy the output below into RustDesk Settings →
+Network → Unlock Network Settings → Import Server Config:
+
+```sh
+rustdesk-homelab config
+```
+
+The profile selects `oci-default-01.tail484abe.ts.net:21116` and the verified hbbs
+public key; relay and API fields are blank. An installed RustDesk service can
+also import the string using `rustdesk --config '<string>'` with administrative
+privileges. Upstream requires an installed client and elevation for that CLI;
+the NixOS AppImage should use GUI import. Home Manager does not overwrite mutable
+RustDesk TOML files or change settings through a privileged activation hook.
+Confirm Ready and the device ID after import. Configure access passwords outside
+Git; macOS also needs Screen Recording and Accessibility permissions.
+
+Record each device's actual RustDesk ID in `home/modules/rustdesk/clients.json`
+and reapply Home Manager to distribute the list. Null means not yet enrolled;
+no synthetic IDs are assigned. `us-mbpro2311-sg` was read locally using
+`RustDesk --get-id`; recheck it after enrolling with the homelab server. Every generated destination includes the server
+and public key, including when the default server is already homelab:
+
+```sh
+rustdesk-homelab list
+rustdesk-homelab address 123456789
+rustdesk-homelab connect 123456789
+# After recording its ID:
+rustdesk-homelab connect sg-lenovo
+```
+
+`address` prints `ID@server:21116?key=public-key`; `connect` passes that exact
+address to RustDesk. This is an outbound connection selector, not a custom ID or
+simultaneous registration with multiple servers. These commands do not populate
+RustDesk's internal recent-peer database. To undo enrollment, import the saved
+previous server configuration. No unattended-access passwords are managed here.
