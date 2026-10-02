@@ -56,13 +56,15 @@ let
       "${pkgs.libsecret}/bin/secret-tool"
     ];
   apiConfig = toml.generate "codex-omni-api.config.toml" {
-    model = "model/gpt-6-astra";
+    model = "model/gpt-6.1-sol";
     model_provider = "omniroute";
     model_catalog_json = "${codexHome}/api-models.json";
-    model_reasoning_effort = "medium";
+    model_reasoning_effort = "high";
+    plan_mode_reasoning_effort = "high";
     developer_instructions = builtins.readFile ./omni-api-agents.md;
     agents = {
       default_subagent_model = "model/gpt-6-luna";
+      default_subagent_reasoning_effort = "high";
     }
     // lib.listToAttrs (map
       (name: lib.nameValuePair "omni-${name}" {

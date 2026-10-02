@@ -67,3 +67,10 @@ for models in catalogs:
     sol = next(m for m in models if m['id'] == 'model/gpt-6.1-sol')
     assert sol['thinkingLevelMap'].get('off', sol['thinkingLevelMap'].get(False)) is None
 print('PASS: Sol 6 to 6.1 migration and reasoning controls')
+
+managed = tomllib.loads(codex.merge(''))
+assert managed['model'] == 'gpt-6.1-sol'
+assert managed['model_reasoning_effort'] == managed['plan_mode_reasoning_effort'] == 'high'
+assert managed['agents']['default_subagent_model'] == 'gpt-6-luna'
+assert managed['agents']['default_subagent_reasoning_effort'] == 'high'
+print('PASS: Codex Sol/high main and Luna 6 defaults')

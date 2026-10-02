@@ -34,8 +34,8 @@ home-manager build --flake .#dididi@sg-lenovo
 
 ## Codex agent routing
 
-`home/modules/codex` keeps the Codex main agent on GPT-6 Astra with medium reasoning,
-defaults unspecified subagents to GPT-5.6 Luna with high reasoning, and defines
+`home/modules/codex` keeps the Codex main agent on GPT-6.1 Sol with high reasoning (including Plan mode),
+defaults unspecified subagents to GPT-6 Luna with high reasoning, and defines
 the `scout`, `explorer`, `worker`, and `powerhouse` roles. The module merges only
 these owned keys into `~/.codex/config.toml`, leaving app-managed MCP, plugin,
 notice, and project settings mutable.
@@ -44,21 +44,23 @@ OmniRoute API routing is opt-in with the native profile selector:
 
 ```bash
 codex -p omni-api
-codex -p omni-api -m model/gpt-6-astra
+codex -p omni-api -m model/gpt-6.1-sol
 ```
 
 The managed `~/.codex/omni-api.config.toml` uses command-backed authentication.
 Activation also merges the profile into existing Orca account homes, preserving
 profile-local UI state. Run Home Manager again after adding a new Orca account.
-An API-specific catalog maps installed Codex metadata to the five `model/*`
+An API-specific catalog maps installed Codex metadata to the four `model/*`
 route names so model selection and subagent validation use the same IDs.
 The SOPS-encrypted `secrets/codex.yaml` seeds the native keychain on first use
 and refreshes it after rotation. Darwin uses login Keychain; Linux requires an
 unlocked Secret Service accessible through `secret-tool`.
 Credentials are never written to the Nix store or the profile TOML.
 
-Spark High `scout`, Terra Medium `explorer`, the Astra Medium parent, and Astra XHigh
-`powerhouse` use the Standard service tier. Luna High `worker` uses Fast mode.
+Spark 5.3/high `scout`, Sol 6.1/medium `explorer`, Sol 6.1/high Main, and
+Astra 6/xhigh `powerhouse` do not pin a service tier. Luna 6/high `worker`
+uses Fast mode. The OmniRoute profile derives the same roles with `omni-` names
+and `model/` model IDs.
 
 ## Claude agent routing
 
@@ -85,7 +87,7 @@ OS keychain entry (`omniroute-personal-<client>`). The helpers seed Darwin
 Keychain or Linux Secret Service from the private SOPS paths.
 
 OmniRoute uses the same `personal-codex`, `personal-pi`, and `personal-omp`
-key names. Codex is restricted to the five subscription-only model routes;
+key names. Codex is restricted to the managed subscription model routes;
 Pi and OMP have separate operator route grants and usage attribution. The old
 `api` Codex profile is retained locally for compatibility; activation seeds
 `omni-api` from its managed OmniRoute settings without changing default login

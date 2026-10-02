@@ -27,7 +27,7 @@ custom_feature = true
 ''')
     template = root / 'template.toml'
     instructions = 'First line\nSecond line with "quotes" and C:\\tools\\new'
-    template.write_text('developer_instructions = ' + json.dumps(instructions) + '\n' + '''model = "model/gpt-6-astra"
+    template.write_text('developer_instructions = ' + json.dumps(instructions) + '\n' + '''model = "model/gpt-6.1-sol"
 [agents.omni-worker]
 config_file = "/Users/test/.codex/api-agents/worker.toml"
 ''')

@@ -20,10 +20,16 @@ def build(codex):
         try:
             cached = json.loads((root/'models_cache.json').read_text())
             for model in cached.get('models', []):
-                if model.get('slug') == 'gpt-5.3-codex-spark':
+                if model.get('slug') in MODELS and model['slug'] not in models:
                     models[model['slug']] = model
         except (OSError, ValueError, TypeError):
             continue
+    missing = [name for name in MODELS[:-1] if name not in models]
+    if missing:
+        raise SystemExit(
+            'Codex model metadata unavailable: ' + ', '.join(missing)
+            + '. Update Codex or refresh its authenticated model catalog before activation; '
+            + 'existing catalog has not been replaced.')
     if MODELS[-1] not in models:
         # Spark may be absent from the bundled API catalog. Keep conservative
         # text-only metadata until a subscription catalog supplies its entry.

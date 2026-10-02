@@ -13,9 +13,9 @@ from pathlib import Path
 
 
 TOP_LEVEL = {
-    "model": '"gpt-6-astra"',
-    "model_reasoning_effort": '"medium"',
-    "plan_mode_reasoning_effort": '"medium"',
+    "model": '"gpt-6.1-sol"',
+    "model_reasoning_effort": '"high"',
+    "plan_mode_reasoning_effort": '"high"',
     "check_for_update_on_startup": "false",
 }
 
