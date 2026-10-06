@@ -1,8 +1,8 @@
 name: renovate
 
-# The client Nix repository owns its Renovate workflow and token. Keeping this
-# workflow repository-local prevents a credential or configuration failure in
-# one repository from affecting the other.
+# The client Nix repository owns its Renovate workflow and policy. The shared
+# META credential authenticates ordinary GitHub operations without repository
+# Administration access; each invocation targets only github.repository.
 
 on:
   schedule:
@@ -36,32 +36,32 @@ jobs:
 
       - name: Verify Renovate token access
         env:
-          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_TOKEN: ${{ secrets.META_HOMELAB_GITHUB_PAT }}
         run: |
-          set -euo pipefail
-          identity_status="$(curl --silent --output /dev/null --write-out '%{http_code}' \
-            --header 'Accept: application/vnd.github+json' \
-            --header "Authorization: Bearer $RENOVATE_TOKEN" \
-            --header 'X-GitHub-Api-Version: 2022-11-28' \
-            "$GITHUB_API_URL/user")"
-          if [ "$identity_status" != 200 ]; then
-            echo "::error title=Renovate token authentication::GitHub /user returned HTTP $identity_status"
-            exit 1
-          fi
-
-          status="$(curl --silent --output /dev/null --write-out '%{http_code}' \
-            --header 'Accept: application/vnd.github+json' \
-            --header "Authorization: Bearer $RENOVATE_TOKEN" \
-            --header 'X-GitHub-Api-Version: 2022-11-28' \
-            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pulls?state=all&per_page=1")"
-          if [ "$status" != 200 ]; then
-            echo "::error title=Renovate token access::$GITHUB_REPOSITORY pull-request access returned HTTP $status"
-            exit 1
-          fi
+          python3 - <<'PYTHON'
+          import os, sys, urllib.error, urllib.request
+          base = os.environ.get("GITHUB_API_URL", "https://api.github.com")
+          for target in ("user", f"repos/{os.environ['GITHUB_REPOSITORY']}/pulls?state=all&per_page=1"):
+              request = urllib.request.Request(f"{base}/{target}", headers={
+                  "Authorization": "Bearer " + os.environ["RENOVATE_TOKEN"],
+                  "Accept": "application/vnd.github+json",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              })
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      if response.status != 200:
+                          raise OSError("unexpected status")
+              except urllib.error.HTTPError as error:
+                  print(f"::error title=Renovate token access::{target}: HTTP {error.code}")
+                  sys.exit(1)
+              except OSError:
+                  print(f"::error title=Renovate token access::{target}: request failed")
+                  sys.exit(1)
+          PYTHON
 
       - name: Run Renovate
         env:
-          RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+          RENOVATE_TOKEN: ${{ secrets.META_HOMELAB_GITHUB_PAT }}
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           RENOVATE_PLATFORM: github
           RENOVATE_GIT_AUTHOR: "renovate[bot] <29139614+renovate[bot]@users.noreply.github.com>"

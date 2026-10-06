@@ -1,0 +1,6 @@
+# Project-local overrides only. Hermes receives META as GH_TOKEN from OCI Vault.
+# Operator META/ADMIN credentials are managed in homelab, not copied here.
+# Copy to .mise.local.toml if overrides are needed; never commit credentials.
+[env]
+GH_HOST = "github.com"
+GH_PROMPT_DISABLED = "1"
