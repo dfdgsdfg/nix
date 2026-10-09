@@ -6,7 +6,7 @@
   ],
   "timezone": "Asia/Seoul",
   "schedule": [
-    "after 9pm on thursday"
+    "at any time"
   ],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 4,
@@ -18,7 +18,7 @@
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": [
-      "after 9pm on thursday"
+      "at any time"
     ]
   },
   "packageRules": [

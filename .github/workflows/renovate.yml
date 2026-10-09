@@ -6,7 +6,7 @@ name: renovate
 
 on:
   schedule:
-    - cron: "0 12 * * 4" # Thursday 21:00 KST, matching renovate.json's window
+    - cron: "0 12 * * 4" # Weekly Thursday 21:00 KST; Renovate is unrestricted to tolerate dispatch delays/manual invocation.
   workflow_dispatch:
     inputs:
       dry_run:
