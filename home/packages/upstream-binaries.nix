@@ -155,6 +155,12 @@ let
             --replace-fail 'exec -a "buzz-desktop"' \
               'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0''${GST_PLUGIN_SYSTEM_PATH_1_0:+:$GST_PLUGIN_SYSTEM_PATH_1_0}"
           exec -a "buzz-desktop"'
+
+          # The bundled GTK cache omits host input modules such as kime.
+          # Fall back to XIM, which can reach the host input-method daemon.
+          cat >> "$out/apprun-hooks/linuxdeploy-plugin-gtk.sh" <<'EOF'
+          export GTK_IM_MODULE="''${GTK_IM_MODULE:+$GTK_IM_MODULE:}xim"
+          EOF
         '';
       };
     in
