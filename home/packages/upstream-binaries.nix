@@ -148,11 +148,26 @@ let
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
+        postExtract = ''
+          # Buzz clears linuxdeploy's empty plugin path. Restore the FHS path
+          # because Nix's GStreamer cannot discover it from its store location.
+          substituteInPlace "$out/usr/bin/buzz-desktop" \
+            --replace-fail 'exec -a "buzz-desktop"' \
+              'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0''${GST_PLUGIN_SYSTEM_PATH_1_0:+:$GST_PLUGIN_SYSTEM_PATH_1_0}"
+          exec -a "buzz-desktop"'
+        '';
       };
     in
-    pkgs.appimageTools.wrapType2 {
+    pkgs.appimageTools.wrapAppImage {
       inherit pname version src;
-      extraPkgs = pkgs: [ pkgs.elfutils pkgs.zstd ];
+      contents = appimageContents;
+      extraPkgs = pkgs: [
+        pkgs.elfutils
+        pkgs.zstd
+        pkgs.gst_all_1.gst-plugins-good
+        pkgs.gst_all_1.gst-plugins-bad
+        pkgs.gst_all_1.gst-libav
+      ];
 
       extraInstallCommands = ''
         install -Dm444 ${appimageContents}/Buzz.desktop \
