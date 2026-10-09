@@ -63,6 +63,20 @@
     },
     {
       "customType": "regex",
+      "description": "Buzz desktop release with desktop-v GitHub tag",
+      "managerFilePatterns": [
+        "/^home\\/packages\\/upstream-binaries\\.nix$/"
+      ],
+      "matchStrings": [
+        "pname = \"buzz\";\\s*version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\";"
+      ],
+      "depNameTemplate": "block/buzz",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^desktop-v(?<version>\\d+\\.\\d+\\.\\d+)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
       "description": "Herdr release shared across Linux and Darwin source URLs",
       "managerFilePatterns": [
         "/^home\\/packages\\/upstream-binaries\\.nix$/"

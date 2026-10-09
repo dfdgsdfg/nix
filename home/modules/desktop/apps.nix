@@ -39,10 +39,10 @@ let
   rustdesk =
     let
       pname = "rustdesk";
-      version = "1.4.9";
+      version = "1.5.0";
       src = pkgs.fetchurl {
         url = "https://github.com/rustdesk/rustdesk/releases/download/${version}/rustdesk-${version}-x86_64.AppImage";
-        hash = "sha256-eQLNYKTymBfuviZooVyaGVKsaQ6Pewe/52IP7dTighc=";
+        hash = "sha256-Qi67kVtMcJ81Ec+ilBq879yx09YPZz9aIM+IpKssmqU=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
@@ -74,10 +74,10 @@ let
   orca =
     let
       pname = "orca";
-      version = "1.4.218";
+      version = "1.4.223";
       src = pkgs.fetchurl {
         url = "https://github.com/stablyai/orca/releases/download/v${version}/orca-linux.AppImage";
-        hash = "sha256-fDFjzzJXXJD+Ngu+zekB+y3MI0lAlhvRXiLBH95QcEQ=";
+        hash = "sha256-Dhis/lwH7Rk6/2A/tja6H8WQeBEgOad5pUQ6jVNIPUs=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;

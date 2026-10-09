@@ -18,10 +18,10 @@ let
 
   xtool = let
     pname = "xtool";
-    version = "1.20.1";
+    version = "1.21.0";
     src = pkgs.fetchurl {
       url = "https://github.com/xtool-org/xtool/releases/download/${version}/xtool-x86_64.AppImage";
-      hash = "sha256-BAxY1ccI9hO5t0y9sk4l6NcsR/+GlB8ZRjYm2BEVmDE=";
+      hash = "sha256-4id+Wbsv2ptIfLx3rQgOorA3C7dArA8CzEL6KKJy06U=";
     };
     appimageContents = pkgs.appimageTools.extract {
       inherit pname version src;

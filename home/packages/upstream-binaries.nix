@@ -62,16 +62,16 @@ let
   terraformRelease = selectRelease "terraform" {
     x86_64-linux = {
       asset = "linux_amd64";
-      hash = "sha256-3JSvDu8RR3GK18ja6nku0Znj4Eku7BgNCtr6KmWoed8=";
+      hash = "sha256-K8L8//AzJlyeAsoDUfAXlOsSL2KpsqSaMpS55J6qteQ=";
     };
     aarch64-darwin = {
       asset = "darwin_arm64";
-      hash = "sha256-Qs/fl61yL3kIX+InmwbUuGgBct41NLIu7d2aD7vnuPE=";
+      hash = "sha256-7N72XiQZPWJ/J8ObrtoxKV8IyTjYo9R2T0QvuRbUt9w=";
     };
   };
   terraform = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "terraform";
-    version = "1.16.4";
+    version = "1.16.5";
 
     src = pkgs.fetchurl {
       url = "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_${terraformRelease.asset}.zip";
@@ -102,16 +102,16 @@ let
   codexRelease = selectRelease "codex" {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-OTDzGsX8qGHqPkROJoPyYRkNlrY/uljgpAqHkXQ2nN8=";
+      hash = "sha256-T1c5RMHSBZEJ11ovTQzJwDaXKIIkpeQHcXqd6Y/AEMU=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-+tV6VoHKvO8h0yKvWuyTiXXPtxG18l1M5JB+ZWFhbQc=";
+      hash = "sha256-WAnukKnDtZ1Di7JmOu+gtD2G+CVDi2XUUEsx+CNDYos=";
     };
   };
   codex = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "codex";
-    version = "0.159.3";
+    version = "0.162.0";
 
     src = pkgs.fetchurl {
       url = "https://github.com/openai/codex/releases/download/rust-v${version}/codex-package-${codexRelease.target}.tar.gz";
@@ -141,26 +141,34 @@ let
   buzz =
     let
       pname = "buzz";
-      version = "0.5.26";
+      version = "0.5.27";
       src = pkgs.fetchurl {
         url = "https://github.com/block/buzz/releases/download/desktop-v${version}/Buzz_${version}_amd64.AppImage";
-        hash = "sha256-67HFouhjceRMawqqdO9X6AwphliNnxftpSTcQ4iTz0M=";
+        hash = "sha256-GVlFK6n3yCuMZH0fySHrZSqQ4AdypGq9q9yr1o2tmyg=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
         postExtract = ''
           # Buzz clears linuxdeploy's empty plugin path. Restore the FHS path
           # because Nix's GStreamer cannot discover it from its store location.
-          substituteInPlace "$out/usr/bin/buzz-desktop" \
-            --replace-fail 'exec -a "buzz-desktop"' \
-              'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0''${GST_PLUGIN_SYSTEM_PATH_1_0:+:$GST_PLUGIN_SYSTEM_PATH_1_0}"
-          exec -a "buzz-desktop"'
+          # Buzz 0.5.27 restores this path in its launcher already. Keep the
+          # patch for releases whose launcher still clears linuxdeploy's path.
+          if ! grep -q 'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0' \
+            "$out/usr/bin/buzz-desktop"; then
+            substituteInPlace "$out/usr/bin/buzz-desktop" \
+              --replace-fail 'exec -a "buzz-desktop"' \
+                'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0''${GST_PLUGIN_SYSTEM_PATH_1_0:+:$GST_PLUGIN_SYSTEM_PATH_1_0}"
+            exec -a "buzz-desktop"'
+          fi
 
           # The bundled GTK cache omits host input modules such as kime.
           # Fall back to XIM, which can reach the host input-method daemon.
-          cat >> "$out/apprun-hooks/linuxdeploy-plugin-gtk.sh" <<'EOF'
+          if ! grep -q '^export GTK_IM_MODULE=.*xim' \
+            "$out/apprun-hooks/linuxdeploy-plugin-gtk.sh"; then
+            cat >> "$out/apprun-hooks/linuxdeploy-plugin-gtk.sh" <<'EOF'
           export GTK_IM_MODULE="''${GTK_IM_MODULE:+$GTK_IM_MODULE:}xim"
           EOF
+          fi
         '';
       };
     in
@@ -232,10 +240,10 @@ let
   tether =
     let
       pname = "tether";
-      version = "0.2.35";
+      version = "0.2.36";
       src = pkgs.fetchurl {
         url = "https://github.com/zackb/tether/releases/download/v${version}/tether-${version}-x86_64.AppImage";
-        hash = "sha256-T3vAZaouasv/kiuCWXWVFCDOpKu3HM8y8oqSXJj+kMk=";
+        hash = "sha256-3UVZuQ+Es2AOtsW3xm+4UXx+3p1M7a6wCZ0OrmEmeTg=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
@@ -266,7 +274,7 @@ let
 
   zed = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "zed-editor";
-    version = "1.22.0";
+    version = "1.23.2";
 
     nativeBuildInputs = [
       pkgs.autoPatchelfHook
@@ -290,7 +298,7 @@ let
 
     src = pkgs.fetchurl {
       url = "https://github.com/zed-industries/zed/releases/download/v${version}/zed-linux-x86_64.tar.gz";
-      hash = "sha256-XOOZGzSo+tCiNiX1ghzaYBxxUKbMaWg8CXuNGwg6vFA=";
+      hash = "sha256-yr3dWvKyahljPqOfXd4HDiqtIEu4Fb+nTLZQc//V/zk=";
     };
 
     installPhase = ''
