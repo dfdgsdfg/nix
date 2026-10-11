@@ -102,16 +102,16 @@ let
   codexRelease = selectRelease "codex" {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-T1c5RMHSBZEJ11ovTQzJwDaXKIIkpeQHcXqd6Y/AEMU=";
+      hash = "sha256-pnb1ciquDYbL43ZDMvCOqx/didwKMAs61P+/SGEfo+M=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-WAnukKnDtZ1Di7JmOu+gtD2G+CVDi2XUUEsx+CNDYos=";
+      hash = "sha256-iON8zd9aD06p3BvhPGaiqU+cLRoE86zpBT1xs5OeiF0=";
     };
   };
   codex = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "codex";
-    version = "0.162.0";
+    version = "0.162.1";
 
     src = pkgs.fetchurl {
       url = "https://github.com/openai/codex/releases/download/rust-v${version}/codex-package-${codexRelease.target}.tar.gz";
@@ -141,10 +141,10 @@ let
   buzz =
     let
       pname = "buzz";
-      version = "0.5.27";
+      version = "0.5.28";
       src = pkgs.fetchurl {
         url = "https://github.com/block/buzz/releases/download/desktop-v${version}/Buzz_${version}_amd64.AppImage";
-        hash = "sha256-GVlFK6n3yCuMZH0fySHrZSqQ4AdypGq9q9yr1o2tmyg=";
+        hash = "sha256-YCI6wn2HQiJqC149teH5dEGyZ/9jq7kFeTsz/mVoh0w=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
@@ -240,10 +240,10 @@ let
   tether =
     let
       pname = "tether";
-      version = "0.2.36";
+      version = "0.2.37";
       src = pkgs.fetchurl {
         url = "https://github.com/zackb/tether/releases/download/v${version}/tether-${version}-x86_64.AppImage";
-        hash = "sha256-3UVZuQ+Es2AOtsW3xm+4UXx+3p1M7a6wCZ0OrmEmeTg=";
+        hash = "sha256-S3/7lYbvl12+FdU1OVuFCWtyIMlkb4hxNh7lXo6YXh8=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;

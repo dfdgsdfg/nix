@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -22,7 +23,10 @@ in
   };
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "sg-lenovo";
-  nixpkgs.overlays = [ (import ../../../overlays/kime.nix) ];
+  nixpkgs.overlays = [
+    (import ../../../overlays/kime.nix)
+    (import ../../../../home/packages/updates.nix { inherit inputs; })
+  ];
   networking.firewall.allowedTCPPorts = [
     3389 # GNOME Remote Desktop (RDP)
     5134 # Tether

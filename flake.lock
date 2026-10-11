@@ -357,6 +357,18 @@
         "type": "github"
       }
     },
+    "nixpkgs-updates": {
+      "locked": {
+        "lastModified": 1791682091,
+        "narHash": "sha256-/rWU9rJX3tXsCRIMGRw3Pzkpd/eRVxdklcOB7ynhydI=",
+        "type": "tarball",
+        "url": "https://codeload.github.com/NixOS/nixpkgs/tar.gz/6941d2b5424359e4194bd864bafa4efb0bac8243"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://codeload.github.com/NixOS/nixpkgs/tar.gz/6941d2b5424359e4194bd864bafa4efb0bac8243"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1789921291,
@@ -397,6 +409,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "nixpkgs-updates": "nixpkgs-updates",
         "sops-nix": "sops-nix",
         "zen-browser": "zen-browser"
       }
