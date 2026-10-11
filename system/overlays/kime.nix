@@ -1,5 +1,6 @@
-final: prev: {
-  kime = prev.kime.overrideAttrs (oldAttrs: rec {
+final: prev:
+let
+  kimeBase = prev.kime.overrideAttrs (oldAttrs: rec {
     version = "3.2.0";
 
     src = final.fetchFromGitHub {
@@ -13,6 +14,9 @@ final: prev: {
       inherit src;
       hash = "sha256-FP7uHsLVozB6kpwCuNFrYY2j6RQUL6n41hfvlFN5/qI=";
     };
+
+    # GTK4 removed button-press-event; connecting it aborts Epiphany at startup.
+    patches = (oldAttrs.patches or [ ]) ++ [ ./kime-gtk4-client.patch ];
 
     nativeBuildInputs = final.lib.unique (
       (oldAttrs.nativeBuildInputs or [ ])
@@ -73,4 +77,25 @@ final: prev: {
       runHook postInstall
     '';
   });
+  gtk4Module = import ./kime-gtk4.nix {
+    pkgs = final;
+    kime = kimeBase;
+  };
+in
+{
+  # Keep the Rust engine and other frontends cached when fixing the GTK4 module.
+  kime = final.symlinkJoin {
+    name = "kime-${kimeBase.version}";
+    inherit (kimeBase) version meta;
+    paths = [ kimeBase ];
+    postBuild = ''
+      modulePath=lib/gtk-4.0/4.0.0/immodules/libkime-gtk4.so
+      rm "$out/$modulePath"
+      ln -s "${gtk4Module}/$modulePath" "$out/$modulePath"
+    '';
+    passthru = (kimeBase.passthru or { }) // {
+      inherit gtk4Module;
+      unwrapped = kimeBase;
+    };
+  };
 }

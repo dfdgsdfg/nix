@@ -1,0 +1,78 @@
+--- a/src/frontends/gtk3/src/immodule.c
++++ b/src/frontends/gtk3/src/immodule.c
+@@ -102,10 +102,23 @@
+   debug("commit(%zu)", ctx->buf.len);
+ #endif
+ 
++#if GTK_CHECK_VERSION(3, 98, 4)
++  // GtkText caches the preedit cursor until preedit-changed. Publish the
++  // engine's new preedit before commit makes the widget recompute its layout.
++  // Snapshot and clear first so client callbacks can safely reset the context.
++  gchar *text = g_strndup(ctx->buf.ptr, ctx->buf.len);
++  ctx->buf.len = 0;
++  g_object_ref(ctx);
++  update_preedit(ctx);
++  g_signal_emit(ctx, ctx->signals.commit, 0, text);
++  g_free(text);
++  g_object_unref(ctx);
++#else
+   g_signal_emit(ctx, ctx->signals.commit, 0, ctx->buf.ptr);
+ 
+   // clear commit buffer
+   ctx->buf.len = 0;
++#endif
+ }
+ 
+ KeyRet process_input_result(KimeImContext *ctx, KimeInputResult ret) {
+@@ -130,8 +143,13 @@
+ 
+   if (ret & KimeInputResult_HAS_COMMIT) {
+     str_buf_set_str(&ctx->buf, kime_engine_commit_str(ctx->engine));
++#if GTK_CHECK_VERSION(3, 98, 4)
++    kime_engine_clear_commit(ctx->engine);
++    commit(ctx);
++#else
+     commit(ctx);
+     kime_engine_clear_commit(ctx->engine);
++#endif
+   }
+ 
+   return key_ret;
+@@ -155,8 +173,16 @@
+ void kime_reset(KimeImContext *ctx) {
+   kime_engine_clear_preedit(ctx->engine);
+   str_buf_set_str(&ctx->buf, kime_engine_commit_str(ctx->engine));
++#if GTK_CHECK_VERSION(3, 98, 4)
++  g_object_ref(ctx);
++  kime_engine_reset(ctx->engine);
++  commit(ctx);
++  update_preedit(ctx);
++  g_object_unref(ctx);
++#else
+   commit(ctx);
+   kime_engine_reset(ctx->engine);
++#endif
+ }
+ 
+ void reset(GtkIMContext *im) {
+@@ -272,6 +298,12 @@
+   KeyRet key_ret = on_key_input(ctx, code, numlock, kime_state);
+ 
+   if (ctx->preedit_visible || key_ret.has_preedit) {
++#if GTK_CHECK_VERSION(3, 98, 4)
++    // GTK4 cannot requeue events with gdk_event_put. Let unhandled control
++    // keys reach the widget after synchronously publishing the new preedit.
++    update_preedit(ctx);
++    return key_ret.bypassed ? commit_event(ctx, state, keyval) : TRUE;
++#else
+     guint mask = HANDLED_MASK;
+ 
+     if (key_ret.bypassed) {
+@@ -285,6 +317,7 @@
+ 
+     // never return `FALSE` here
+     return TRUE;
++#endif
+   } else if (key_ret.bypassed) {
+     // debug("commit_event");
+     return commit_event(ctx, state, keyval);

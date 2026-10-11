@@ -1,0 +1,37 @@
+--- a/src/frontends/gtk3/src/immodule.c
++++ b/src/frontends/gtk3/src/immodule.c
+@@ -309,6 +309,7 @@
+ #endif
+ }
+ 
++#if !GTK_CHECK_VERSION(3, 98, 4)
+ gboolean client_button_press(GtkWidget *widget, GdkEvent *event,
+                              gpointer user_data) {
+   debug("button");
+@@ -317,19 +318,26 @@
+ 
+   return FALSE;
+ }
++#endif
+ 
+ void set_client(GtkIMContext *im, ClientType *client) {
+   KIME_IM_CONTEXT(im);
+   GtkWidget *widget = client_get_widget(client);
+ 
+   if (ctx->widget) {
++#if !GTK_CHECK_VERSION(3, 98, 4)
+     g_signal_handlers_disconnect_by_func(ctx->widget,
+                                          (GCallback)client_button_press, ctx);
++#endif
+     g_object_unref(ctx->widget);
+   }
+   if (widget) {
++    // GTK4 has no legacy button-press-event signal. Its widgets manage
++    // their IM reset; Epiphany treats invalid signal connections as fatal.
++#if !GTK_CHECK_VERSION(3, 98, 4)
+     g_signal_connect(widget, "button-press-event",
+                      (GCallback)client_button_press, ctx);
++#endif
+     g_object_ref(widget);
+   }
+   ctx->widget = widget;
