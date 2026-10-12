@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 
 let
   sshSecrets = ../../secrets/ssh.yaml;
@@ -54,10 +54,6 @@ in
       publicKeySecret = "ssh/id_rsa.pub";
     };
     secretFiles = {
-      authorizedKeys = {
-        secret = "ssh/authorized_keys";
-        target = ".ssh/authorized_keys";
-      };
       rsaPublicPem = {
         secret = "ssh/id_rsa.pub.pem";
         target = ".ssh/id_rsa.pub.pem";
@@ -73,5 +69,13 @@ in
       "~/.ssh/id_ed25519"
       "~/.ssh/id_rsa"
     ];
+  };
+
+  # Trust the homelab agent's public key without distributing its private key.
+  sops.templates."ssh/authorized_keys" = {
+    path = "${config.home.homeDirectory}/.ssh/authorized_keys";
+    mode = "0600";
+    content = config.sops.placeholder."ssh/authorized_keys"
+      + "\n" + builtins.readFile ../modules/ssh/agent.pub;
   };
 }

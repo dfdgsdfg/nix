@@ -104,6 +104,19 @@ desired package groups from its target/host configuration, but omit the
 `personal` profile. Supply its own Git identity separately; the personal age
 key and SSH credentials are not required by the common configuration.
 
+The personal SSH profile trusts the homelab agent through the public-only
+`home/modules/ssh/agent.pub`. A SOPS template combines the existing encrypted
+authorized-key list with this public key at `~/.ssh/authorized_keys`. This is
+inbound client authorization; `known_hosts` instead authenticates destination
+SSH servers. Applying the profile does not enable a disabled SSH server.
+
+The homelab repository owns generation and credential management through
+`scripts/provision-agent-ssh.py`, OCI Vault secret `homelab-agent-ssh-key`, and
+canonical public key `nix/keys/agent.pub`. This repository keeps only a public
+trust copy; it neither stores nor installs the agent's private key. Keep the
+public copy aligned with homelab when intentionally rotating the identity.
+The agent inherits the existing destination account's permissions.
+
 `home/profiles/work-us.nix` independently opts into the US work SSH identity
 `~/.ssh/us_sg_ed25519` and its public key, encrypted in `secrets/work-us.yaml`.
 Import it from the hosts that need this key; it does not require the `personal`
