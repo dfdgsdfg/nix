@@ -4,8 +4,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    # Selected updates that have not reached nixos-unstable yet.
-    nixpkgs-updates.url = "https://codeload.github.com/NixOS/nixpkgs/tar.gz/6941d2b5424359e4194bd864bafa4efb0bac8243";
 
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -105,8 +103,7 @@
         }:
         let
           pkgs = import nixpkgs-unstable {
-            inherit system;
-            overlays = overlays ++ [ (import ./home/packages/updates.nix { inherit inputs; }) ];
+            inherit system overlays;
             config.allowUnfree = true;
           };
         in

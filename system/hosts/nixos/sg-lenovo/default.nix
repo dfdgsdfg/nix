@@ -2,7 +2,7 @@
   config,
   lib,
   pkgs,
-  inputs,
+  pkgsUnstable,
   ...
 }:
 
@@ -25,7 +25,6 @@ in
   networking.hostName = "sg-lenovo";
   nixpkgs.overlays = [
     (import ../../../overlays/kime.nix)
-    (import ../../../../home/packages/updates.nix { inherit inputs; })
   ];
   networking.firewall.allowedTCPPorts = [
     3389 # GNOME Remote Desktop (RDP)
@@ -88,7 +87,7 @@ in
       DynamicUser = true;
       LoadCredential = "tunnel-token:${config.sops.secrets.cloudflare-tunnel-token.path}";
       ExecCondition = "${pkgs.gnugrep}/bin/grep --quiet ^eyJ %d/tunnel-token";
-      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file %d/tunnel-token";
+      ExecStart = "${pkgsUnstable.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file %d/tunnel-token";
       Restart = "on-failure";
       RestartSec = "5s";
     };
@@ -125,6 +124,7 @@ in
 
   services.tailscale = {
     enable = true;
+    package = pkgsUnstable.tailscale;
     openFirewall = true;
   };
 

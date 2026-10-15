@@ -124,7 +124,7 @@ in
    discord
    slack
    upstreamBinaries.buzz
-   telegram-desktop
+   upstreamBinaries.telegram
    upstreamBinaries.zed
    bitwarden-desktop
    obsidian

@@ -237,6 +237,46 @@ let
       };
     };
 
+  telegram = pkgs.stdenvNoCC.mkDerivation rec {
+    pname = "telegram-desktop";
+    version = "7.3.1";
+
+    src = pkgs.fetchurl {
+      url = "https://github.com/telegramdesktop/tdesktop/releases/download/v${version}/td-setup-linux-x64-${version}.tar.xz";
+      hash = "sha256-ZUpbJm1lOwcrRAekZEvUQeN+45P1AscbLh2G/BFbirY=";
+    };
+
+    # patchelf 0.15 moves .init without fixing Telegram's startup call.
+    nativeBuildInputs = [ pkgs.patchelfUnstable pkgs.autoPatchelfHook pkgs.makeWrapper ];
+    buildInputs = with pkgs; [
+      stdenv.cc.cc.lib alsa-lib cairo dbus fontconfig freetype glib libglvnd
+      libpulseaudio pango pipewire
+      libx11 libxcb libxcomposite libxcursor libxdamage libxext
+      libxfixes libxrandr libxrender libxtst libxkbcommon zlib
+    ];
+    runtimeDependencies = map lib.getLib [
+      pkgs.libGL pkgs.wayland pkgs.libxkbcommon pkgs.libx11 pkgs.gtk3
+    ];
+
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 Telegram "$out/libexec/Telegram"
+      cp -R ${pkgs.telegram-desktop}/share "$out/share"
+      chmod -R u+w "$out/share"
+      mkdir -p "$out/bin"
+      makeWrapper "$out/libexec/Telegram" "$out/bin/telegram-desktop" --add-flags -noupdate
+      ln -s "$out/bin/telegram-desktop" "$out/bin/Telegram"
+      substituteInPlace "$out/share/applications/org.telegram.desktop.desktop" \
+        --replace-fail 'Exec=Telegram' "Exec=$out/bin/telegram-desktop"
+      runHook postInstall
+    '';
+
+    meta = pkgs.telegram-desktop.meta // {
+      platforms = [ "x86_64-linux" ];
+      sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
+    };
+  };
+
   tether =
     let
       pname = "tether";
@@ -326,6 +366,7 @@ in
     codex
     herdr
     localsend
+    telegram
     tether
     terraform
     zed
