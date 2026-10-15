@@ -29,10 +29,25 @@
       "matchManagers": [
         "custom.regex"
       ],
+      "matchFileNames": [
+        "home/**",
+        "system/**"
+      ],
       "addLabels": [
         "needs-hash"
       ],
       "automerge": false
+    },
+    {
+      "description": "Update Determinate through lock maintenance; read the root nixpkgs channel directly with the regex manager",
+      "matchManagers": [
+        "nix"
+      ],
+      "matchDepNames": [
+        "determinate",
+        "nixpkgs"
+      ],
+      "enabled": false
     }
   ],
   "customDatasources": {
@@ -45,6 +60,20 @@
     }
   },
   "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Stable root nixpkgs channel, independent of flake.lock node names",
+      "managerFilePatterns": [
+        "/^flake\\.nix$/"
+      ],
+      "matchStrings": [
+        "nixpkgs\\.url\\s*=\\s*\"github:nixos/nixpkgs/(?<currentValue>nixos-\\d{2}\\.\\d{2})\";"
+      ],
+      "depNameTemplate": "nixpkgs",
+      "packageNameTemplate": "https://github.com/NixOS/nixpkgs",
+      "datasourceTemplate": "git-refs",
+      "versioningTemplate": "nixpkgs"
+    },
     {
       "customType": "regex",
       "description": "GitHub release versions used by fetchurl packages",

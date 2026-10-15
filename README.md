@@ -42,6 +42,16 @@ age where available, major upgrades require Dependency Dashboard approval, and
 merging remains manual. Custom source updates keep the `needs-hash` label and
 require refreshed hashes and a build before merging.
 
+FlakeHub inputs, including Determinate and its transitive dependencies, update
+through native `flake.lock` maintenance. Individual Git lookups for Determinate
+and the native manager's `nixpkgs` entry are disabled: Renovate does not recognize
+FlakeHub tarballs, and its lock-node lookup can mistake a transitive `nixpkgs`
+for the root input. A regex manager reads the stable `nixpkgs` channel directly
+from `flake.nix`, preserving channel-upgrade PRs; the native Nix manager still
+refreshes `flake.lock` for those changes. Channel upgrades do not need the
+`needs-hash` label. Lock maintenance stays within the input ranges in
+`flake.nix`; changing Determinate's major range remains an explicit edit.
+
 Renovate refreshes an existing update branch when a newer release supersedes
 its target. Separate major and minor upgrade paths may have separate PRs;
 package name alone is not a reason to close one.
