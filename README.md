@@ -32,6 +32,20 @@ nixos-rebuild build --flake .#sg-lenovo
 home-manager build --flake .#dididi@sg-lenovo
 ```
 
+## Dependency updates
+
+GitHub Actions runs Renovate on Thursday at 21:00 KST or by manual dispatch.
+Actions owns scheduling; Renovate has no additional time window, including for
+flake.lock maintenance, so delayed runs still process updates. Hourly and
+concurrent PR creation are unlimited. Updates still require three days of release
+age where available, major upgrades require Dependency Dashboard approval, and
+merging remains manual. Custom source updates keep the `needs-hash` label and
+require refreshed hashes and a build before merging.
+
+Renovate refreshes an existing update branch when a newer release supersedes
+its target. Separate major and minor upgrade paths may have separate PRs;
+package name alone is not a reason to close one.
+
 ## Codex agent routing
 
 `home/modules/codex` keeps the Codex main agent on GPT-6.1 Sol with high reasoning (including Plan mode),

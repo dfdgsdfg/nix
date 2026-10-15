@@ -5,11 +5,8 @@
     ":dependencyDashboard"
   ],
   "timezone": "Asia/Seoul",
-  "schedule": [
-    "at any time"
-  ],
   "prHourlyLimit": 0,
-  "prConcurrentLimit": 4,
+  "prConcurrentLimit": 0,
   "minimumReleaseAge": "3 days",
   "automerge": false,
   "nix": {
