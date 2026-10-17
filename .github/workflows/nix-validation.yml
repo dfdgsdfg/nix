@@ -37,7 +37,7 @@ jobs:
           nix eval --raw '.#nixosConfigurations.sg-asus.config.system.build.toplevel.drvPath' >/dev/null
 
       - name: Verify Kime source hash
-        run: nix build --no-link '.#nixosConfigurations.sg-lenovo.pkgs.kime.src'
+        run: nix build --no-link '.#nixosConfigurations.sg-lenovo.pkgs.kime.unwrapped.src'
 
   darwin:
     name: Darwin flake evaluation
