@@ -33,7 +33,11 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/payg/deepseek-v4.1-flash
   - omniroute/model/payg/glm-5.3-flash
   - omniroute/model/payg/gemini-3.8-flash
-  - omniroute/model/payg/gemini-3.5-flash-lite""",
+  - omniroute/model/payg/gemini-3.5-flash-lite
+  - omniroute/model/gemini-3.8-flash-low
+  - omniroute/model/gemini-3.8-flash-medium
+  - omniroute/model/gemini-3.8-flash-high
+  - omniroute/model/gemini-3.5-flash-lite""",
     "defaultThinkingLevel": "defaultThinkingLevel: medium",
     "retry": """retry:
   enabled: true
@@ -224,6 +228,88 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       maxTokens: 32768
       compat:
         supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gemini-3.8-flash-low
+      name: gemini-3.8-flash-low (AGY subscription)
+      reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: low
+        medium: null
+        high: null
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [low]
+        defaultLevel: low
+        requiresEffort: true
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gemini-3.8-flash-medium
+      name: gemini-3.8-flash-medium (AGY subscription)
+      reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: null
+        medium: medium
+        high: null
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [medium]
+        defaultLevel: medium
+        requiresEffort: true
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gemini-3.8-flash-high
+      name: gemini-3.8-flash-high (AGY subscription)
+      reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: null
+        medium: null
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [high]
+        defaultLevel: high
+        requiresEffort: true
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/gemini-3.5-flash-lite
+      name: gemini-3.5-flash-lite (AGY subscription)
+      reasoning: false
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
         maxTokensField: max_tokens"""
 
 

@@ -24,6 +24,10 @@ SETTINGS_MANAGED = {
         "omni/model/payg/glm-5.3-flash",
         "omni/model/payg/gemini-3.8-flash",
         "omni/model/payg/gemini-3.5-flash-lite",
+        "omni/model/gemini-3.8-flash-low",
+        "omni/model/gemini-3.8-flash-medium",
+        "omni/model/gemini-3.8-flash-high",
+        "omni/model/gemini-3.5-flash-lite",
     ],
     "theme": "dark",
 }
