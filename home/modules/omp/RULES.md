@@ -17,8 +17,8 @@ active model before falling back to its configured/default model.
 | `tiny` | `model/gpt-6-luna` | session/default | Lightweight background operations |
 | `commit` | `model/gpt-6-luna` | session/default | Commit generation and repository work |
 | `advisor` | `model/gpt-6-luna` | session/default | Optional ongoing assistance, not final acceptance |
-| `designer` | `model/payg/gemini-3.8-flash` | explicit selection | UI/UX model role; no dedicated agent installed |
-| `vision` | `model/payg/gemini-3.5-flash-lite` | explicit selection | Image and document understanding |
+| `designer` | `model/gemini-3.8-flash-medium` | medium | UI/UX model role; no dedicated agent installed |
+| `vision` | `model/gemini-3.5-flash-lite` | none | Image understanding |
 | `slow` | `model/gpt-6-astra` | high | Independent correctness and security review |
 
 `~/.omp/agent/config.yml` is authoritative if this table drifts. Role selectors
@@ -30,6 +30,10 @@ merely because the assignment is large.
 The gateway exposes model identities. Role selection and reasoning effort are
 client settings. GPT-6 Luna keeps Fast service and uses subscription accounts
 only. Exhaustion fails visibly; these defaults do not fall back to paid Luna 5.6.
+
+Gemini roles use the two AGY subscriptions without paid fallback. PAYG remains
+an explicit model selection. Audio, video, and PDF support is verified only for
+the separate Hermes paid attachment bridge.
 
 ## Main session
 

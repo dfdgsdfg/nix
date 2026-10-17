@@ -74,3 +74,18 @@ assert managed['model_reasoning_effort'] == managed['plan_mode_reasoning_effort'
 assert managed['agents']['default_subagent_model'] == 'gpt-6-luna'
 assert managed['agents']['default_subagent_reasoning_effort'] == 'high'
 print('PASS: Codex Sol/high main and Luna 6 defaults')
+
+# Managed Gemini roles prefer subscriptions while explicit paid sessions survive.
+selected = yaml.safe_load(omp.merge_config(
+    'model: omniroute/model/payg/gemini-3.8-flash\ncustom: keep\n'))
+assert selected['modelRoles']['designer'] == 'omniroute/model/gemini-3.8-flash-medium:medium'
+assert selected['modelRoles']['vision'] == 'omniroute/model/gemini-3.5-flash-lite'
+assert selected['model'] == 'omniroute/model/payg/gemini-3.8-flash'
+assert selected['custom'] == 'keep'
+for models in catalogs:
+    lite = next(m for m in models if m['id'] == 'model/gemini-3.5-flash-lite')
+    assert lite['reasoning'] is False
+    assert 'thinking' not in lite
+    assert 'thinkingLevelMap' not in lite
+    assert any(m['id'] == 'model/payg/gemini-3.5-flash-lite' for m in models)
+print('PASS: subscription Gemini defaults, explicit paid selection, and Lite controls')

@@ -18,12 +18,12 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   plan: omniroute/model/gpt-6-astra:high
   task: omniroute/model/gpt-6-luna:high
   explore: omniroute/model/gpt-6.1-sol:medium
-  designer: omniroute/model/payg/gemini-3.8-flash
+  designer: omniroute/model/gemini-3.8-flash-medium:medium
   advisor: omniroute/model/gpt-6-luna
   smol: omniroute/model/gpt-6-luna:medium
   tiny: omniroute/model/gpt-6-luna
   commit: omniroute/model/gpt-6-luna
-  vision: omniroute/model/payg/gemini-3.5-flash-lite
+  vision: omniroute/model/gemini-3.5-flash-lite
   slow: omniroute/model/gpt-6-astra:high""",
     "enabledModels": """enabledModels:
   - omniroute/model/gpt-6.1-sol
