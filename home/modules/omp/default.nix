@@ -14,11 +14,11 @@ let
     {
       x86_64-linux = {
         asset = "omp-linux-x64";
-        hash = "sha256-yswS1c3Ub/IH80UrNqDQz6fFuK7g1AOqg8WrH0a8y1g=";
+        hash = "sha256-PY+We7TPKhVFkhFe2vS7cj16amRI7skzrF60k0STgSU=";
       };
       aarch64-darwin = {
         asset = "omp-darwin-arm64";
-        hash = "sha256-HQhM+7lYf6H/dvp38G7oaAtqcPks0gf0p5QuK9Ra5mU=";
+        hash = "sha256-l1Lj1/e9q2NuIUlaav/Bluj/w6Lf+vUp2y3XPSveolU=";
       };
     }
     .${system} or (throw "OMP is not packaged for ${system}");
