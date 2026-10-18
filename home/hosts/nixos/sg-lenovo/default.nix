@@ -13,4 +13,9 @@
     network.enable = true;
     ops.enable = true;
   };
+
+  modules.desktop.connections.targets.us-mbpro2311-sg = {
+    protocol = "vnc";
+    host = "100.100.101.101";
+  };
 }
