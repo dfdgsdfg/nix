@@ -19,6 +19,20 @@ Linux desktop modules are intentionally host-scoped. macOS and WSL should opt in
 to extra GUI, game, Android, GNOME, or SSH modules explicitly instead of getting
 them from the shared Home Manager base.
 
+## Orca CLI on Linux
+
+The desktop package includes `orca-ui` for the app and `orca-ide` for its CLI.
+The CLI uses an FHS environment for Electron's shared libraries and runs the
+bundled CLI launcher directly, without the desktop launcher's GUI flags.
+Home Manager owns `~/.local/bin/orca-ide` and the `~/.local/bin/orca` compatibility
+entry point so both follow the installed version after upgrades and garbage
+collection.
+
+```bash
+orca-ide skills get orca-cli
+orca-ide status --json
+```
+
 ## Checks
 
 ```bash

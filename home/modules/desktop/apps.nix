@@ -82,6 +82,13 @@ let
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
       };
+      cli = pkgs.buildFHSEnv (pkgs.appimageTools.defaultFhsEnvArgs // {
+        name = "orca-cli-${version}";
+        executableName = "orca-ide";
+        # The bundled CLI starts Electron in Node mode. It needs the same
+        # libraries as the desktop app, but must bypass AppRun's GUI flags.
+        runScript = "${appimageContents}/resources/bin/orca-ide";
+      });
     in
     pkgs.appimageTools.wrapType2 {
       inherit pname version src;
@@ -98,6 +105,7 @@ let
         makeWrapper $out/bin/orca $out/bin/orca-ui \
           --add-flags '--ozone-platform=x11' \
           --add-flags '--force-prefers-reduced-motion'
+        ln -s ${cli}/bin/orca-ide $out/bin/orca-ide
       '';
 
       meta = {
@@ -138,6 +146,17 @@ in
   home.activation.setLocalSendPort = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${setLocalSendPort}
   '';
+
+  # Orca's own installer writes version-specific launchers here. Manage both
+  # entry points so they follow the current package instead of collected builds.
+  home.file.".local/bin/orca-ide" = {
+    source = "${orca}/bin/orca-ide";
+    force = true;
+  };
+  home.file.".local/bin/orca" = {
+    source = "${orca}/bin/orca-ide";
+    force = true;
+  };
 
   xdg.mimeApps.defaultApplications."x-scheme-handler/buzz" = [ "Buzz.desktop" ];
 
