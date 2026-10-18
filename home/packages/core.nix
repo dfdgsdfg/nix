@@ -8,7 +8,6 @@
 
 (with pkgs; [
   age
-  atuin
   bat
   bottom
   broot

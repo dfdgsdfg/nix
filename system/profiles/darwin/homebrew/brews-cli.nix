@@ -5,6 +5,7 @@
       "hashicorp/tap"
     ];
     brews = [
+      "atuin"
       "can1357/tap/omp"
       "fnox"
       "hashicorp/tap/terraform"

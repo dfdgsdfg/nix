@@ -9,6 +9,7 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   brewPrefix = if pkgs.stdenv.hostPlatform.isAarch64 then "/opt/homebrew" else "/usr/local";
   brewMise = "${brewPrefix}/bin/mise";
+  brewAtuin = "${brewPrefix}/bin/atuin";
   pathOrder = import ./path-order.nix;
   pnpmHome =
     if isDarwin then
@@ -186,6 +187,9 @@ in
       if [[ -x ${brewMise} ]]; then
         eval "$(${brewMise} activate zsh)"
       fi
+      if [[ -x ${brewAtuin} && $options[zle] = on ]]; then
+        eval "$(${brewAtuin} init zsh)"
+      fi
     '';
     oh-my-zsh = {
       enable = true;
@@ -210,6 +214,9 @@ in
       if test -x ${brewMise}
         ${brewMise} activate fish | source
       end
+      if test -x ${brewAtuin}
+        ${brewAtuin} init fish | source
+      end
     '';
     shellInit = ''
       set -gx fisher_home ~/.local/share/fisherman
@@ -226,6 +233,10 @@ in
       if [[ -x ${brewMise} ]]; then
         eval "$(${brewMise} activate bash)"
       fi
+      if [[ -x ${brewAtuin} && :$SHELLOPTS: =~ :(vi|emacs): ]]; then
+        source "${pkgs.bash-preexec}/share/bash/bash-preexec.sh"
+        eval "$(${brewAtuin} init bash)"
+      fi
     '';
   };
   programs.starship = {
@@ -236,7 +247,7 @@ in
   };
 
   programs.atuin = {
-    enable = true;
+    enable = !isDarwin;
     enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
