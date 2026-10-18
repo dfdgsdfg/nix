@@ -6,7 +6,7 @@ name: renovate
 
 on:
   schedule:
-    - cron: "0 12 * * 4" # Thursday 21:00 KST; Actions owns scheduling
+    - cron: "0 12 * * 1,3,5" # Monday, Wednesday, Friday 21:00 KST; Actions owns scheduling
   workflow_dispatch:
     inputs:
       dry_run:
