@@ -71,7 +71,7 @@ let
   };
   terraform = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "terraform";
-    version = "1.16.5";
+    version = "1.16.6";
 
     src = pkgs.fetchurl {
       url = "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_${terraformRelease.asset}.zip";
