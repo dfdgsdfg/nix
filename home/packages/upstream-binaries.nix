@@ -314,7 +314,7 @@ let
 
   zed = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "zed-editor";
-    version = "1.23.2";
+    version = "1.24.2";
 
     nativeBuildInputs = [
       pkgs.autoPatchelfHook
