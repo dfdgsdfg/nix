@@ -18,7 +18,7 @@ let
 
   xtool = let
     pname = "xtool";
-    version = "1.21.0";
+    version = "1.22.2";
     src = pkgs.fetchurl {
       url = "https://github.com/xtool-org/xtool/releases/download/${version}/xtool-x86_64.AppImage";
       hash = "sha256-4id+Wbsv2ptIfLx3rQgOorA3C7dArA8CzEL6KKJy06U=";
