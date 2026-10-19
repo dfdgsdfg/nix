@@ -280,7 +280,7 @@ let
   tether =
     let
       pname = "tether";
-      version = "0.2.37";
+      version = "0.2.38";
       src = pkgs.fetchurl {
         url = "https://github.com/zackb/tether/releases/download/v${version}/tether-${version}-x86_64.AppImage";
         hash = "sha256-S3/7lYbvl12+FdU1OVuFCWtyIMlkb4hxNh7lXo6YXh8=";
