@@ -43,7 +43,7 @@ let
 
   herdr = mkRawBinary rec {
     pname = "herdr";
-    version = "0.9.3";
+    version = "0.9.5";
     releases = {
       x86_64-linux = {
         url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-linux-x86_64";
