@@ -43,15 +43,15 @@ let
 
   herdr = mkRawBinary rec {
     pname = "herdr";
-    version = "0.9.3";
+    version = "0.9.5";
     releases = {
       x86_64-linux = {
         url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-linux-x86_64";
-        hash = "sha256-GKjcZfHC+khYhDRDVt6hz9kRxvBs9G+njhk/QIf026c=";
+        hash = "sha256-FNnovItKngEY13wyJm921GHwm0A0LrI3UpYL2J9Zkp0=";
       };
       aarch64-darwin = {
         url = "https://github.com/herdrdev/herdr/releases/download/v${version}/herdr-macos-aarch64";
-        hash = "sha256-UXOj4K5C1dGrfr+l1eYyn3w9I/jho2d8fOMjHaKIQVc=";
+        hash = "sha256-+3fCIyoFqANUITgsiUOS9BdOTjihjkivPdApAVfDp+I=";
       };
     };
     description = "Terminal UI for managing coding agents";
