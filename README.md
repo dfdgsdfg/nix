@@ -48,13 +48,26 @@ home-manager build --flake .#dididi@sg-lenovo
 
 ## Dependency updates
 
-GitHub Actions runs Renovate on Thursday at 21:00 KST or by manual dispatch.
+GitHub Actions runs Renovate on Monday, Wednesday, and Friday at 21:00 KST or by manual dispatch.
 Actions owns scheduling; Renovate has no additional time window, including for
 flake.lock maintenance, so delayed runs still process updates. Hourly and
 concurrent PR creation are unlimited. Updates still require three days of release
 age where available, major upgrades require Dependency Dashboard approval, and
-merging remains manual. Custom source updates keep the `needs-hash` label and
-require refreshed hashes and a build before merging.
+merging remains manual.
+
+Supported upstream binary updates run `scripts/renovate-release-hashes.py` through
+Renovate's `postUpgradeTasks` before committing. The hook downloads the updated
+release with `nix store prefetch-file`, refreshes every declared Linux and Darwin
+hash, and includes those edits in the same PR. It only writes after all downloads
+succeed. These branches rebase when behind `main`, so existing PRs receive new
+hook configuration. The workflow permits only this exact hook command.
+
+The supported dependency registry is in the script; its package names and file
+paths must match the hook rule in `renovate.json`. Run
+`python3 scripts/test-renovate-release-hashes.py` to check coverage and layouts.
+Source archives (`fetchFromGitHub`/`fetchzip`) and dependency hashes remain manual:
+their updates keep `needs-hash` and require refreshed hashes and a build before
+merging. Binary updates also require successful CI before merging.
 
 FlakeHub inputs, including Determinate and its transitive dependencies, update
 through native `flake.lock` maintenance. Individual Git lookups for Determinate

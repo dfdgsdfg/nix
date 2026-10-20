@@ -36,7 +36,59 @@
       "addLabels": [
         "needs-hash"
       ],
-      "automerge": false
+      "automerge": false,
+      "matchDepNames": [
+        "!can1357/oh-my-pi",
+        "!stablyai/orca",
+        "!rustdesk/rustdesk",
+        "!xtool-org/xtool",
+        "!OpenHV/OpenHV",
+        "!herdrdev/herdr",
+        "!hashicorp/terraform",
+        "!openai/codex",
+        "!block/buzz",
+        "!localsend/localsend",
+        "!telegramdesktop/tdesktop",
+        "!zackb/tether",
+        "!zed-industries/zed"
+      ]
+    },
+    {
+      "description": "Refresh all platform hashes for supported upstream binary releases",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepNames": [
+        "can1357/oh-my-pi",
+        "stablyai/orca",
+        "rustdesk/rustdesk",
+        "xtool-org/xtool",
+        "OpenHV/OpenHV",
+        "herdrdev/herdr",
+        "hashicorp/terraform",
+        "openai/codex",
+        "block/buzz",
+        "localsend/localsend",
+        "telegramdesktop/tdesktop",
+        "zackb/tether",
+        "zed-industries/zed"
+      ],
+      "automerge": false,
+      "postUpgradeTasks": {
+        "commands": [
+          "python3 scripts/renovate-release-hashes.py"
+        ],
+        "dataFileTemplate": "[{{#each upgrades}}{\"depName\":{{{toJSON depName}}},\"packageFile\":{{{toJSON packageFile}}},\"newValue\":{{{toJSON newValue}}} }{{#unless @last}},{{/unless}}{{/each}}]",
+        "fileFilters": [
+          "home/modules/desktop/apps.nix",
+          "home/modules/desktop/dev.nix",
+          "home/modules/desktop/games.nix",
+          "home/modules/omp/default.nix",
+          "home/packages/upstream-binaries.nix"
+        ],
+        "executionMode": "branch"
+      },
+      "rebaseWhen": "behind-base-branch"
     },
     {
       "description": "Update Determinate through lock maintenance; read the root nixpkgs channel directly with the regex manager",

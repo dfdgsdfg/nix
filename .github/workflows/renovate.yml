@@ -68,5 +68,7 @@ jobs:
           # No second time window: delayed scheduled jobs and manual runs
           # process the same queue, including flake.lock maintenance.
           RENOVATE_DRY_RUN: ${{ inputs.dry_run && 'full' || '' }}
+          # Permit only the repository-owned hash updater, with no shell arguments.
+          RENOVATE_ALLOWED_COMMANDS: '["^python3 scripts/renovate-release-hashes\\.py$"]'
           LOG_LEVEL: info
         run: nix run --inputs-from . nixpkgs#renovate --
