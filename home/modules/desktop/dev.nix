@@ -21,7 +21,7 @@ let
     version = "1.22.2";
     src = pkgs.fetchurl {
       url = "https://github.com/xtool-org/xtool/releases/download/${version}/xtool-x86_64.AppImage";
-      hash = "sha256-4id+Wbsv2ptIfLx3rQgOorA3C7dArA8CzEL6KKJy06U=";
+      hash = "sha256-4xds34YfWLfxNcdVx7+uyS0FaO+CYCe05ePYKzIZ3f4=";
     };
     appimageContents = pkgs.appimageTools.extract {
       inherit pname version src;
