@@ -62,11 +62,11 @@ let
   terraformRelease = selectRelease "terraform" {
     x86_64-linux = {
       asset = "linux_amd64";
-      hash = "sha256-K8L8//AzJlyeAsoDUfAXlOsSL2KpsqSaMpS55J6qteQ=";
+      hash = "sha256-OANLONAwljmaehJkoUVhqAKbK0lv0fFpRSZW5Tlo8bc=";
     };
     aarch64-darwin = {
       asset = "darwin_arm64";
-      hash = "sha256-7N72XiQZPWJ/J8ObrtoxKV8IyTjYo9R2T0QvuRbUt9w=";
+      hash = "sha256-heG8eKtFvcX4KnusOSnjfQcoNKWE0iWDokmNxnu2JM0=";
     };
   };
   terraform = pkgs.stdenvNoCC.mkDerivation rec {
