@@ -19,6 +19,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
+      - name: Test release hash updater
+        run: python3 scripts/test-renovate-release-hashes.py
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v22
 
