@@ -20,6 +20,16 @@
   },
   "packageRules": [
     {
+      "description": "Refresh flake.lock without the individual release age delay",
+      "matchManagers": [
+        "nix"
+      ],
+      "matchUpdateTypes": [
+        "lockFileMaintenance"
+      ],
+      "minimumReleaseAge": "0 days"
+    },
+    {
       "matchUpdateTypes": [
         "major"
       ],

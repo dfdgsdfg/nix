@@ -23,7 +23,7 @@ jobs:
         run: python3 scripts/test-renovate-release-hashes.py
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v22
+        uses: DeterminateSystems/nix-installer-action@v23
 
       - name: Evaluate all flake outputs
         run: nix flake check --no-build --all-systems
@@ -44,13 +44,13 @@ jobs:
 
   darwin:
     name: Darwin flake evaluation
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v22
+        uses: DeterminateSystems/nix-installer-action@v23
 
       - name: Evaluate Darwin system outputs
         run: |

@@ -51,9 +51,10 @@ home-manager build --flake .#dididi@sg-lenovo
 GitHub Actions runs Renovate on Monday, Wednesday, and Friday at 21:00 KST or by manual dispatch.
 Actions owns scheduling; Renovate has no additional time window, including for
 flake.lock maintenance, so delayed runs still process updates. Hourly and
-concurrent PR creation are unlimited. Updates still require three days of release
-age where available, major upgrades require Dependency Dashboard approval, and
-merging remains manual.
+concurrent PR creation are unlimited. Individual dependency updates require three
+days of release age where available. Native Nix `flake.lock` maintenance is exempt
+from that delay; channel and individual dependency upgrades retain it. Major
+upgrades require Dependency Dashboard approval, and merging remains manual.
 
 Supported upstream binary updates run `scripts/renovate-release-hashes.py` through
 Renovate's `postUpgradeTasks` before committing. The hook downloads the updated
