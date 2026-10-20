@@ -102,11 +102,11 @@ let
   codexRelease = selectRelease "codex" {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-pnb1ciquDYbL43ZDMvCOqx/didwKMAs61P+/SGEfo+M=";
+      hash = "sha256-WCZGxr8FYesN5UD3/IW5EhsAkagmvG6Wgwt/FyISIYI=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-iON8zd9aD06p3BvhPGaiqU+cLRoE86zpBT1xs5OeiF0=";
+      hash = "sha256-sDRPwuQfFeAHEUflhpAIBHuP9L8sSoiXl107rj8QOzQ=";
     };
   };
   codex = pkgs.stdenvNoCC.mkDerivation rec {
