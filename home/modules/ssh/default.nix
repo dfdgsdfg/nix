@@ -222,7 +222,26 @@ in
 
       sops.secrets = lib.mkMerge sopsSecretAssignments;
 
-      home.file = identityPublicFiles;
+      # OpenSSH rejects Nix store ownership inside FHS user namespaces, where
+      # root is unmapped and appears as nobody. Keep Home Manager's generated
+      # config, but install it as a user-owned file instead of a store symlink.
+      home.file = identityPublicFiles // { ".ssh/config".enable = false; };
+
+      home.activation.sshConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        if [[ -z "''${DRY_RUN:-}" ]]; then
+          (
+            umask 077
+            sshConfigDir=${lib.escapeShellArg "${config.home.homeDirectory}/.ssh"}
+            mkdir -p "$sshConfigDir"
+            sshConfigTmp="$(mktemp "$sshConfigDir/.config.XXXXXX")"
+            trap 'rm -f "$sshConfigTmp"' EXIT
+            install -m 0600 ${config.home.file.".ssh/config".source} "$sshConfigTmp"
+            mv -fT "$sshConfigTmp" "$sshConfigDir/config"
+          )
+        else
+          echo "Would install user-owned SSH configuration in ${config.home.homeDirectory}/.ssh/config"
+        fi
+      '';
     }
   );
 }

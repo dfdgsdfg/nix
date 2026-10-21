@@ -33,6 +33,12 @@ orca-ide skills get orca-cli
 orca-ide status --json
 ```
 
+The SSH module installs Home Manager's generated `~/.ssh/config` as a
+user-owned regular file with mode `0600` on every activation. Orca's FHS user
+namespace displays the Nix store owner as `nobody`, which OpenSSH rejects for
+this config file. Change SSH settings in `home/modules/ssh` or
+`home/profiles/ssh.nix`; activation replaces local edits to `~/.ssh/config`.
+
 ## Checks
 
 ```bash
