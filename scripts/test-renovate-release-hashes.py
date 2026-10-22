@@ -82,7 +82,9 @@ class HashUpdates(unittest.TestCase):
 
     def test_config_covers_registry(self):
         config = json.loads((ROOT / "renovate.json").read_text())
-        rule = next(r for r in config["packageRules"] if "postUpgradeTasks" in r)
+        rule = next(r for r in config["packageRules"]
+                    if "python3 scripts/renovate-release-hashes.py"
+                    in r.get("postUpgradeTasks", {}).get("commands", []))
         self.assertEqual(set(rule["matchDepNames"]), set(HOOK.PACKAGES))
         self.assertEqual(set(rule["postUpgradeTasks"]["fileFilters"]), {p[0] for p in HOOK.PACKAGES.values()})
         manual = next(r for r in config["packageRules"] if "needs-hash" in r.get("addLabels", []))

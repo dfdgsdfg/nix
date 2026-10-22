@@ -67,14 +67,17 @@ Renovate's `postUpgradeTasks` before committing. The hook downloads the updated
 release with `nix store prefetch-file`, refreshes every declared Linux and Darwin
 hash, and includes those edits in the same PR. It only writes after all downloads
 succeed. These branches rebase when behind `main`, so existing PRs receive new
-hook configuration. The workflow permits only this exact hook command.
+hook configuration. The workflow permits only the exact repository hook commands.
 
 The supported dependency registry is in the script; its package names and file
 paths must match the hook rule in `renovate.json`. Run
 `python3 scripts/test-renovate-release-hashes.py` to check coverage and layouts.
-Source archives (`fetchFromGitHub`/`fetchzip`) and dependency hashes remain manual:
-their updates keep `needs-hash` and require refreshed hashes and a build before
-merging. Binary updates also require successful CI before merging.
+Other custom source updates keep the `needs-hash` label and run
+`scripts/renovate-update-hashes.sh`. This hook instantiates HEAD and the edited
+tree, prefetches changed URLs, and refreshes supported fixed-output hashes. It
+skips FODs without a fetchable URL (for example the Kime `fetchCargoVendor` hash)
+and unsupported fetch methods, so confirm the hashes and build before merging.
+Binary updates also require successful CI before merging.
 
 FlakeHub inputs, including Determinate and its transitive dependencies, update
 through native `flake.lock` maintenance. Individual Git lookups for Determinate

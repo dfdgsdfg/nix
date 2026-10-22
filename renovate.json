@@ -61,7 +61,17 @@
         "!telegramdesktop/tdesktop",
         "!zackb/tether",
         "!zed-industries/zed"
-      ]
+      ],
+      "postUpgradeTasks": {
+        "commands": [
+          "bash scripts/renovate-update-hashes.sh"
+        ],
+        "fileFilters": [
+          "home/**/*.nix",
+          "system/**/*.nix"
+        ],
+        "executionMode": "branch"
+      }
     },
     {
       "description": "Refresh all platform hashes for supported upstream binary releases",
