@@ -27,7 +27,8 @@
       "matchUpdateTypes": [
         "lockFileMaintenance"
       ],
-      "minimumReleaseAge": "0 days"
+      "minimumReleaseAge": "0 days",
+      "rebaseWhen": "behind-base-branch"
     },
     {
       "matchUpdateTypes": [

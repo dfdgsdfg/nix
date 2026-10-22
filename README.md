@@ -88,6 +88,8 @@ from `flake.nix`, preserving channel-upgrade PRs; the native Nix manager still
 refreshes `flake.lock` for those changes. Channel upgrades do not need the
 `needs-hash` label. Lock maintenance stays within the input ranges in
 `flake.nix`; changing Determinate's major range remains an explicit edit.
+Lock maintenance rebases when behind `main`, so a retained, already-merged
+branch cannot prevent the next lock refresh or cause an empty replacement PR.
 
 Renovate refreshes an existing update branch when a newer release supersedes
 its target. Separate major and minor upgrade paths may have separate PRs;
