@@ -31,9 +31,14 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/gpt-6-astra
   - omniroute/model/gpt-5.3-codex-spark
   - omniroute/model/payg/deepseek-v4.1-flash
+  - omniroute/model/payg/deepseek-v4.1-flash-1017
+  - omniroute/model/payg/deepseek-flash-latest
   - omniroute/model/payg/glm-5.3-flash
+  - omniroute/model/payg/glm-flash-latest
   - omniroute/model/payg/gemini-3.8-flash
+  - omniroute/model/payg/gemini-flash-latest
   - omniroute/model/payg/gemini-3.5-flash-lite
+  - omniroute/model/payg/jev-router
   - omniroute/model/gemini-3.8-flash-low
   - omniroute/model/gemini-3.8-flash-medium
   - omniroute/model/gemini-3.8-flash-high
@@ -160,8 +165,77 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
         thinkingFormat: openai
         requiresReasoningContentOnAssistantMessages: true
         maxTokensField: max_tokens
+    - id: model/payg/deepseek-v4.1-flash-1017
+      name: DeepSeek V4.1 Flash 1017 (fixed)
+      reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: null
+        high: high
+        xhigh: null
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, high, max]
+      input:
+      - text
+      contextWindow: 1000000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        thinkingFormat: openai
+        requiresReasoningContentOnAssistantMessages: true
+        maxTokensField: max_tokens
+    - id: model/payg/deepseek-flash-latest
+      name: DeepSeek Flash Latest (rolling)
+      reasoning: true
+      thinkingLevelMap:
+        off: none
+        minimal: null
+        low: low
+        medium: null
+        high: high
+        xhigh: null
+        max: max
+      thinking:
+        mode: effort
+        efforts: [low, high, max]
+      input:
+      - text
+      contextWindow: 1000000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        thinkingFormat: openai
+        requiresReasoningContentOnAssistantMessages: true
+        maxTokensField: max_tokens
     - id: model/payg/glm-5.3-flash
       name: GLM 5.3 Flash identity
+      reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [low, medium, high]
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        thinkingFormat: openai
+        maxTokensField: max_tokens
+    - id: model/payg/glm-flash-latest
+      name: GLM Flash Latest (rolling)
       reasoning: true
       thinkingLevelMap:
         off: null
@@ -206,6 +280,29 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
+    - id: model/payg/gemini-flash-latest
+      name: Gemini Flash Latest (rolling)
+      reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [low, medium, high]
+        requiresEffort: true
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
     - id: model/payg/gemini-3.5-flash-lite
       name: Gemini 3.5 Flash-Lite identity
       reasoning: true
@@ -228,6 +325,17 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       maxTokens: 32768
       compat:
         supportsReasoningEffort: true
+        maxTokensField: max_tokens
+    - id: model/payg/jev-router
+      name: Jev Router (PAYG, adaptive model/effort)
+      reasoning: false
+      input:
+      - text
+      - image
+      contextWindow: 1000000
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: false
         maxTokensField: max_tokens
     - id: model/gemini-3.8-flash-low
       name: gemini-3.8-flash-low (AGY subscription)

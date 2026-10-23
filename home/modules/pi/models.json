@@ -274,6 +274,119 @@
           "compat": {
             "maxTokensField": "max_tokens"
           }
+        },
+        {
+          "id": "model/payg/deepseek-flash-latest",
+          "name": "DeepSeek Flash Latest (rolling, PAYG)",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": "none",
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "thinkingFormat": "deepseek",
+            "requiresReasoningContentOnAssistantMessages": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/payg/deepseek-v4.1-flash-1017",
+          "name": "DeepSeek V4.1 Flash 1017 (fixed, PAYG)",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": "none",
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "thinkingFormat": "deepseek",
+            "requiresReasoningContentOnAssistantMessages": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/payg/glm-flash-latest",
+          "name": "GLM Flash Latest (rolling, PAYG)",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/payg/gemini-flash-latest",
+          "name": "Gemini Flash Latest (rolling, PAYG)",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/payg/jev-router",
+          "name": "Jev Router (PAYG, adaptive model/effort)",
+          "reasoning": false,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1000000,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": false,
+            "maxTokensField": "max_tokens"
+          }
         }
       ]
     }
