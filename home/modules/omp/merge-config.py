@@ -30,7 +30,6 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/gpt-6-luna
   - omniroute/model/gpt-6-astra
   - omniroute/model/gpt-5.3-codex-spark
-  - omniroute/model/payg/deepseek-v4.1-flash
   - omniroute/model/payg/deepseek-v4.1-flash-1017
   - omniroute/model/payg/deepseek-flash-latest
   - omniroute/model/payg/glm-5.3-flash
@@ -141,29 +140,6 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       contextWindow: 128000
       maxTokens: 32768
       compat:
-        maxTokensField: max_tokens
-    - id: model/payg/deepseek-v4.1-flash
-      name: DeepSeek V4.1 Flash identity
-      reasoning: true
-      thinkingLevelMap:
-        off: none
-        minimal: null
-        low: low
-        medium: null
-        high: high
-        xhigh: null
-        max: max
-      thinking:
-        mode: effort
-        efforts: [low, high, max]
-      input:
-      - text
-      contextWindow: 1000000
-      maxTokens: 32768
-      compat:
-        supportsReasoningEffort: true
-        thinkingFormat: openai
-        requiresReasoningContentOnAssistantMessages: true
         maxTokensField: max_tokens
     - id: model/payg/deepseek-v4.1-flash-1017
       name: DeepSeek V4.1 Flash 1017 (fixed)

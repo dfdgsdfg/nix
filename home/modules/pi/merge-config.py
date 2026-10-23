@@ -20,7 +20,6 @@ SETTINGS_MANAGED = {
         "omni/model/gpt-6-luna",
         "omni/model/gpt-6-astra",
         "omni/model/gpt-5.3-codex-spark",
-        "omni/model/payg/deepseek-v4.1-flash",
         "omni/model/payg/deepseek-flash-latest",
         "omni/model/payg/deepseek-v4.1-flash-1017",
         "omni/model/payg/glm-5.3-flash",

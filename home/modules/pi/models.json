@@ -42,31 +42,6 @@
           }
         },
         {
-          "id": "model/payg/deepseek-v4.1-flash",
-          "name": "DeepSeek V4.1 Flash identity",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "off": "none",
-            "minimal": null,
-            "low": "low",
-            "medium": null,
-            "high": "high",
-            "xhigh": null,
-            "max": "max"
-          },
-          "input": [
-            "text"
-          ],
-          "contextWindow": 1000000,
-          "maxTokens": 32768,
-          "compat": {
-            "supportsReasoningEffort": true,
-            "thinkingFormat": "deepseek",
-            "requiresReasoningContentOnAssistantMessages": true,
-            "maxTokensField": "max_tokens"
-          }
-        },
-        {
           "id": "model/payg/glm-5.3-flash",
           "name": "GLM 5.3 Flash identity",
           "reasoning": true,
