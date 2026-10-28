@@ -280,9 +280,7 @@ in
         node = "lts";
         pnpm = "latest";
         python = "miniconda3-latest";
-        deno = "latest";
         java = "temurin-25";
-        ruby = "latest";
         go = "latest";
         bun = "latest";
         zig = "latest";
