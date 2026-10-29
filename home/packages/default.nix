@@ -24,7 +24,10 @@ let
     core = import ./core.nix {
       inherit lib pkgs stablePkgs unstablePkgs upstreamBinaries;
     };
-    dev = import ./dev.nix { inherit lib pkgs; };
+    dev = import ./dev.nix {
+      inherit lib pkgs;
+      ccache = import ./ccache.nix { inherit pkgs inputs; };
+    };
     network = import ./network.nix { inherit pkgs; };
     ops = import ./ops.nix { inherit lib pkgs upstreamBinaries; };
   };

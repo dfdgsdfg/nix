@@ -1,8 +1,12 @@
-{ lib, pkgs }:
+{
+  lib,
+  pkgs,
+  ccache,
+}:
 
-(with pkgs; [
+[ ccache ]
+++ (with pkgs; [
   b3sum
-  ccache
   cmake
   chezmoi
   d2

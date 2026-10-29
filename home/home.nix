@@ -17,10 +17,11 @@ let
     else
       "${config.home.homeDirectory}/.local/share/pnpm";
 
+  ccache = import ./packages/ccache.nix { inherit pkgs inputs; };
   ccacheWrappers = pkgs.runCommand "ccache-wrappers" { } ''
     mkdir -p "$out/bin"
     for compiler in cc c++ gcc g++ clang clang++; do
-      ln -s ${lib.getExe pkgs.ccache} "$out/bin/$compiler"
+      ln -s ${lib.getExe ccache} "$out/bin/$compiler"
     done
   '';
 
