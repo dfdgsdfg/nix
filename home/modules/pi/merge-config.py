@@ -13,7 +13,7 @@ from pathlib import Path
 
 SETTINGS_MANAGED = {
     "defaultProvider": "omni",
-    "defaultModel": "model/gpt-6-luna",
+    "defaultModel": "model/gpt-6.1-sol",
     "defaultThinkingLevel": "high",
     "enabledModels": [
         "omni/model/gpt-6.1-sol",
