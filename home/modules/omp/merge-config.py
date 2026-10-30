@@ -34,6 +34,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/payg/deepseek-flash-latest
   - omniroute/model/payg/glm-5.3-flash
   - omniroute/model/payg/glm-flash-latest
+  - omniroute/model/payg/glm-latest
   - omniroute/model/payg/gemini-3.8-flash
   - omniroute/model/payg/gemini-flash-latest
   - omniroute/model/payg/gemini-3.5-flash-lite
@@ -227,6 +228,28 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       input:
       - text
       - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        thinkingFormat: openai
+        maxTokensField: max_tokens
+    - id: model/payg/glm-latest
+      name: GLM Latest (rolling)
+      reasoning: true
+      thinkingLevelMap:
+        off: null
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: null
+        max: null
+      thinking:
+        mode: effort
+        efforts: [low, medium, high]
+      input:
+      - text
       contextWindow: 1048576
       maxTokens: 32768
       compat:

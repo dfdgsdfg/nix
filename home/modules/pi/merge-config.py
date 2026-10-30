@@ -24,6 +24,7 @@ SETTINGS_MANAGED = {
         "omni/model/payg/deepseek-v4.1-flash-1017",
         "omni/model/payg/glm-5.3-flash",
         "omni/model/payg/glm-flash-latest",
+        "omni/model/payg/glm-latest",
         "omni/model/payg/gemini-3.8-flash",
         "omni/model/payg/gemini-flash-latest",
         "omni/model/payg/gemini-3.5-flash-lite",
