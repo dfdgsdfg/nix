@@ -139,5 +139,11 @@ in
     nixLd.enable = true;
   };
 
+  # Second upstream of the homelab home-egress proxy (oci-default-01 -> here).
+  modules.egressProxy = {
+    enable = true;
+    listenAddress = "100.96.27.92";
+  };
+
   nixpkgs.config.allowUnfree = true;
 }
