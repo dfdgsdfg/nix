@@ -325,6 +325,29 @@
           }
         },
         {
+          "id": "model/payg/glm-latest",
+          "name": "GLM Latest (rolling, PAYG)",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": null,
+            "max": null
+          },
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
           "id": "model/payg/gemini-flash-latest",
           "name": "Gemini Flash Latest (rolling, PAYG)",
           "reasoning": true,
