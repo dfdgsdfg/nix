@@ -59,6 +59,8 @@
           inherit (host) system;
           modules = host.modules ++ [
             determinate.darwinModules.default
+            ./system/modules/egress-proxy/options.nix
+            ./system/modules/egress-proxy/darwin.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
@@ -74,6 +76,8 @@
             determinate.nixosModules.default
             sops-nix.nixosModules.sops
             ./system/modules/runtime.nix
+            ./system/modules/egress-proxy/options.nix
+            ./system/modules/egress-proxy/nixos.nix
             {
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
