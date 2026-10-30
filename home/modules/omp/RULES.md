@@ -9,20 +9,20 @@ active model before falling back to its configured/default model.
 
 | OMP role | OmniRoute route | Effort | Intended use |
 |---|---|---|---|
-| `default` | `model/gpt-6-astra` | medium | Main session, decomposition, integration, acceptance |
-| `plan` | `model/gpt-6-astra` | high | Planning and architecture decisions |
+| `default` | `model/gpt-6.1-sol` | high | Main session, decomposition, integration, acceptance |
+| `plan` | `model/gpt-6-astra` | medium | Planning and architecture decisions |
 | `task` | `model/gpt-6-luna` | high | Bounded implementation and focused tests |
 | `explore` | `model/gpt-6.1-sol` | medium | Relationships across modules and failure analysis |
-| `smol` | `model/gpt-6-luna` | medium | Narrow exploration and mechanical work |
-| `tiny` | `model/gpt-6-luna` | session/default | Lightweight background operations |
-| `commit` | `model/gpt-6-luna` | session/default | Commit generation and repository work |
-| `advisor` | `model/gpt-6-luna` | session/default | Optional ongoing assistance, not final acceptance |
+| `smol` | `model/gpt-6-luna` | high | Narrow exploration and mechanical work |
+| `tiny` | `model/gpt-6-luna` | medium | Lightweight background operations |
+| `commit` | `model/gpt-6-luna` | medium | Commit generation and repository work |
+| `advisor` | `model/gpt-6-astra` | high | Optional ongoing assistance, not final acceptance |
 | `designer` | `model/gemini-3.8-flash-medium` | medium | UI/UX model role; no dedicated agent installed |
 | `vision` | `model/gemini-3.5-flash-lite` | none | Image understanding |
-| `slow` | `model/gpt-6-astra` | high | Independent correctness and security review |
+| `slow` | `model/gpt-6.1-sol` | high | Independent correctness and security review |
 
 `~/.omp/agent/config.yml` is authoritative if this table drifts. Role selectors
-include effort suffixes where listed; the default thinking level is medium.
+include effort suffixes where listed; the default thinking level is high.
 Explicit session or task effort settings may override these defaults. Use xhigh
 for a consequential, unresolved question when the evidence warrants it, not
 merely because the assignment is large.
@@ -55,10 +55,10 @@ below are bundled with OMP 18.4.2.
   return architectural decisions to the parent.
 - `task` — Luna/high via `@task`. Implement clearly specified changes and run
   focused tests. Return design ambiguity to the parent.
-- `sonic` — Luna/medium via `@smol`. Small mechanical edits and data collection.
-- `reviewer` — Astra/high via the managed `@slow` override. Independently review
+- `sonic` — Luna/high via `@smol`. Small mechanical edits and data collection.
+- `reviewer` — Sol/high via the managed `@slow` override. Independently review
   correctness and regressions using the bundled review instructions.
-- `security-reviewer` — Astra/high via the managed `@slow` override. Perform
+- `security-reviewer` — Sol/high via the managed `@slow` override. Perform
   evidence-backed security review without inheriting a worker's model.
 
 Do not dispatch `librarian`, `conversation-analyzer`, or `designer` merely
@@ -76,7 +76,7 @@ bundled definitions.
 - If a worker fails or finds ambiguity, return evidence to the main session and
   re-scope the assignment. Do not silently retry on a stronger model.
 - Use `reviewer` or `security-reviewer` for independent verification when a wrong
-  judgment is expensive. The optional Luna advisor is not a substitute.
+  judgment is expensive. The optional Astra advisor is not a substitute.
 - Parallelize independent read-heavy work. Avoid concurrent edits to overlapping
   files. Keep review independent of implementation.
 - Keep architectural decisions in the main session; workers receive assignments

@@ -14,17 +14,17 @@ from pathlib import Path
 
 MANAGED_CONFIG_BLOCKS: dict[str, str] = {
     "modelRoles": """modelRoles:
-  default: omniroute/model/gpt-6-astra:medium
-  plan: omniroute/model/gpt-6-astra:high
+  default: omniroute/model/gpt-6.1-sol:high
+  plan: omniroute/model/gpt-6-astra:medium
   task: omniroute/model/gpt-6-luna:high
   explore: omniroute/model/gpt-6.1-sol:medium
   designer: omniroute/model/gemini-3.8-flash-medium:medium
-  advisor: omniroute/model/gpt-6-luna
-  smol: omniroute/model/gpt-6-luna:medium
-  tiny: omniroute/model/gpt-6-luna
-  commit: omniroute/model/gpt-6-luna
+  advisor: omniroute/model/gpt-6-astra:high
+  smol: omniroute/model/gpt-6-luna:high
+  tiny: omniroute/model/gpt-6-luna:medium
+  commit: omniroute/model/gpt-6-luna:medium
   vision: omniroute/model/gemini-3.5-flash-lite
-  slow: omniroute/model/gpt-6-astra:high""",
+  slow: omniroute/model/gpt-6.1-sol:high""",
     "enabledModels": """enabledModels:
   - omniroute/model/gpt-6.1-sol
   - omniroute/model/gpt-6-luna
@@ -43,7 +43,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/gemini-3.8-flash-medium
   - omniroute/model/gemini-3.8-flash-high
   - omniroute/model/gemini-3.5-flash-lite""",
-    "defaultThinkingLevel": "defaultThinkingLevel: medium",
+    "defaultThinkingLevel": "defaultThinkingLevel: high",
     "retry": """retry:
   enabled: true
   maxRetries: 1""",
