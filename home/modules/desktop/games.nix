@@ -28,40 +28,6 @@ let
     '';
   };
 
-  openhv =
-    let
-      pname = "openhv";
-      version = "20250725";
-      src = pkgs.fetchurl {
-        url = "https://github.com/OpenHV/OpenHV/releases/download/${version}/OpenHV-${version}-x86_64.AppImage";
-        hash = "sha256-AbG/HPhlAPYdgz4iBVoDXlbQez3byDuRRG1oSzWSGqM=";
-      };
-      appimageContents = pkgs.appimageTools.extract {
-        inherit pname version src;
-      };
-    in
-    pkgs.appimageTools.wrapType2 {
-      inherit pname version src;
-
-      extraPkgs = pkgs: with pkgs; [
-        icu
-      ];
-
-      extraInstallCommands = ''
-        install -Dm444 ${appimageContents}/openhv.desktop $out/share/applications/openhv.desktop
-        install -Dm444 ${appimageContents}/openhv.png $out/share/icons/hicolor/256x256/apps/openhv.png
-      '';
-
-      meta = {
-        description = "Open source pixel art science-fiction real-time strategy game";
-        homepage = "https://www.openhv.net/";
-        license = lib.licenses.gpl3Only;
-        mainProgram = "openhv";
-        platforms = [ "x86_64-linux" ];
-        sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
-      };
-    };
-
   openemux =
     let
       pythonEnv = pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
@@ -287,7 +253,6 @@ in
     gameConquerorRoot
     heroicWithNativeLibraries
     heroicSyncGogGenres
-    openhv
     openemux
     scanmem
     scummvm

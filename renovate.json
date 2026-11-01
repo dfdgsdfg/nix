@@ -53,7 +53,6 @@
         "!stablyai/orca",
         "!rustdesk/rustdesk",
         "!xtool-org/xtool",
-        "!OpenHV/OpenHV",
         "!herdrdev/herdr",
         "!hashicorp/terraform",
         "!openai/codex",
@@ -84,7 +83,6 @@
         "stablyai/orca",
         "rustdesk/rustdesk",
         "xtool-org/xtool",
-        "OpenHV/OpenHV",
         "herdrdev/herdr",
         "hashicorp/terraform",
         "openai/codex",
@@ -103,7 +101,6 @@
         "fileFilters": [
           "home/modules/desktop/apps.nix",
           "home/modules/desktop/dev.nix",
-          "home/modules/desktop/games.nix",
           "home/modules/omp/default.nix",
           "home/packages/upstream-binaries.nix"
         ],
@@ -215,18 +212,6 @@
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
       "versioningTemplate": "semver"
-    },
-    {
-      "customType": "regex",
-      "description": "OpenHV calendar-style GitHub release version",
-      "managerFilePatterns": [
-        "/^home\\/modules\\/desktop\\/games\\.nix$/"
-      ],
-      "matchStrings": [
-        "version = \"(?<currentValue>\\d{8})\";\\s*src = pkgs\\.fetchurl \\{\\s*url = \"https://github\\.com/(?<depName>OpenHV/OpenHV)/releases/download/\\$\\{version\\}/"
-      ],
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "loose"
     },
     {
       "customType": "regex",

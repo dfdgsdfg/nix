@@ -19,7 +19,6 @@ PACKAGES = {
     "stablyai/orca": ("home/modules/desktop/apps.nix", "orca", None),
     "rustdesk/rustdesk": ("home/modules/desktop/apps.nix", "rustdesk", None),
     "xtool-org/xtool": ("home/modules/desktop/dev.nix", "xtool", None),
-    "OpenHV/OpenHV": ("home/modules/desktop/games.nix", "openhv", None),
     "herdrdev/herdr": (UPSTREAM, "herdr", None),
     "hashicorp/terraform": (UPSTREAM, "terraform", "  terraformRelease ="),
     "openai/codex": (UPSTREAM, "codex", "  codexRelease ="),
