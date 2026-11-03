@@ -177,6 +177,7 @@ let
       contents = appimageContents;
       extraPkgs = pkgs: [
         pkgs.elfutils
+        pkgs.libgpg-error
         pkgs.zstd
         pkgs.gst_all_1.gst-plugins-good
         pkgs.gst_all_1.gst-plugins-bad
