@@ -281,10 +281,10 @@ let
   tether =
     let
       pname = "tether";
-      version = "0.3.2";
+      version = "0.3.3";
       src = pkgs.fetchurl {
         url = "https://github.com/zackb/tether/releases/download/v${version}/tether-${version}-x86_64.AppImage";
-        hash = "sha256-K91nt2lcNxhphlEhuddZtKmqtF2vdNI3dLNXTyZT6GY=";
+        hash = "sha256-6B9MNbAX4BAaBpvhHo3Ipl9FFxSvNIDfDqHTuYyt6rI=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
