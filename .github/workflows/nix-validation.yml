@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          # The hash verify step evaluates the working tree as a git+file flake,
+          # which Nix refuses on a shallow clone (no revCount).
+          fetch-depth: 0
 
       - name: Test release hash updater
         run: python3 scripts/test-renovate-release-hashes.py
@@ -41,6 +45,17 @@ jobs:
 
       - name: Verify Kime source hash
         run: nix build --no-link '.#nixosConfigurations.sg-lenovo.pkgs.kime.unwrapped.src'
+
+      # Evaluation does not check fixed-output hashes. Realise every fetch whose
+      # derivation this PR changed so a stale hash fails here instead of after
+      # merge; Renovate PRs therefore need no manual hash label.
+      - name: Verify changed fixed-output hashes
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          bash scripts/renovate-update-hashes.sh --verify "origin/${BASE_REF}"
 
   darwin:
     name: Darwin flake evaluation

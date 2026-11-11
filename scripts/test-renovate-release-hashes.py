@@ -87,7 +87,9 @@ class HashUpdates(unittest.TestCase):
                     in r.get("postUpgradeTasks", {}).get("commands", []))
         self.assertEqual(set(rule["matchDepNames"]), set(HOOK.PACKAGES))
         self.assertEqual(set(rule["postUpgradeTasks"]["fileFilters"]), {p[0] for p in HOOK.PACKAGES.values()})
-        manual = next(r for r in config["packageRules"] if "needs-hash" in r.get("addLabels", []))
+        manual = next(r for r in config["packageRules"]
+                      if "bash scripts/renovate-update-hashes.sh" in r.get("postUpgradeTasks", {}).get("commands", []))
+        self.assertNotIn("addLabels", manual)
         self.assertEqual(set(manual["matchDepNames"]), {"!" + dep for dep in HOOK.PACKAGES})
 
 
