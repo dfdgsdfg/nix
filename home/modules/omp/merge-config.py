@@ -53,7 +53,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
     reviewer: "@slow"
     security-reviewer: "@slow"
 """,
-    "setupVersion": "setupVersion: 2",
+    "setupVersion": "setupVersion: 3",
     "composer": """composer:
   shape: box""",
     "dev": """dev:
