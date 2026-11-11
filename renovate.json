@@ -44,9 +44,6 @@
         "home/**",
         "system/**"
       ],
-      "addLabels": [
-        "needs-hash"
-      ],
       "automerge": false,
       "matchDepNames": [
         "!can1357/oh-my-pi",

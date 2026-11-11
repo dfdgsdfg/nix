@@ -72,12 +72,20 @@ hook configuration. The workflow permits only the exact repository hook commands
 The supported dependency registry is in the script; its package names and file
 paths must match the hook rule in `renovate.json`. Run
 `python3 scripts/test-renovate-release-hashes.py` to check coverage and layouts.
-Other custom source updates keep the `needs-hash` label and run
-`scripts/renovate-update-hashes.sh`. This hook instantiates HEAD and the edited
-tree, prefetches changed URLs, and refreshes supported fixed-output hashes. It
-skips FODs without a fetchable URL (for example the Kime `fetchCargoVendor` hash)
-and unsupported fetch methods, so confirm the hashes and build before merging.
-Binary updates also require successful CI before merging.
+Other custom source updates run `scripts/renovate-update-hashes.sh`. This hook
+instantiates HEAD and the edited tree, prefetches changed URLs, and refreshes
+supported fixed-output hashes. A changed FOD it cannot refresh (for example the
+Kime `fetchCargoVendor` hash) or an unsupported fetch method makes the hook exit
+non-zero after it applies the hashes it can, so the failure shows in Renovate's
+logs. No label is added: the `Linux flake checks and build` job in
+`nix-validation.yml` runs `scripts/renovate-update-hashes.sh --verify <base>` on
+every pull request, which compares the base branch's fixed-output derivations
+with the PR's and realises each changed one whose hash is written in a tracked
+`.nix` file, so Nix itself rejects a stale hash. Fetches for a platform the
+runner cannot build (Darwin on Linux) are checked by prefetching the URL;
+anything else on such a platform fails the check instead of being skipped. A
+green `Nix validation` therefore means the changed hashes are correct. Binary
+updates handled by `renovate-release-hashes.py` are verified the same way.
 
 FlakeHub inputs, including Determinate and its transitive dependencies, update
 through native `flake.lock` maintenance. Individual Git lookups for Determinate
@@ -85,8 +93,7 @@ and the native manager's `nixpkgs` entry are disabled: Renovate does not recogni
 FlakeHub tarballs, and its lock-node lookup can mistake a transitive `nixpkgs`
 for the root input. A regex manager reads the stable `nixpkgs` channel directly
 from `flake.nix`, preserving channel-upgrade PRs; the native Nix manager still
-refreshes `flake.lock` for those changes. Channel upgrades do not need the
-`needs-hash` label. Lock maintenance stays within the input ranges in
+refreshes `flake.lock` for those changes. Lock maintenance stays within the input ranges in
 `flake.nix`; changing Determinate's major range remains an explicit edit.
 Lock maintenance rebases when behind `main`, so a retained, already-merged
 branch cannot prevent the next lock refresh or cause an empty replacement PR.
