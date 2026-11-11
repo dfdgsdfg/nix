@@ -240,11 +240,11 @@ let
 
   telegram = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "telegram-desktop";
-    version = "7.3.3";
+    version = "7.4.1";
 
     src = pkgs.fetchurl {
       url = "https://github.com/telegramdesktop/tdesktop/releases/download/v${version}/td-setup-linux-x64-${version}.tar.xz";
-      hash = "sha256-e81STqF/Pu/albL/2z1bNV5/cn1EBFpv8jFs0Hc1Xfk=";
+      hash = "sha256-2EX+ogmIdJYX2nvXTUFEvYHhHGLc9T5BaBqYC/BBNXI=";
     };
 
     # patchelf 0.15 moves .init without fixing Telegram's startup call.
