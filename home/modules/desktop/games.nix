@@ -59,13 +59,13 @@ let
     in
     pkgs.stdenvNoCC.mkDerivation rec {
       pname = "openemux";
-      version = "1.18.10";
+      version = "1.20.0";
 
       src = pkgs.fetchFromGitHub {
         owner = "guilhermefeitosa66";
         repo = "OpenEmux";
         rev = "v${version}";
-        hash = "sha256-lEjX4tPNKVrv9sZ62qxQh457V4d/nB9OG+no+wXsVd0=";
+        hash = "sha256-yIiGHtNF907MNXQyHIX7QiebhxPAOSj6+3CEVk9l7HM=";
       };
 
       nativeBuildInputs = [ pkgs.makeWrapper ];
