@@ -39,10 +39,10 @@ let
   rustdesk =
     let
       pname = "rustdesk";
-      version = "1.5.1";
+      version = "1.5.3";
       src = pkgs.fetchurl {
         url = "https://github.com/rustdesk/rustdesk/releases/download/${version}/rustdesk-${version}-x86_64.AppImage";
-        hash = "sha256-u4t8yz9QogHczcibRjhc/5DzPmC0cw+u2p+lUErE3OY=";
+        hash = "sha256-/3//II/tIY/J+JVFejbMLdMf77+uBGGie1Tz05EgRQY=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
