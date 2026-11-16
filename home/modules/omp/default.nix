@@ -14,17 +14,17 @@ let
     {
       x86_64-linux = {
         asset = "omp-linux-x64";
-        hash = "sha256-pM5gAasQEsqDX0GE1nVDdTG9GsR3p7qEJO0LVHbp5Ms=";
+        hash = "sha256-yGlL6MbmofReNjbdio6eqniHitYpqJAAtAPsXkVtP4k=";
       };
       aarch64-darwin = {
         asset = "omp-darwin-arm64";
-        hash = "sha256-UfKDbyZ6i6bBLPtQ+A518DAcz7G9U1NfxvnfAxmdo2Q=";
+        hash = "sha256-KxMJsGp0Ouk5cI+Tm2P3XHpDbtCMeVMwnw44fgx5Pq0=";
       };
     }
     .${system} or (throw "OMP is not packaged for ${system}");
   omp = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "omp";
-    version = "18.17.0";
+    version = "18.20.0";
 
     src = pkgs.fetchurl {
       url = "https://github.com/can1357/oh-my-pi/releases/download/v${version}/${release.asset}";
