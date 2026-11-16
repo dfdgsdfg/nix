@@ -62,16 +62,16 @@ let
   terraformRelease = selectRelease "terraform" {
     x86_64-linux = {
       asset = "linux_amd64";
-      hash = "sha256-RjhigFjnGlUhKxxWNxLqwDuQISj0B0Dz3IF03xITUGE=";
+      hash = "sha256-5vFrLwsTfuVynKqMTnmjuuTuJhrNGYofz6hYSmKWYFs=";
     };
     aarch64-darwin = {
       asset = "darwin_arm64";
-      hash = "sha256-seyz/g0KApDBq2+D2WfUPyXaBdC2ce4Ps1UlImjc6Vo=";
+      hash = "sha256-2gx+8nipETR4YnWOdXOlkHNl5mSFwmN89cIXxeInmS4=";
     };
   };
   terraform = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "terraform";
-    version = "1.17.1";
+    version = "1.17.2";
 
     src = pkgs.fetchurl {
       url = "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_${terraformRelease.asset}.zip";
