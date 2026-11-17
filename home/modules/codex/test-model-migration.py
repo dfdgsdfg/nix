@@ -53,7 +53,7 @@ for models in catalogs:
     luna = next(m for m in models if m['id'] == 'model/gpt-6-luna')
     assert luna['samplingParams']['service_tier'] == 'priority'
     assert luna['contextWindow'] == 272000
-assert pi.SETTINGS_MANAGED['defaultModel'] == 'model/gpt-6-luna'
+assert pi.SETTINGS_MANAGED['defaultModel'] == 'model/gpt-6.1-sol'
 assert pi.SETTINGS_MANAGED['defaultThinkingLevel'] == 'high'
 print('PASS: GPT-6 selections, saved models, prompts/credentials, tier, and idempotence')
 
@@ -74,6 +74,39 @@ assert managed['model_reasoning_effort'] == managed['plan_mode_reasoning_effort'
 assert managed['agents']['default_subagent_model'] == 'gpt-6-luna'
 assert managed['agents']['default_subagent_reasoning_effort'] == 'high'
 print('PASS: Codex Sol/high main and Luna 6 defaults')
+
+# Remove the managed deprecated flag from existing profiles, preserving prompts
+# and explicit native controls. Prefix parsing distinguishes TOML from prose.
+for source in ('[features]\nmulti_agent = true\ncustom = true\n',
+               '["features"]\n"multi_agent" = true # old flag\ncustom = true\n',
+               'features.multi_agent = true\n'):
+    updated = codex.migrate_deprecated_features(source)
+    parsed = tomllib.loads(updated)
+    assert 'multi_agent' not in parsed.get('features', {})
+    assert parsed['agents']['enabled'] is True
+    assert codex.migrate_deprecated_features(updated) == updated
+legacy = '''prompt = """
+multi_agent = true
+"""
+[agents]
+enabled = true
+[features]
+multi_agent = false
+custom = true
+[profiles.user.features]
+multi_agent = false
+'''
+parsed = tomllib.loads(codex.migrate_deprecated_features(legacy))
+assert parsed['prompt'] == tomllib.loads(legacy)['prompt']
+assert parsed['agents']['enabled'] is True
+assert parsed['features'] == {'custom': True}
+assert parsed['profiles']['user']['features']['multi_agent'] is False
+assert tomllib.loads(codex.migrate_deprecated_features(
+    '[features]\nmulti_agent = false\n'))['agents']['enabled'] is False
+assert 'multi_agent' not in managed['features']
+assert managed['agents']['enabled'] is True
+assert codex.merge(codex.merge(legacy)) == codex.merge(legacy)
+print('PASS: deprecated feature migration, explicit controls, prompts, and idempotence')
 
 # Managed Gemini roles prefer subscriptions while explicit paid sessions survive.
 selected = yaml.safe_load(omp.merge_config(
