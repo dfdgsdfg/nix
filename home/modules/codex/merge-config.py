@@ -29,7 +29,6 @@ SECTIONS = {
         "default_subagent_reasoning_effort": '"high"',
     },
     "features": {
-        "multi_agent": "true",
         "fast_mode": "true",
     },
 }
@@ -109,14 +108,48 @@ def migrate_model_selections(text: str) -> str:
     return pattern.sub(replace, text)
 
 
+def migrate_deprecated_features(text: str) -> str:
+    """Replace the obsolete flag, preserving explicit agents.enabled and prompts."""
+    validate(text)
+    parsed = tomllib.loads(text)
+    features = parsed.get("features", {})
+    if "multi_agent" not in features:
+        return text
+    enabled = features["multi_agent"]
+    if not isinstance(enabled, bool):
+        raise SystemExit("features.multi_agent is not boolean; refusing to overwrite")
+    pattern = re.compile(r"(?m)^[ \t]*(?P<key>[^#=\n]*\bmulti_agent\b[^#=\n]*)=.*(?:\n|$)")
+    for match in pattern.finditer(text):
+        prefix = text[:match.start()]
+        try:
+            before = tomllib.loads(prefix)
+            probe = tomllib.loads(prefix + match["key"] + "= true\n")
+        except tomllib.TOMLDecodeError:
+            # A key-looking line inside a multiline prompt is not an assignment.
+            continue
+        if ("multi_agent" not in before.get("features", {})
+                and probe.get("features", {}).get("multi_agent") is True):
+            updated = text[:match.start()] + text[match.end():]
+            break
+    else:
+        raise SystemExit("cannot safely remove features.multi_agent; refusing to overwrite")
+    if "enabled" not in parsed.get("agents", {}):
+        updated = set_section(updated, "agents", {"enabled": str(enabled).lower()})
+    validate(updated)
+    return updated
+
+
 def merge(text: str) -> str:
     validate(text)
     text = migrate_model_selections(text)
+    text = migrate_deprecated_features(text)
     text = remove_top_level(text, REMOVE_TOP_LEVEL)
     text = set_top_level(text, TOP_LEVEL)
     for section, values in SECTIONS.items():
         text = set_section(text, section, values)
-    return text.rstrip() + "\n"
+    text = text.rstrip() + "\n"
+    validate(text)
+    return text
 
 
 def update_file(path: Path) -> None:

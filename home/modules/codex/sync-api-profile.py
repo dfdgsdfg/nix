@@ -52,7 +52,7 @@ for root in roots:
         if not path.exists():
             continue
         before = path.read_text()
-        after = merge.migrate_model_selections(before)
+        after = merge.migrate_deprecated_features(merge.migrate_model_selections(before))
         if before == after:
             continue
         backup = path.with_suffix('.toml.before-gpt6')
@@ -76,7 +76,8 @@ for root in roots:
             origin = legacy
     original = origin.read_text() if origin else ''
     merge.validate(original)
-    updated = merge.migrate_model_selections(remove_legacy_api_roles(original))
+    updated = merge.migrate_deprecated_features(
+        merge.migrate_model_selections(remove_legacy_api_roles(original)))
     for section, values in sections(managed):
         updated = merge.set_section(updated, section, values) if section else merge.set_top_level(updated, values)
     merge.validate(updated)

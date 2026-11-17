@@ -14,6 +14,10 @@ with tempfile.TemporaryDirectory() as directory:
     root = Path(directory)
     home = root / '.codex'
     home.mkdir()
+    native = home / 'config.toml'
+    native.write_text('[features]\nmulti_agent = true\ncustom_feature = true\n')
+    legacy_api = home / 'api.config.toml'
+    legacy_api.write_text('[features]\nmulti_agent = false\n')
     target = home / 'omni-api.config.toml'
     target.write_text('''model = "old"
 [agents.worker]
@@ -24,6 +28,7 @@ config_file = "/custom/scout.toml"
 config_file = "/custom/worker.toml"
 [features]
 custom_feature = true
+multi_agent = true
 ''')
     template = root / 'template.toml'
     instructions = 'First line\nSecond line with "quotes" and C:\\tools\\new'
@@ -42,6 +47,12 @@ config_file = "/Users/test/.codex/api-agents/worker.toml"
         assert parsed['agents']['scout']['config_file'] == '/custom/scout.toml'
         assert 'custom' in parsed['agents']
         assert parsed['features']['custom_feature']
+        assert 'multi_agent' not in parsed['features']
+        assert parsed['agents']['enabled'] is True
+        assert tomllib.loads(native.read_text()) == {
+            'features': {'custom_feature': True}, 'agents': {'enabled': True}}
+        assert tomllib.loads(legacy_api.read_text()) == {
+            'features': {}, 'agents': {'enabled': False}}
         runpy.run_path(str(repo / 'sync-api-profile.py'))
         assert target.read_text() == first
     print('PASS: stale roles removed; user roles/settings preserved; sync idempotent')
