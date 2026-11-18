@@ -32,15 +32,17 @@ let
     };
 
     dontUnpack = true;
-    nativeBuildInputs = lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.makeWrapper ];
+    nativeBuildInputs = lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.patchelf ];
 
     installPhase =
       if pkgs.stdenv.hostPlatform.isLinux then
         ''
           runHook preInstall
-          install -Dm755 "$src" "$out/libexec/omp"
-          makeWrapper ${pkgs.stdenv.cc.bintools.dynamicLinker} "$out/bin/omp" \
-            --add-flags "$out/libexec/omp"
+          install -Dm755 "$src" "$out/bin/omp"
+          # A loader wrapper makes Bun's process.execPath point at ld-linux.
+          # OMP re-executes that path for command-backed credentials and native
+          # helpers, so patch the ELF interpreter and keep the executable real.
+          patchelf --set-interpreter ${pkgs.stdenv.cc.bintools.dynamicLinker} "$out/bin/omp"
           runHook postInstall
         ''
       else
@@ -49,6 +51,20 @@ let
           install -Dm755 "$src" "$out/bin/omp"
           runHook postInstall
         '';
+
+    doInstallCheck = pkgs.stdenv.hostPlatform.isLinux
+      && pkgs.stdenv.buildPlatform.canExecute pkgs.stdenv.hostPlatform;
+    installCheckPhase = ''
+      runHook preInstallCheck
+      "$out/bin/omp" --version
+      BUN_BE_BUN=1 "$out/bin/omp" -e '
+        const child = Bun.spawnSync([process.execPath, "-e", "process.stdout.write(\"runtime-ok\")"], {
+          env: { ...process.env, BUN_BE_BUN: "1" }, stdout: "pipe"
+        });
+        if (child.exitCode !== 0 || new TextDecoder().decode(child.stdout) !== "runtime-ok") process.exit(1);
+      '
+      runHook postInstallCheck
+    '';
 
     meta = {
       description = "AI coding agent for the terminal";
