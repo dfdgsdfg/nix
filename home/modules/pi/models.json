@@ -6,8 +6,8 @@
       "apiKey": "!security find-generic-password -a \"$USER\" -s \"omniroute-personal-pi\" -w",
       "models": [
         {
-          "id": "model/gpt-6-astra",
-          "name": "GPT-6 Astra identity",
+          "id": "model/gpt-6.2-astra",
+          "name": "GPT-6.2 Astra identity",
           "reasoning": true,
           "thinkingLevelMap": {
             "off": null,
@@ -114,8 +114,8 @@
           }
         },
         {
-          "id": "model/gpt-6.1-sol",
-          "name": "GPT-6.1 Sol identity",
+          "id": "model/gpt-6.2-sol",
+          "name": "GPT-6.2 Sol identity",
           "reasoning": true,
           "thinkingLevelMap": {
             "off": null,
@@ -383,6 +383,30 @@
           "maxTokens": 32768,
           "compat": {
             "supportsReasoningEffort": false,
+            "maxTokensField": "max_tokens"
+          }
+        },
+        {
+          "id": "model/payg/gemini-4-hydrogen",
+          "name": "Gemini 4 Hydrogen (PAYG)",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": null
+          },
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 32768,
+          "compat": {
+            "supportsReasoningEffort": true,
             "maxTokensField": "max_tokens"
           }
         }

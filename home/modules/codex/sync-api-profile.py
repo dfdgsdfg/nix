@@ -53,13 +53,16 @@ for root in roots:
             continue
         before = path.read_text()
         after = merge.migrate_deprecated_features(merge.migrate_model_selections(before))
+        if tomllib.loads(after).get('model', '').removeprefix('model/') in ('gpt-6.2-sol', 'gpt-6.2-astra'):
+            ceiling = min(tomllib.loads(after).get('model_context_window', 272000), 272000)
+            after = merge.set_top_level(after, {'model_context_window': str(ceiling)})
         if before == after:
             continue
-        backup = path.with_suffix('.toml.before-gpt6')
+        backup = path.with_suffix('.toml.before-gpt62')
         if not backup.exists():
             shutil.copyfile(path, backup)
             backup.chmod(0o600)
-        fd, temporary = tempfile.mkstemp(prefix='.gpt6-profile.', dir=root)
+        fd, temporary = tempfile.mkstemp(prefix='.gpt62-profile.', dir=root)
         try:
             with os.fdopen(fd, 'w') as output:
                 output.write(after)
@@ -95,4 +98,4 @@ for root in roots:
         os.replace(tmp, target)
     finally:
         if os.path.exists(tmp): os.unlink(tmp)
-print('API profiles synchronized; GPT-5.6 selections migrated; login preserved')
+print('API profiles synchronized; managed Sol/Astra selections migrated; login preserved')

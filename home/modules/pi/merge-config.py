@@ -13,12 +13,12 @@ from pathlib import Path
 
 SETTINGS_MANAGED = {
     "defaultProvider": "omni",
-    "defaultModel": "model/gpt-6.1-sol",
+    "defaultModel": "model/gpt-6.2-sol",
     "defaultThinkingLevel": "high",
     "enabledModels": [
-        "omni/model/gpt-6.1-sol",
+        "omni/model/gpt-6.2-sol",
         "omni/model/gpt-6-luna",
-        "omni/model/gpt-6-astra",
+        "omni/model/gpt-6.2-astra",
         "omni/model/gpt-5.3-codex-spark",
         "omni/model/payg/deepseek-flash-latest",
         "omni/model/payg/deepseek-v4.1-flash-1017",
@@ -26,6 +26,7 @@ SETTINGS_MANAGED = {
         "omni/model/payg/glm-flash-latest",
         "omni/model/payg/glm-latest",
         "omni/model/payg/gemini-3.8-flash",
+        "omni/model/payg/gemini-4-hydrogen",
         "omni/model/payg/gemini-flash-latest",
         "omni/model/payg/gemini-3.5-flash-lite",
         "omni/model/payg/jev-router",

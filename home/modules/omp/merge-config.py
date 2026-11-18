@@ -14,21 +14,21 @@ from pathlib import Path
 
 MANAGED_CONFIG_BLOCKS: dict[str, str] = {
     "modelRoles": """modelRoles:
-  default: omniroute/model/gpt-6.1-sol:high
-  plan: omniroute/model/gpt-6-astra:medium
+  default: omniroute/model/gpt-6.2-sol:high
+  plan: omniroute/model/gpt-6.2-astra:medium
   task: omniroute/model/gpt-6-luna:high
-  explore: omniroute/model/gpt-6.1-sol:medium
+  explore: omniroute/model/gpt-6.2-sol:medium
   designer: omniroute/model/gemini-3.8-flash-medium:medium
-  advisor: omniroute/model/gpt-6-astra:high
+  advisor: omniroute/model/gpt-6.2-astra:high
   smol: omniroute/model/gpt-6-luna:high
   tiny: omniroute/model/gpt-6-luna:medium
   commit: omniroute/model/gpt-6-luna:medium
   vision: omniroute/model/gemini-3.5-flash-lite
-  slow: omniroute/model/gpt-6.1-sol:high""",
+  slow: omniroute/model/gpt-6.2-sol:high""",
     "enabledModels": """enabledModels:
-  - omniroute/model/gpt-6.1-sol
+  - omniroute/model/gpt-6.2-sol
   - omniroute/model/gpt-6-luna
-  - omniroute/model/gpt-6-astra
+  - omniroute/model/gpt-6.2-astra
   - omniroute/model/gpt-5.3-codex-spark
   - omniroute/model/payg/deepseek-v4.1-flash-1017
   - omniroute/model/payg/deepseek-flash-latest
@@ -36,6 +36,7 @@ MANAGED_CONFIG_BLOCKS: dict[str, str] = {
   - omniroute/model/payg/glm-flash-latest
   - omniroute/model/payg/glm-latest
   - omniroute/model/payg/gemini-3.8-flash
+  - omniroute/model/payg/gemini-4-hydrogen
   - omniroute/model/payg/gemini-flash-latest
   - omniroute/model/payg/gemini-3.5-flash-lite
   - omniroute/model/payg/jev-router
@@ -90,8 +91,36 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
-    - id: model/gpt-6.1-sol
-      name: GPT-6.1 Sol identity
+    - id: model/payg/gemini-4-hydrogen
+      name: Gemini 4 Hydrogen (PAYG)
+      reasoning: true
+      thinkingLevelMap:
+        'off': null
+        minimal: null
+        low: low
+        medium: medium
+        high: high
+        xhigh: xhigh
+        max: null
+      input:
+      - text
+      - image
+      contextWindow: 1048576
+      maxTokens: 32768
+      compat:
+        supportsReasoningEffort: true
+        maxTokensField: max_tokens
+      thinking:
+        mode: effort
+        efforts:
+        - low
+        - medium
+        - high
+        - xhigh
+        defaultLevel: medium
+        requiresEffort: true
+    - id: model/gpt-6.2-sol
+      name: GPT-6.2 Sol identity
       reasoning: true
       thinkingLevelMap:
         off: null
@@ -112,8 +141,8 @@ OMNIROUTE_PROVIDER_TEMPLATE = """  omniroute:
       compat:
         supportsReasoningEffort: true
         maxTokensField: max_tokens
-    - id: model/gpt-6-astra
-      name: GPT-6 Astra identity
+    - id: model/gpt-6.2-astra
+      name: GPT-6.2 Astra identity
       reasoning: true
       thinkingLevelMap:
         off: null
@@ -449,15 +478,17 @@ def migrate_saved_model(value):
     if not isinstance(value, str):
         return value
     routes = {
-        'model/gpt-6-sol': 'model/gpt-6.1-sol',
-        'model/gpt-5.6-sol': 'model/gpt-6.1-sol',
-        'model/gpt-5.6-terra': 'model/gpt-6.1-sol',
+        'model/gpt-6.1-sol': 'model/gpt-6.2-sol',
+        'model/gpt-6-astra': 'model/gpt-6.2-astra',
+        'model/gpt-6-sol': 'model/gpt-6.2-sol',
+        'model/gpt-5.6-sol': 'model/gpt-6.2-sol',
+        'model/gpt-5.6-terra': 'model/gpt-6.2-sol',
         'model/gpt-5.6-luna': 'model/gpt-6-luna',
         'model/payg-fb/gpt-5.6-luna': 'model/gpt-6-luna',
     }
     prefix = 'omniroute/' if value.startswith('omniroute/') else ''
-    model = value[len(prefix):]
-    return prefix + routes.get(model, model)
+    model, separator, effort = value[len(prefix):].partition(':')
+    return prefix + routes.get(model, model) + separator + effort
 
 
 def merge_config(original: str) -> str:

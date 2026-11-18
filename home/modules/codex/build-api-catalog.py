@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-MODELS = ['gpt-6-astra', 'gpt-6.1-sol', 'gpt-6-luna', 'gpt-5.3-codex-spark']
+MODELS = ['gpt-6.2-astra', 'gpt-6.2-sol', 'gpt-6-luna', 'gpt-5.3-codex-spark']
 
 
 def build(codex):
@@ -40,6 +40,7 @@ def build(codex):
     for name in MODELS:
         model = dict(models[name])
         model.update(slug='model/'+name, supported_in_api=True, visibility='list')
+        model['context_window'] = min(model.get('context_window', 272000), 272000)
         result.append(model)
     return {'models': result}
 

@@ -1,6 +1,6 @@
 name = "powerhouse"
 description = "Independent clean-context second opinion for unresolved architecture, debugging, and validation."
-model = "gpt-6-astra"
+model = "gpt-6.2-astra"
 model_reasoning_effort = "xhigh"
 developer_instructions = """
 Provide an independent, clean-context re-examination when the normal worker or

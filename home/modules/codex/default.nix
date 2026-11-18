@@ -56,8 +56,9 @@ let
       "${pkgs.libsecret}/bin/secret-tool"
     ];
   apiConfig = toml.generate "codex-omni-api.config.toml" {
-    model = "model/gpt-6.1-sol";
+    model = "model/gpt-6.2-sol";
     model_provider = "omniroute";
+    model_context_window = 272000;
     model_catalog_json = "${codexHome}/api-models.json";
     model_reasoning_effort = "high";
     plan_mode_reasoning_effort = "high";

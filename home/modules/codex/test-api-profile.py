@@ -32,10 +32,14 @@ multi_agent = true
 ''')
     template = root / 'template.toml'
     instructions = 'First line\nSecond line with "quotes" and C:\\tools\\new'
-    template.write_text('developer_instructions = ' + json.dumps(instructions) + '\n' + '''model = "model/gpt-6.1-sol"
+    template.write_text('developer_instructions = ' + json.dumps(instructions) + '\n' + '''model = "model/gpt-6.2-sol"
 [agents.omni-worker]
 config_file = "/Users/test/.codex/api-agents/worker.toml"
 ''')
+    orca = root / 'Library/Application Support/orca/codex-accounts/test/home'
+    orca.mkdir(parents=True)
+    (orca / 'config.toml').write_text('model = "gpt-6.1-sol"\nmodel_context_window = 500000\nmodel_reasoning_effort = "medium"\nservice_tier = "priority"\nprompt = "gpt-6.1-sol"\n')
+    (orca / 'api.config.toml').write_text('model = "model/gpt-6-astra"\nmodel_context_window = 128000\nmodel_reasoning_effort = "xhigh"\n')
     argv = ['sync', str(template), str(repo / 'merge-config.py')]
     with patch.object(Path, 'home', return_value=root), patch.object(sys, 'argv', argv):
         runpy.run_path(str(repo / 'sync-api-profile.py'))
@@ -53,6 +57,14 @@ config_file = "/Users/test/.codex/api-agents/worker.toml"
             'features': {'custom_feature': True}, 'agents': {'enabled': True}}
         assert tomllib.loads(legacy_api.read_text()) == {
             'features': {}, 'agents': {'enabled': False}}
+        current = tomllib.loads((orca / 'config.toml').read_text())
+        assert current == {'model': 'gpt-6.2-sol', 'model_context_window': 272000,
+                           'model_reasoning_effort': 'medium', 'service_tier': 'priority',
+                           'prompt': 'gpt-6.1-sol'}
+        api = tomllib.loads((orca / 'api.config.toml').read_text())
+        assert api == {'model': 'model/gpt-6.2-astra', 'model_context_window': 128000,
+                       'model_reasoning_effort': 'xhigh'}
+        assert (orca / 'config.toml.before-gpt62').stat().st_mode & 0o777 == 0o600
         runpy.run_path(str(repo / 'sync-api-profile.py'))
         assert target.read_text() == first
     print('PASS: stale roles removed; user roles/settings preserved; sync idempotent')

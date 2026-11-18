@@ -2,7 +2,7 @@
 
 Model portfolio:
 
-- Main: Sol 6.1/high for planning, decomposition, decisions, and final verification.
+- Main: Sol 6.2/high for planning, decomposition, decisions, and final verification.
 - `scout`: Spark/high for narrow read-only lookups.
 - `explorer`: Sol/medium for broader codebase relationships and execution flows.
 - `worker`: GPT-6 Luna/high for implementation and focused tests; return design

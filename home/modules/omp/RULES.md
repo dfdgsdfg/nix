@@ -9,17 +9,17 @@ active model before falling back to its configured/default model.
 
 | OMP role | OmniRoute route | Effort | Intended use |
 |---|---|---|---|
-| `default` | `model/gpt-6.1-sol` | high | Main session, decomposition, integration, acceptance |
-| `plan` | `model/gpt-6-astra` | medium | Planning and architecture decisions |
+| `default` | `model/gpt-6.2-sol` | high | Main session, decomposition, integration, acceptance |
+| `plan` | `model/gpt-6.2-astra` | medium | Planning and architecture decisions |
 | `task` | `model/gpt-6-luna` | high | Bounded implementation and focused tests |
-| `explore` | `model/gpt-6.1-sol` | medium | Relationships across modules and failure analysis |
+| `explore` | `model/gpt-6.2-sol` | medium | Relationships across modules and failure analysis |
 | `smol` | `model/gpt-6-luna` | high | Narrow exploration and mechanical work |
 | `tiny` | `model/gpt-6-luna` | medium | Lightweight background operations |
 | `commit` | `model/gpt-6-luna` | medium | Commit generation and repository work |
-| `advisor` | `model/gpt-6-astra` | high | Optional ongoing assistance, not final acceptance |
+| `advisor` | `model/gpt-6.2-astra` | high | Optional ongoing assistance, not final acceptance |
 | `designer` | `model/gemini-3.8-flash-medium` | medium | UI/UX model role; no dedicated agent installed |
 | `vision` | `model/gemini-3.5-flash-lite` | none | Image understanding |
-| `slow` | `model/gpt-6.1-sol` | high | Independent correctness and security review |
+| `slow` | `model/gpt-6.2-sol` | high | Independent correctness and security review |
 
 `~/.omp/agent/config.yml` is authoritative if this table drifts. Role selectors
 include effort suffixes where listed; the default thinking level is high.

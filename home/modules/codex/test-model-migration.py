@@ -30,15 +30,15 @@ api_key = "gpt-5.6-luna"
 '''
 updated = codex.migrate_model_selections(source)
 parsed = tomllib.loads(updated)
-assert parsed['model'] == 'gpt-6.1-sol'
+assert parsed['model'] == 'gpt-6.2-sol'
 assert 'model = "gpt-5.6-luna"' in parsed['prompt']
 assert parsed['agents']['default_subagent_model'] == 'model/gpt-6-luna'
-assert parsed['profiles']['custom']['model'] == 'gpt-6.1-sol'
+assert parsed['profiles']['custom']['model'] == 'gpt-6.2-sol'
 assert parsed['profiles']['custom']['api_key'] == 'gpt-5.6-luna'
 assert '# keep comment' in updated
 assert codex.migrate_model_selections(updated) == updated
-for old, new in [('model/gpt-5.6-sol', 'model/gpt-6.1-sol'),
-                 ('model/gpt-5.6-terra', 'model/gpt-6.1-sol'),
+for old, new in [('model/gpt-5.6-sol', 'model/gpt-6.2-sol'),
+                 ('model/gpt-5.6-terra', 'model/gpt-6.2-sol'),
                  ('model/gpt-5.6-luna', 'model/gpt-6-luna'),
                  ('model/payg-fb/gpt-5.6-luna', 'model/gpt-6-luna')]:
     result = omp.merge_config('model: omniroute/' + old + '\ncustom: keep\n')
@@ -53,23 +53,23 @@ for models in catalogs:
     luna = next(m for m in models if m['id'] == 'model/gpt-6-luna')
     assert luna['samplingParams']['service_tier'] == 'priority'
     assert luna['contextWindow'] == 272000
-assert pi.SETTINGS_MANAGED['defaultModel'] == 'model/gpt-6.1-sol'
+assert pi.SETTINGS_MANAGED['defaultModel'] == 'model/gpt-6.2-sol'
 assert pi.SETTINGS_MANAGED['defaultThinkingLevel'] == 'high'
 print('PASS: GPT-6 selections, saved models, prompts/credentials, tier, and idempotence')
 
 for old in ('gpt-6-sol', 'model/gpt-6-sol'):
     text = 'model = "' + old + '"\n'
     migrated = codex.migrate_model_selections(text)
-    assert tomllib.loads(migrated)['model'] == old.replace('gpt-6-sol', 'gpt-6.1-sol')
+    assert tomllib.loads(migrated)['model'] == old.replace('gpt-6-sol', 'gpt-6.2-sol')
     assert codex.migrate_model_selections(migrated) == migrated
-assert omp.migrate_saved_model('omniroute/model/gpt-6-sol') == 'omniroute/model/gpt-6.1-sol'
+assert omp.migrate_saved_model('omniroute/model/gpt-6-sol') == 'omniroute/model/gpt-6.2-sol'
 for models in catalogs:
-    sol = next(m for m in models if m['id'] == 'model/gpt-6.1-sol')
+    sol = next(m for m in models if m['id'] == 'model/gpt-6.2-sol')
     assert sol['thinkingLevelMap'].get('off', sol['thinkingLevelMap'].get(False)) is None
-print('PASS: Sol 6 to 6.1 migration and reasoning controls')
+print('PASS: Sol upgrade migration and reasoning controls')
 
 managed = tomllib.loads(codex.merge(''))
-assert managed['model'] == 'gpt-6.1-sol'
+assert managed['model'] == 'gpt-6.2-sol'
 assert managed['model_reasoning_effort'] == managed['plan_mode_reasoning_effort'] == 'high'
 assert managed['agents']['default_subagent_model'] == 'gpt-6-luna'
 assert managed['agents']['default_subagent_reasoning_effort'] == 'high'
@@ -122,3 +122,29 @@ for models in catalogs:
     assert 'thinkingLevelMap' not in lite
     assert any(m['id'] == 'model/payg/gemini-3.5-flash-lite' for m in models)
 print('PASS: subscription Gemini defaults, explicit paid selection, and Lite controls')
+
+for old, new in [('gpt-6.1-sol', 'gpt-6.2-sol'), ('gpt-6-astra', 'gpt-6.2-astra')]:
+    for prefix in ('', 'model/'):
+        source = 'model = "' + prefix + old + '"\nmodel_reasoning_effort = "xhigh"\nservice_tier = "priority"\nprompt = "' + old + '"\n'
+        migrated = tomllib.loads(codex.migrate_model_selections(source))
+        assert migrated['model'] == prefix + new
+        assert migrated['prompt'] == old
+        assert migrated['model_reasoning_effort'] == 'xhigh'
+        assert migrated['service_tier'] == 'priority'
+    assert omp.migrate_saved_model('omniroute/model/' + old + ':high') == 'omniroute/model/' + new + ':high'
+assert managed['model_context_window'] == 272000
+for models in catalogs:
+    for identity in ('gpt-6.2-sol', 'gpt-6.2-astra'):
+        entry = next(m for m in models if m['id'] == 'model/' + identity)
+        assert entry['contextWindow'] == 272000
+        assert entry['maxTokens'] == 32768
+        assert 'ultra' not in entry['thinkingLevelMap']
+print('PASS: GPT-6.2 preserves effort, tier, prompts and managed capacity')
+
+for models in catalogs:
+    hydrogen = next(m for m in models if m['id'] == 'model/payg/gemini-4-hydrogen')
+    assert hydrogen['thinkingLevelMap']['xhigh'] == 'xhigh'
+    assert hydrogen['thinkingLevelMap']['max'] is None
+assert all('hydrogen' not in v for v in yaml.safe_load(omp.merge_config(''))['modelRoles'].values())
+assert pi.SETTINGS_MANAGED['defaultModel'] == 'model/gpt-6.2-sol'
+print('PASS: Hydrogen remains a manual catalog choice; Flash roles preserved')
