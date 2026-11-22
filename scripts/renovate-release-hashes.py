@@ -22,7 +22,7 @@ PACKAGES = {
     "herdrdev/herdr": (UPSTREAM, "herdr", None),
     "hashicorp/terraform": (UPSTREAM, "terraform", "  terraformRelease ="),
     "openai/codex": (UPSTREAM, "codex", "  codexRelease ="),
-    "block/buzz": (UPSTREAM, "buzz", None),
+    "block/buzz-app": (UPSTREAM, "buzz", None),
     "localsend/localsend": (UPSTREAM, "localsend", None),
     "telegramdesktop/tdesktop": (UPSTREAM, "telegram-desktop", None),
     "zackb/tether": (UPSTREAM, "tether", None),

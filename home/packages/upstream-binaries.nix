@@ -141,25 +141,23 @@ let
   buzz =
     let
       pname = "buzz";
-      version = "0.5.30";
+      version = "1.0.6";
       src = pkgs.fetchurl {
-        url = "https://github.com/block/buzz/releases/download/desktop-v${version}/Buzz_${version}_amd64.AppImage";
-        hash = "sha256-AAZc110TQPDucGamgOUgimlXw4mjquzBgvTwc6oWzZo=";
+        url = "https://github.com/block/buzz-app/releases/download/v${version}/Buzz_${version}_x86_64.AppImage";
+        hash = "sha256-vwwbkPCIlBsfMm9Gxz8tMdRb+gPF7ToGDpr+g3sZmI0=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
         postExtract = ''
-          # Buzz clears linuxdeploy's empty plugin path. Restore the FHS path
-          # because Nix's GStreamer cannot discover it from its store location.
-          # Buzz 0.5.27 restores this path in its launcher already. Keep the
-          # patch for releases whose launcher still clears linuxdeploy's path.
-          if ! grep -q 'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0' \
-            "$out/usr/bin/buzz-desktop"; then
-            substituteInPlace "$out/usr/bin/buzz-desktop" \
-              --replace-fail 'exec -a "buzz-desktop"' \
-                'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0''${GST_PLUGIN_SYSTEM_PATH_1_0:+:$GST_PLUGIN_SYSTEM_PATH_1_0}"
-            exec -a "buzz-desktop"'
-          fi
+          # Use the same OpenSSL as the FHS GStreamer plugins.
+          rm -f "$out/usr/lib/libcrypto.so.3" "$out/usr/lib/libssl.so.3"
+
+          # After Buzz clears linuxdeploy's empty plugin path, point Nix's
+          # GStreamer at the plugins installed in the FHS environment.
+          substituteInPlace "$out/usr/bin/Buzz" \
+            --replace-fail 'exec -a "Buzz"' \
+              'export GST_PLUGIN_SYSTEM_PATH_1_0="/usr/lib/gstreamer-1.0''${GST_PLUGIN_SYSTEM_PATH_1_0:+:$GST_PLUGIN_SYSTEM_PATH_1_0}"
+          exec -a "Buzz"'
 
           # The bundled GTK cache omits host input modules such as kime.
           # Fall back to XIM, which can reach the host input-method daemon.
@@ -173,11 +171,12 @@ let
       };
     in
     pkgs.appimageTools.wrapAppImage {
-      inherit pname version src;
-      contents = appimageContents;
+      inherit pname version;
+      src = appimageContents;
       extraPkgs = pkgs: [
         pkgs.elfutils
         pkgs.libgpg-error
+        pkgs.openssl
         pkgs.zstd
         pkgs.gst_all_1.gst-plugins-good
         pkgs.gst_all_1.gst-plugins-bad
@@ -185,10 +184,10 @@ let
       ];
 
       extraInstallCommands = ''
-        install -Dm444 ${appimageContents}/Buzz.desktop \
-          $out/share/applications/Buzz.desktop
-        substituteInPlace $out/share/applications/Buzz.desktop \
-          --replace-fail 'Exec=buzz-desktop' "Exec=$out/bin/buzz %U" \
+        install -Dm444 "${appimageContents}/Buzz Foundation.desktop" \
+          "$out/share/applications/Buzz.desktop"
+        substituteInPlace "$out/share/applications/Buzz.desktop" \
+          --replace-fail 'Exec=Buzz' "Exec=$out/bin/buzz %U" \
           --replace-fail 'Categories=' 'Categories=Network;Chat;'
         cp -R ${appimageContents}/usr/share/icons $out/share/
       '';
