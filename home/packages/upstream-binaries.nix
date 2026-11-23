@@ -314,7 +314,7 @@ let
 
   zed = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "zed-editor";
-    version = "1.28.1";
+    version = "1.29.3";
 
     nativeBuildInputs = [
       pkgs.autoPatchelfHook
@@ -338,7 +338,7 @@ let
 
     src = pkgs.fetchurl {
       url = "https://github.com/zed-industries/zed/releases/download/v${version}/zed-linux-x86_64.tar.gz";
-      hash = "sha256-nD/Ey+Uz5yyNDoZKYr4riNacxEufUs0l1MIdBU3aN0I=";
+      hash = "sha256-RLDzUKp79FUdGwqqLTtnOm3iwDvF6XmzWS/SGAtPd8E=";
     };
 
     installPhase = ''
