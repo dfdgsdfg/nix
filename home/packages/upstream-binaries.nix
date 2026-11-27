@@ -205,10 +205,10 @@ let
   localsend =
     let
       pname = "localsend";
-      version = "1.18.2";
+      version = "1.19.0";
       src = pkgs.fetchurl {
         url = "https://github.com/localsend/localsend/releases/download/v${version}/LocalSend-${version}-linux-x86-64.AppImage";
-        hash = "sha256-GfIWE9GDT2yqaVFxE2cEYaPxC4CioxX4ZUjAZj2cCq8=";
+        hash = "sha256-5yzog4OjK+7JcBWDwi4pgDf3aD+VkM6ns6KB9YwuwrM=";
       };
       appimageContents = pkgs.appimageTools.extract {
         inherit pname version src;
