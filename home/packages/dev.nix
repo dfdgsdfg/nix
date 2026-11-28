@@ -6,6 +6,7 @@
 
 [ ccache ]
 ++ (with pkgs; [
+  antigravity-cli
   b3sum
   cmake
   chezmoi
